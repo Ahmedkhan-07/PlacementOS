@@ -156,21 +156,22 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
 
                 {/* Price */}
                 <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                    <span style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: '52px',
-                        fontWeight: 700,
-                        color: '#2D6A4F',
-                    }}>
-                        ₹499
-                    </span>
-                    <p style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '13px',
-                        color: '#6B6560',
-                        marginTop: '4px',
-                    }}>
-                        one-time payment
+                    {/* Discount badge */}
+                    <div style={{ display: 'inline-block', background: '#C0392B', color: '#fff', fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 700, padding: '4px 12px', borderRadius: '100px', marginBottom: '10px', letterSpacing: '0.05em' }}>
+                        93% OFF 🔥
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '12px' }}>
+                        {/* Strikethrough original */}
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '26px', color: '#aaa', textDecoration: 'line-through', fontWeight: 500 }}>
+                            ₹399
+                        </span>
+                        {/* Actual price */}
+                        <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '58px', fontWeight: 700, color: '#2D6A4F', lineHeight: 1 }}>
+                            ₹29
+                        </span>
+                    </div>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#6B6560', marginTop: '6px' }}>
+                        one-time payment · limited time offer
                     </p>
                 </div>
 

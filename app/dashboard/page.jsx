@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 
 import Navbar from '@/components/shared/Navbar';
+import Footer from '@/components/shared/Footer';
 import ExpiryBanner from '@/components/dashboard/ExpiryBanner';
 import ProfileHero from '@/components/dashboard/ProfileHero';
 import TypewriterSummary from '@/components/dashboard/TypewriterSummary';
@@ -243,6 +244,8 @@ export default function DashboardPage() {
                     onRefreshUser={refreshUser}
                 />
             </main>
+
+            <Footer />
 
             {/* Edit Profile Panel */}
             <EditProfilePanel
