@@ -10,8 +10,7 @@ export function ThemeProvider({ children }) {
     // On mount: read from localStorage and apply immediately
     useEffect(() => {
         const saved = localStorage.getItem('pos_theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = saved ? saved === 'dark' : prefersDark;
+        const isDark = saved === 'dark'; // default is always light
         setDark(isDark);
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
     }, []);
