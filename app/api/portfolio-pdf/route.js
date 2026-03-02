@@ -15,17 +15,22 @@ export async function POST() {
     }
 
     try {
+        const isLocal = process.env.NODE_ENV === 'development';
+        const executablePath = isLocal
+            ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+            : await chromium.executablePath();
+
         const browser = await puppeteer.launch({
-            args: chromium.args,
+            args: isLocal ? [] : chromium.args,
             defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(),
-            headless: chromium.headless,
+            executablePath: executablePath,
+            headless: isLocal ? 'new' : chromium.headless,
         });
 
         const page = await browser.newPage();
         await page.setViewport({ width: 1280, height: 900 });
         await page.goto(
-            `${process.env.NEXT_PUBLIC_APP_URL}/u/${user.username}`,
+            `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/u/${user.username}`,
             { waitUntil: 'networkidle0', timeout: 30000 }
         );
 
