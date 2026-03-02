@@ -1,0 +1,122 @@
+import LegalLayout from '@/components/shared/LegalLayout';
+
+export const metadata = {
+    title: 'Contact Us — PlacementOS',
+    description: 'Get in touch with the PlacementOS support team.',
+};
+
+const S = ({ children }) => (
+    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: 'var(--text)', marginTop: '40px', marginBottom: '12px' }}>
+        {children}
+    </h2>
+);
+const P = ({ children }) => (
+    <p style={{ marginBottom: '16px', color: 'var(--text-muted)', lineHeight: 1.9 }}>{children}</p>
+);
+
+export default function ContactUs() {
+    return (
+        <LegalLayout title="Contact Us" lastUpdated="March 2, 2026">
+
+            <P>We're here to help. Whether you have a question about your account, a technical issue, a payment query, or a legal/privacy concern — reach out and we'll respond as soon as possible.</P>
+
+            {/* Contact Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', margin: '32px 0' }}>
+                {[
+                    {
+                        icon: '📧',
+                        title: 'General Support',
+                        desc: 'Account issues, feature questions, and feedback.',
+                        value: 'support@placementos.in',
+                        href: 'mailto:support@placementos.in',
+                    },
+                    {
+                        icon: '💳',
+                        title: 'Payment & Billing',
+                        desc: 'Premium subscription, refund requests, and payment disputes.',
+                        value: 'billing@placementos.in',
+                        href: 'mailto:billing@placementos.in',
+                    },
+                    {
+                        icon: '🔒',
+                        title: 'Privacy & Legal',
+                        desc: 'Data deletion requests, GDPR/DPDP queries, and legal notices.',
+                        value: 'legal@placementos.in',
+                        href: 'mailto:legal@placementos.in',
+                    },
+                    {
+                        icon: '🤝',
+                        title: 'Partnerships',
+                        desc: 'College tie-ups, B2B integrations, and collaborations.',
+                        value: 'hello@placementos.in',
+                        href: 'mailto:hello@placementos.in',
+                    },
+                ].map(card => (
+                    <div key={card.title} style={{
+                        background: 'var(--surface)',
+                        border: '1.5px solid var(--border)',
+                        borderRadius: '16px',
+                        padding: '24px',
+                    }}>
+                        <div style={{ fontSize: '32px', marginBottom: '10px' }}>{card.icon}</div>
+                        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: '17px', fontWeight: 700, color: 'var(--text)', marginBottom: '6px' }}>{card.title}</p>
+                        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px', lineHeight: 1.6 }}>{card.desc}</p>
+                        <a href={card.href} style={{ fontFamily: "'Inter', sans-serif", fontSize: '13.5px', fontWeight: 600, color: 'var(--accent)', textDecoration: 'none' }}>{card.value}</a>
+                    </div>
+                ))}
+            </div>
+
+            <S>What to Include in Your Email</S>
+            <P>To help us resolve your issue quickly, please include the following in your support email:</P>
+            <ul style={{ paddingLeft: '22px', marginBottom: '20px' }}>
+                {[
+                    'Your registered email address (the one used to sign in to PlacementOS).',
+                    'A clear description of your issue or request.',
+                    'For payment issues: your Razorpay Payment ID (from the payment confirmation email).',
+                    'Screenshots or screen recordings of any errors you are experiencing (if applicable).',
+                    'The date and time the issue occurred.',
+                ].map((li, i) => (
+                    <li key={i} style={{ marginBottom: '8px', color: 'var(--text-muted)', lineHeight: 1.85, paddingLeft: '6px' }}>{li}</li>
+                ))}
+            </ul>
+
+            <S>Response Times</S>
+            <div style={{ overflowX: 'auto', marginBottom: '20px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Inter', sans-serif", fontSize: '14px' }}>
+                    <thead>
+                        <tr style={{ background: 'rgba(45,106,79,0.06)' }}>
+                            {['Query Type', 'Expected Response'].map(h => (
+                                <th key={h} style={{ textAlign: 'left', padding: '12px 16px', color: 'var(--accent)', fontWeight: 700, borderBottom: '1.5px solid var(--border)' }}>{h}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[
+                            ['General support', '1–2 business days'],
+                            ['Payment / Billing', '2–3 business days'],
+                            ['Refund requests', '5–7 business days'],
+                            ['Privacy / Legal', '3–5 business days'],
+                            ['Partnerships', '5–7 business days'],
+                        ].map(([type, time], i) => (
+                            <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
+                                <td style={{ padding: '12px 16px', color: 'var(--text)' }}>{type}</td>
+                                <td style={{ padding: '12px 16px', color: 'var(--text-muted)' }}>{time}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <P>We operate Monday to Saturday, 10:00 AM – 6:00 PM IST. Queries received on Sundays and public holidays will be addressed on the next business day.</P>
+
+            <S>Business Details</S>
+            <P>
+                <strong>Platform:</strong> PlacementOS<br />
+                <strong>Operated by:</strong> TechForce Studio<br />
+                <strong>Country:</strong> India<br />
+                <strong>Payment Partner:</strong> Razorpay Payment Solutions Pvt. Ltd.<br />
+                <strong>Primary Contact:</strong> support@placementos.in
+            </P>
+
+        </LegalLayout>
+    );
+}
