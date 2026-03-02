@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/lib/ThemeContext';
+import PremiumBadge from '@/components/shared/PremiumBadge';
 
 function ThemeToggle() {
     const { dark, toggle } = useTheme();
@@ -35,17 +36,27 @@ function ThemeToggle() {
 
 export default function Navbar() {
     const { isSignedIn } = useUser();
+    const [isPremium, setIsPremium] = useState(false);
     const pathname = usePathname();
     const isDashboard = pathname === '/dashboard';
+
+    useEffect(() => {
+        if (!isSignedIn) return;
+        fetch('/api/user')
+            .then(res => res.json())
+            .then(data => setIsPremium(data?.user?.isPremium || false))
+            .catch(() => { });
+    }, [isSignedIn]);
 
     return (
         <nav className="glass-navbar" style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, padding: '14px 40px' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                {/* Logo */}
-                <Link href="/" style={{ textDecoration: 'none' }}>
+                {/* Logo + Premium Badge */}
+                <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: 'var(--accent)' }}>
                         PlacementOS
                     </span>
+                    {isPremium && <PremiumBadge style={{ fontSize: '10px', padding: '3px 8px' }} />}
                 </Link>
 
                 {/* Right actions */}
