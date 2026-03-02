@@ -68,9 +68,9 @@ export default function Footer() {
                         </p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             {[
-                                { label: 'Support', email: 'support@placementos.in' },
-                                { label: 'Billing', email: 'billing@placementos.in' },
-                                { label: 'Legal', email: 'legal@placementos.in' },
+                                { label: 'Support', email: 'placematedotcom@gmail.com' },
+                                { label: 'Billing', email: 'placematedotcom@gmail.com' },
+                                { label: 'Legal', email: 'placematedotcom@gmail.com' },
                             ].map(c => (
                                 <div key={c.label}>
                                     <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{c.label}: </span>
@@ -98,6 +98,14 @@ export default function Footer() {
                     <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'var(--text-muted)' }}>
                         © {new Date().getFullYear()} PlacementOS by TechForce Studio. All rights reserved.
                     </p>
+                    <a
+                        href="https://www.linkedin.com/in/ahmed-yasin-khan-4489992ba/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                        Connect the Developer 🔗
+                    </a>
                     <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'var(--text-muted)' }}>
                         Payments secured by{' '}
                         <a href="https://razorpay.com" target="_blank" rel="noopener noreferrer"

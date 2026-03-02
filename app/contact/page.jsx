@@ -27,29 +27,29 @@ export default function ContactUs() {
                         icon: '📧',
                         title: 'General Support',
                         desc: 'Account issues, feature questions, and feedback.',
-                        value: 'support@placementos.in',
-                        href: 'mailto:support@placementos.in',
+                        value: 'placematedotcom@gmail.com',
+                        href: 'mailto:placematedotcom@gmail.com',
                     },
                     {
                         icon: '💳',
                         title: 'Payment & Billing',
                         desc: 'Premium subscription, refund requests, and payment disputes.',
-                        value: 'billing@placementos.in',
-                        href: 'mailto:billing@placementos.in',
+                        value: 'placematedotcom@gmail.com',
+                        href: 'mailto:placematedotcom@gmail.com',
                     },
                     {
                         icon: '🔒',
                         title: 'Privacy & Legal',
                         desc: 'Data deletion requests, GDPR/DPDP queries, and legal notices.',
-                        value: 'legal@placementos.in',
-                        href: 'mailto:legal@placementos.in',
+                        value: 'placematedotcom@gmail.com',
+                        href: 'mailto:placematedotcom@gmail.com',
                     },
                     {
                         icon: '🤝',
                         title: 'Partnerships',
                         desc: 'College tie-ups, B2B integrations, and collaborations.',
-                        value: 'hello@placementos.in',
-                        href: 'mailto:hello@placementos.in',
+                        value: 'placematedotcom@gmail.com',
+                        href: 'mailto:placematedotcom@gmail.com',
                     },
                 ].map(card => (
                     <div key={card.title} style={{
@@ -111,10 +111,11 @@ export default function ContactUs() {
             <S>Business Details</S>
             <P>
                 <strong>Platform:</strong> PlacementOS<br />
-                <strong>Operated by:</strong> TechForce Studio<br />
+                <strong>Website:</strong> <a href="https://placement-os-nine.vercel.app" style={{ color: 'var(--accent)', textDecoration: 'none' }}>placement-os-nine.vercel.app</a><br />
+                <strong>Email:</strong> placematedotcom@gmail.com<br />
                 <strong>Country:</strong> India<br />
                 <strong>Payment Partner:</strong> Razorpay Payment Solutions Pvt. Ltd.<br />
-                <strong>Primary Contact:</strong> support@placementos.in
+                <strong>Developer:</strong> <a href="https://www.linkedin.com/in/ahmed-yasin-khan-4489992ba/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Ahmed Yasin Khan</a>
             </P>
 
         </LegalLayout>
