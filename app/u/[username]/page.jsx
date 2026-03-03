@@ -28,39 +28,8 @@ export default async function PublicPortfolio({ params }) {
 
     if (!user) return notFound();
 
-    if (!user.isPublic) {
-        return (
-            <div style={{
-                minHeight: '100vh',
-                background: '#FAF7F2',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '120px 40px',
-                textAlign: 'center',
-            }}>
-                <div>
-                    <div style={{ fontSize: '56px', marginBottom: '16px' }}>🔒</div>
-                    <h1 style={{
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: '32px', fontWeight: 700,
-                        color: '#1C1C1C', marginBottom: '12px',
-                    }}>
-                        This portfolio is private
-                    </h1>
-                    <p style={{
-                        fontFamily: "'Inter', sans-serif",
-                        fontSize: '16px', color: '#6B6560', marginBottom: '32px',
-                    }}>
-                        The owner hasn&apos;t made this portfolio public yet.
-                    </p>
-                    <a href="/" className="btn-primary" style={{ textDecoration: 'none' }}>
-                        Create Your Own →
-                    </a>
-                </div>
-            </div>
-        );
-    }
+    // The public portfolio is accessible if the URL is shared. 
+    // We removed the strict `!user.isPublic` check so it doesn't block by default.
 
     // Fetch all data for the user
     const [resume, projects, certificates, achievements] = await Promise.all([

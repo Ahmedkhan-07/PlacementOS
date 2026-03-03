@@ -130,7 +130,7 @@ export default function OnboardingPage() {
                     marginBottom: '32px',
                     fontWeight: 600,
                 }}>
-                    placementos.com/u/{username || 'your-username'}
+                    placement-os-nine.vercel.app/u/{username || 'your-username'}
                 </p>
 
                 <form onSubmit={handleSubmit}>

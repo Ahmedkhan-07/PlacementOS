@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 export default function PremiumCTA({ user, onOpenPremiumModal, onRefreshUser }) {
@@ -9,8 +9,11 @@ export default function PremiumCTA({ user, onOpenPremiumModal, onRefreshUser }) 
     const [pdfLoading, setPdfLoading] = useState(false);
     const [toggling, setToggling] = useState(false);
 
-    const portfolioUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://placementos.com'}/u/${user?.username}`;
+    const [portfolioUrl, setPortfolioUrl] = useState('');
 
+    useEffect(() => {
+        setPortfolioUrl(`https://placement-os-nine.vercel.app/u/${user?.username}`);
+    }, [user?.username]);
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(portfolioUrl);

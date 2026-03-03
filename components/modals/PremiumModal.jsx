@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 const BENEFITS = [
     'Your data is saved permanently — never resets',
-    'Public portfolio: placementos.com/u/your-username',
+    'Public portfolio: placement-os-nine.vercel.app/u/your-username',
     'Share your link with recruiters, HR, and companies',
     'Download your full portfolio as a beautiful PDF',
     '👑 Royal Premium Badge on your profile',

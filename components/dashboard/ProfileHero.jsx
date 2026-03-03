@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import PremiumBadge from '@/components/shared/PremiumBadge';
 
 const SOCIAL_PLATFORMS = [
     { key: 'linkedinUrl', label: 'LinkedIn', cls: 'btn-linkedin', icon: '🔗' },
@@ -101,7 +100,6 @@ export default function ProfileHero({ user, onEditProfile }) {
                                 </span>
                             </div>
                         )}
-                        {user?.isPremium && <PremiumBadge />}
                     </div>
                     {onEditProfile && (
                         <div style={{ marginTop: '16px' }}>

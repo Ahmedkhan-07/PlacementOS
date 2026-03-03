@@ -7,7 +7,7 @@ import DownloadResumeButton from '@/components/resume/DownloadResumeButton';
 import SocialLinks from '@/components/dashboard/SocialLinks';
 
 
-export default function PublicPortfolioClient({ user, resume, projects, certificates, achievements }) {
+export default function PublicPortfolioClient({ user, resume, projects = [], certificates = [], achievements = [] }) {
     const [showResumeModal, setShowResumeModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(null);
     const [selectedCert, setSelectedCert] = useState(null);
