@@ -15,7 +15,7 @@ function CloudShape() {
     );
 }
 
-export default function ResumeSection({ resume, username, onSaveResume }) {
+export default function ResumeSection({ resume, username, onSaveResume, readOnly = false }) {
     const [revealed, setRevealed] = useState(false);
     const [buttonsVisible, setButtonsVisible] = useState(false);
     const [showBuilder, setShowBuilder] = useState(false);
@@ -113,30 +113,31 @@ export default function ResumeSection({ resume, username, onSaveResume }) {
                 {/* Cloud + Resume scene */}
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 
-                    {/* LEFT CLOUD — Edit Resume */}
-                    <div style={{
-                        position: 'absolute', left: '50%', top: '50%',
-                        marginLeft: '-320px',
-                        transform: leftCloud, transition: 'transform 2.5s ease-in-out',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        width: '320px', zIndex: 6,
-                    }}>
-                        <CloudShape />
-                        <button
-                            className="btn-primary"
-                            onClick={() => setShowBuilder(true)}
-                            style={{
-                                position: 'absolute', top: '50%', left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                opacity: buttonsVisible ? 1 : 0,
-                                transition: 'opacity 0.5s ease',
-                                //pointerEvents: buttonsVisible ? 'auto' : 'none',
-                                fontSize: '15px', padding: '10px 20px', whiteSpace: 'nowrap',
-                            }}
-                        >
-                            ✏️ Edit Resume
-                        </button>
-                    </div>
+                    {/* LEFT CLOUD — Edit Resume (hidden in readOnly mode) */}
+                    {!readOnly && (
+                        <div style={{
+                            position: 'absolute', left: '50%', top: '50%',
+                            marginLeft: '-320px',
+                            transform: leftCloud, transition: 'transform 2.5s ease-in-out',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            width: '320px', zIndex: 6,
+                        }}>
+                            <CloudShape />
+                            <button
+                                className="btn-primary"
+                                onClick={() => setShowBuilder(true)}
+                                style={{
+                                    position: 'absolute', top: '50%', left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    opacity: buttonsVisible ? 1 : 0,
+                                    transition: 'opacity 0.5s ease',
+                                    fontSize: '15px', padding: '10px 20px', whiteSpace: 'nowrap',
+                                }}
+                            >
+                                ✏️ Edit Resume
+                            </button>
+                        </div>
+                    )}
 
                     {/* RIGHT CLOUD — Download Resume */}
                     <div style={{
@@ -297,12 +298,14 @@ export default function ResumeSection({ resume, username, onSaveResume }) {
                             accentColor={resume?.accentColor || '#2D6A4F'}
                         />
                         <div style={{ marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <button
-                                className="btn-primary"
-                                onClick={() => { setShowPreviewModal(false); setShowBuilder(true); }}
-                            >
-                                ✏️ Edit Resume
-                            </button>
+                            {!readOnly && (
+                                <button
+                                    className="btn-primary"
+                                    onClick={() => { setShowPreviewModal(false); setShowBuilder(true); }}
+                                >
+                                    ✏️ Edit Resume
+                                </button>
+                            )}
                             <button
                                 className="btn-gold"
                                 onClick={() => { setShowPreviewModal(false); setShowDownloadConfirm(true); }}
@@ -314,8 +317,8 @@ export default function ResumeSection({ resume, username, onSaveResume }) {
                 </div>
             )}
 
-            {/* Resume Builder */}
-            {showBuilder && (
+            {/* Resume Builder — only for dashboard owner */}
+            {!readOnly && showBuilder && (
                 <ResumeBuilder
                     resume={resume}
                     onClose={() => setShowBuilder(false)}
