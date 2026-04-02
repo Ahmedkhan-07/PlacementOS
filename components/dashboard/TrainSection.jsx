@@ -11,252 +11,322 @@ function Wheel({ size = 28 }) {
     return (
         <div style={{
             width: size, height: size, borderRadius: '50%', flexShrink: 0,
-            background: 'radial-gradient(circle at 38% 32%, #4a4a4a, #111)',
-            border: '2px solid #2a2a2a',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.07)',
+            background: 'radial-gradient(circle at 35% 35%, #4a4a4a, #1a1a1a 70%)',
+            border: '2px solid #222',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.85), inset 0 1px 2px rgba(255,255,255,0.08)',
             position: 'relative',
-            animation: 'spin 1.1s linear infinite',
+            animation: 'spin 1.2s linear infinite',
         }}>
+            {/* Spokes */}
             {[0, 45, 90, 135].map(a => (
                 <div key={a} style={{
                     position: 'absolute', top: '50%', left: '50%',
-                    width: '42%', height: '1.5px',
-                    background: 'rgba(110,110,110,0.7)',
+                    width: '44%', height: '2px',
+                    background: 'rgba(255,255,255,0.05)',
                     transformOrigin: 'left center',
                     transform: `translateY(-50%) rotate(${a}deg)`,
                 }} />
             ))}
+            {/* Center Cap */}
             <div style={{
                 position: 'absolute', top: '50%', left: '50%',
-                width: '30%', height: '30%',
-                background: 'radial-gradient(circle, #D4A017, #8B6200)',
+                width: '32%', height: '32%',
+                background: 'radial-gradient(circle at 30% 30%, #D4A017, #8B6200)',
                 borderRadius: '50%',
                 transform: 'translate(-50%,-50%)',
-                boxShadow: '0 0 4px rgba(212,160,23,0.5)',
+                boxShadow: '0 0 6px rgba(212,160,23,0.4), inset 0 1px 1px rgba(255,255,255,0.2)',
+                border: '1px solid rgba(0,0,0,0.3)',
             }} />
         </div>
     );
 }
 
-/* ─── Locomotive Engine (faces right) ───────────────────────────────── */
+/* ─── Locomotive Engine (faces RIGHT) ───────────────────────────────── */
 function Engine() {
     return (
         <div style={{ display: 'flex', alignItems: 'flex-end', flexShrink: 0 }}>
-            <div style={{ position: 'relative', width: '250px', height: '170px' }}>
+            {/* Heavy Coupler (left end) */}
+            <div style={{ width: '18px', height: '6px', background: 'linear-gradient(180deg, #333, #1a1a1a)', borderRadius: '4px', alignSelf: 'center', marginBottom: '18px', boxShadow: '0 4px 8px rgba(0,0,0,0.8)' }} />
 
-                {/* Smoke */}
-                {[0, 1, 2, 3].map(i => (
+            <div style={{ position: 'relative', width: '320px', height: '260px' }}>
+
+                {/* Highly Realistic Smoke System (Scaled up) */}
+                {[0, 1, 2, 3, 4, 5].map(i => (
                     <div key={i} style={{
-                        position: 'absolute', top: `${-18 - i * 18}px`, left: `${30 + i * 7}px`,
-                        width: `${10 + i * 6}px`, height: `${10 + i * 6}px`,
-                        background: `rgba(150,150,150,${0.55 - i * 0.12})`,
-                        borderRadius: '50%', filter: `blur(${2 + i * 1.5}px)`,
-                        animation: 'smokeRise 2.8s ease-out infinite',
-                        animationDelay: `${i * 0.6}s`,
+                        position: 'absolute', top: `${-30 - i * 22}px`, left: `${40 + i * 10}px`,
+                        width: `${16 + i * 10}px`, height: `${16 + i * 10}px`,
+                        background: `radial-gradient(circle, rgba(200,200,200,${0.6 - i * 0.08}) 0%, rgba(120,120,120,0) 75%)`,
+                        borderRadius: '50%', filter: `blur(${4 + i * 2.5}px)`,
+                        animation: 'smokeRise 3.5s ease-out infinite',
+                        animationDelay: `${i * 0.4}s`,
                     }} />
                 ))}
 
-                {/* Stack */}
+                {/* Heavy Cast-Iron Stack */}
                 <div style={{
-                    position: 'absolute', top: '-24px', left: '26px',
-                    width: '18px', height: '28px',
-                    background: 'linear-gradient(180deg,#111,#1e1e1e)',
-                    borderRadius: '2px 2px 0 0',
+                    position: 'absolute', top: '-10px', left: '32px',
+                    width: '24px', height: '45px',
+                    background: 'linear-gradient(90deg, #0a0a0a 0%, #2a2a2a 30%, #0a0a0a 100%)',
+                    borderRadius: '4px 4px 0 0',
+                    boxShadow: 'inset 0 0 15px rgba(0,0,0,0.6)',
                 }}>
-                    <div style={{ position: 'absolute', top: '-5px', left: '-5px', width: '28px', height: '7px', background: '#111', borderRadius: '4px 4px 0 0' }} />
+                    <div style={{ position: 'absolute', top: '-8px', left: '-6px', width: '36px', height: '10px', background: '#050505', borderRadius: '5px 5px 2px 2px', borderBottom: '1px solid #1a1a1a' }} />
                 </div>
 
-                {/* Main hood */}
+                {/* Massive Boiler Assembly */}
                 <div style={{
-                    position: 'absolute', bottom: '30px', left: '60px', width: '160px', height: '78px',
-                    background: 'linear-gradient(175deg,#1c2b3a 0%,#111d28 55%,#090f18 100%)',
-                    borderRadius: '4px 4px 0 0',
-                    boxShadow: '0 6px 24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06)',
+                    position: 'absolute', bottom: '30px', left: '65px', width: '220px', height: '115px',
+                    background: 'linear-gradient(175deg, #2a2a2a 0%, #1a1a1a 45%, #0a0a0a 100%)',
+                    borderRadius: '8px 50px 6px 6px',
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.9), inset 0 2px 4px rgba(255,255,255,0.06)',
+                    overflow: 'hidden',
                 }}>
-                    {/* Gold stripe */}
-                    <div style={{ position: 'absolute', top: '14px', left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg,#B8860B,#F5C518,#DAA520,#F5C518,#B8860B)' }} />
-                    {/* Hatch panels */}
-                    {[12, 44, 76, 108].map((x, i) => (
+                    <div style={{ position: 'absolute', top: '5px', left: '20px', right: '50px', height: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', filter: 'blur(3px)' }} />
+                    <div style={{ position: 'absolute', top: '22px', left: 0, right: 0, height: '5px', background: 'linear-gradient(90deg, #444, #888, #444)', opacity: 0.3 }} />
+                    
+                    {/* Structural Rivet Bands */}
+                    {[25, 75, 125, 175].map((x, i) => (
                         <div key={i} style={{
-                            position: 'absolute', top: '26px', left: `${x}px`,
-                            width: '22px', height: '32px',
-                            background: 'rgba(255,255,255,0.02)',
-                            border: '1px solid rgba(255,255,255,0.07)',
-                            borderRadius: '2px',
+                            position: 'absolute', bottom: '20px', left: `${x}px`,
+                            width: '3px', height: '80px',
+                            background: 'rgba(0,0,0,0.5)',
+                            boxShadow: '1px 0 0 rgba(255,255,255,0.02)',
                         }} />
                     ))}
-                    {/* Dome */}
+                    
+                    {/* Steam Dome */}
                     <div style={{
-                        position: 'absolute', top: '-16px', left: '42px',
-                        width: '48px', height: '20px',
-                        background: 'linear-gradient(180deg,#253545,#1c2b3a)',
+                        position: 'absolute', top: '-25px', left: '60px',
+                        width: '65px', height: '35px',
+                        background: 'linear-gradient(180deg, #1e2434, #121622)',
                         borderRadius: '50% 50% 0 0',
-                        boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.06)',
+                        boxShadow: 'inset 0 5px 8px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.5)',
                     }} />
                 </div>
 
-                {/* Cab */}
+                {/* Command Cab (Industrial Box Shape) */}
                 <div style={{
                     position: 'absolute', bottom: '30px', left: '0px',
-                    width: '65px', height: '95px',
-                    background: 'linear-gradient(155deg,#243447,#14202e,#090f18)',
-                    borderRadius: '5px 5px 0 0',
-                    boxShadow: '0 6px 22px rgba(0,0,0,0.7)',
+                    width: '85px', height: '155px',
+                    background: 'linear-gradient(155deg, #222a3a, #151a25, #0a0e14)',
+                    borderRadius: '10px 10px 6px 6px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.06)',
+                    border: '1.2px solid rgba(255,255,255,0.02)',
                 }}>
-                    {/* Windshield */}
+                    {/* Cab Windows */}
                     <div style={{
-                        position: 'absolute', top: '10px', left: '7px', right: '7px', height: '34px',
-                        background: 'linear-gradient(180deg,rgba(90,160,230,0.22),rgba(30,90,170,0.12))',
-                        border: '1.5px solid rgba(90,160,230,0.28)',
-                        borderRadius: '3px',
-                        boxShadow: 'inset 0 0 10px rgba(90,160,255,0.15)',
+                        position: 'absolute', top: '15px', left: '10px', right: '10px', height: '55px',
+                        background: 'linear-gradient(180deg, rgba(80,120,200,0.15), rgba(20,40,80,0.05))',
+                        border: '2px solid #0a0a0a',
+                        borderRadius: '5px',
+                        boxShadow: 'inset 0 0 20px rgba(0,0,0,0.9)',
                     }}>
-                        <div style={{ position: 'absolute', top: '5px', left: '5px', width: '7px', height: '14px', background: 'rgba(255,255,255,0.18)', borderRadius: '1px', transform: 'skewX(-8deg)' }} />
+                        <div style={{ position: 'absolute', top: '5px', left: '10px', width: '15px', height: '30px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', transform: 'skewX(-15deg)', filter: 'blur(1.5px)' }} />
                     </div>
-                    {/* Stripe */}
-                    <div style={{ position: 'absolute', bottom: '34px', left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg,transparent,#F5C518)' }} />
-                    {/* Headlights */}
-                    <div style={{ position: 'absolute', bottom: '18px', left: '8px', width: '13px', height: '13px', background: 'radial-gradient(circle,#fffbe0,#F5C518)', borderRadius: '50%', boxShadow: '0 0 14px 5px rgba(245,197,24,0.75),0 0 32px 10px rgba(245,197,24,0.3)' }} />
-                    <div style={{ position: 'absolute', bottom: '18px', right: '8px', width: '10px', height: '10px', background: 'radial-gradient(circle,#fff,rgba(245,197,24,0.8))', borderRadius: '50%', boxShadow: '0 0 10px 3px rgba(245,197,24,0.6)' }} />
                 </div>
 
-                {/* Nose */}
+                {/* Pilot / Cowcatcher (Front End Facing Right) */}
                 <div style={{
                     position: 'absolute', bottom: '30px', right: '0px',
-                    width: '22px', height: '78px',
-                    background: 'linear-gradient(90deg,#090f18,#142030)',
-                    borderRadius: '0 6px 0 0',
+                    width: '40px', height: '115px',
+                    background: 'linear-gradient(90deg, #07090e, #151a25)',
+                    borderRadius: '0 15px 15px 6px',
                 }}>
-                    <div style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '14px', background: 'radial-gradient(circle,#fffbe0,#F5C518)', borderRadius: '50%', boxShadow: '0 0 18px 6px rgba(245,197,24,0.9),0 0 50px 16px rgba(245,197,24,0.4)' }} />
+                    {/* Iconic Central Headlight */}
+                    <div style={{ position: 'absolute', top: '25px', left: '50%', transform: 'translateX(-50%)', width: '22px', height: '22px', background: 'radial-gradient(circle, #fff, #fffbe0 40%, #ffd000)', borderRadius: '50%', boxShadow: '0 0 30px 15px rgba(255,210,50,0.5), 0 0 70px 30px rgba(255,210,50,0.15)' }} />
                 </div>
 
-                {/* Underframe */}
-                <div style={{ position: 'absolute', bottom: '24px', left: '4px', right: '0px', height: '8px', background: 'linear-gradient(180deg,#0a1520,#04090f)', borderRadius: '0 0 2px 2px' }} />
-
-                {/* Wheel bogies */}
-                <div style={{ position: 'absolute', bottom: '-2px', right: '8px', display: 'flex', gap: '12px' }}>
-                    <Wheel size={26} /><Wheel size={26} />
-                </div>
-                <div style={{ position: 'absolute', bottom: '-2px', left: '14px', display: 'flex', gap: '12px' }}>
-                    <Wheel size={26} /><Wheel size={26} />
+                {/* Heavy Underframe Skirting */}
+                <div style={{ position: 'absolute', bottom: '18px', left: '0px', right: '5px', height: '15px', background: 'linear-gradient(180deg,#0a0e14,#000)', borderRadius: '0 0 6px 6px', boxShadow: '0 3px 6px rgba(0,0,0,0.6)' }}>
+                    {[15, 55, 95, 135, 175, 215, 255, 295].map(x => (
+                        <div key={x} style={{ position: 'absolute', top: '4px', left: `${x}px`, width: '12px', height: '4px', background: 'rgba(255,255,255,0.02)', borderRadius: '1.5px' }} />
+                    ))}
                 </div>
 
-                {/* Connecting rod */}
-                <div style={{ position: 'absolute', bottom: '11px', left: '28px', right: '22px', height: '3px', background: 'linear-gradient(90deg,#333,#555,#333)', borderRadius: '2px' }} />
+                {/* Extra Heavy Wheel Bogies */}
+                <div style={{ position: 'absolute', bottom: '-8px', left: '16px', display: 'flex', gap: '18px' }}>
+                    <Wheel size={34} /><Wheel size={34} />
+                </div>
+                <div style={{ position: 'absolute', bottom: '-8px', right: '22px', display: 'flex', gap: '18px' }}>
+                    <Wheel size={34} /><Wheel size={34} />
+                </div>
+
+                {/* Main Connecting Drive Rod */}
+                <div style={{ position: 'absolute', bottom: '12px', left: '35px', right: '40px', height: '8px', background: 'linear-gradient(180deg, #555 0%, #222 50%, #111 100%)', borderRadius: '5px', boxShadow: '0 3px 6px rgba(0,0,0,0.7)', border: '1.2px solid #1a1a1a' }} />
             </div>
-
-            {/* Coupler */}
-            <div style={{ width: '14px', height: '5px', background: 'linear-gradient(180deg,#4a4a4a,#252525)', borderRadius: '3px', alignSelf: 'center', marginBottom: '16px', boxShadow: '0 2px 6px rgba(0,0,0,0.6)' }} />
         </div>
     );
 }
 
-/* ─── Flatcar + Floating Project Card ───────────────────────────────── */
+/* ─── Flatcar + Realistic Project Card ──────────────────────────────── */
 function TrainCar({ project, isActive, onClick, index }) {
-    const techStack = Array.isArray(project.techStack)
-        ? project.techStack
-        : typeof project.techStack === 'string' && project.techStack
-            ? project.techStack.split(',').map(t => t.trim()).filter(Boolean)
-            : [];
+    const displayIndex = (index + 1).toString().padStart(2, '0');
+    
+    // Extract first word or short code for background watermark
+    const watermarkText = project.title.split(' ')[0].toUpperCase();
 
     return (
         <div style={{ display: 'flex', alignItems: 'flex-end', flexShrink: 0 }}>
-            <div style={{ position: 'relative', width: '264px' }}>
+            <div style={{ position: 'relative', width: '310px' }}>
 
-                {/* ── PREMIUM CARD ─────────────────────────────────────────── */}
+                {/* ── PREMIUM PROJECT CARD (Styled per Image) ────────────────── */}
                 <div
                     onClick={onClick}
+                    className="card"
                     style={{
-                        margin: '0 8px 14px',
+                        margin: '0 8px 15px',
                         background: isActive
-                            ? 'linear-gradient(135deg,rgba(12,30,20,0.97),rgba(20,50,32,0.95))'
-                            : 'linear-gradient(135deg,rgba(10,14,10,0.95),rgba(22,28,22,0.93))',
-                        backdropFilter: 'blur(22px)',
-                        WebkitBackdropFilter: 'blur(22px)',
-                        borderRadius: '20px',
+                            ? 'linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%)'
+                            : 'var(--surface)',
+                        borderRadius: '24px',
                         border: isActive
-                            ? '1.5px solid rgba(82,183,136,0.7)'
-                            : '1.5px solid rgba(201,162,58,0.4)',
+                            ? '2px solid var(--accent)'
+                            : '1.5px solid var(--border)',
                         boxShadow: isActive
-                            ? '0 -14px 45px rgba(45,106,79,0.55), 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(82,183,136,0.15)'
-                            : '0 -8px 30px rgba(201,162,58,0.22), 0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
-                        cursor: 'pointer', overflow: 'hidden',
-                        animation: 'levitate 3.2s ease-in-out infinite',
-                        animationDelay: `${index * 0.45}s`,
-                        transition: 'border-color 0.35s, box-shadow 0.35s, background 0.35s',
+                            ? '0 20px 50px rgba(0,0,0,0.1), inset 0 1px 1px rgba(255,255,255,0.05)'
+                            : '0 8px 20px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.02)',
+                        cursor: 'pointer',
+                        padding: '28px',
+                        height: '380px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                        overflow: 'hidden',
                         userSelect: 'none',
-                        display: 'flex', height: '126px', position: 'relative',
+                        transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                        transform: isActive ? 'translateY(-14px)' : 'translateY(0)',
+                    }}
+                    onMouseEnter={(e) => {
+                        if (!isActive) {
+                            e.currentTarget.style.transform = 'translateY(-10px)';
+                            e.currentTarget.style.borderColor = 'var(--accent)';
+                            e.currentTarget.style.boxShadow = '0 20px 40px rgba(45, 106, 79, 0.12)';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (!isActive) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.borderColor = 'var(--border)';
+                            e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.05)';
+                        }
                     }}
                 >
-                    {/* ── Image panel — full height, fades right ── */}
-                    <div style={{ width: '104px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
-                        {project.imageUrl ? (
-                            <img src={project.imageUrl} alt={project.title}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', opacity: 0.82 }} />
-                        ) : (
-                            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(160deg,#0d2318,#1B4332,#2D6A4F)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>📦</div>
-                        )}
-                        {/* Right-edge fade to card bg */}
-                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,transparent 40%,rgba(10,14,10,0.95))' }} />
-                        {/* Bottom shimmer */}
-                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '32px', background: 'linear-gradient(180deg,transparent,rgba(0,0,0,0.6))' }} />
-                        {/* Accent top bar */}
-                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: isActive ? 'linear-gradient(90deg,#52B788,#2D6A4F,#52B788)' : 'linear-gradient(90deg,#B8860B,#F5D76E,#B8860B)', boxShadow: isActive ? '0 0 8px rgba(82,183,136,0.8)' : '0 0 8px rgba(245,215,110,0.6)' }} />
+                    {/* Top Left: Large Index */}
+                    <div style={{ 
+                        fontFamily: "'Inter', sans-serif", 
+                        fontSize: '32px', 
+                        fontWeight: 900, 
+                        color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                        opacity: isActive ? 1 : 0.6,
+                        marginBottom: '15px'
+                    }}>
+                        {displayIndex}
                     </div>
 
-                    {/* ── Right: title + desc + chips ── */}
-                    <div style={{ flex: 1, padding: '13px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '5px', overflow: 'hidden' }}>
-                        {/* Category label */}
-                        <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '8px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: isActive ? 'rgba(82,183,136,0.85)' : 'rgba(201,162,58,0.75)', margin: 0 }}>PROJECT</p>
+                    {/* Middle: Title with Watermark */}
+                    <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        position: 'relative'
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            fontSize: '60px',
+                            fontWeight: 900,
+                            letterSpacing: '0.05em',
+                            color: isActive ? 'var(--accent)' : 'var(--text-muted)',
+                            opacity: isActive ? 0.04 : 0.02,
+                            textAlign: 'center',
+                            zIndex: 0,
+                            pointerEvents: 'none',
+                            textTransform: 'uppercase'
+                        }}>
+                            {watermarkText}
+                        </div>
 
-                        {/* Title */}
-                        <p style={{ fontFamily: "'Playfair Display',serif", fontSize: '14px', fontWeight: 700, color: 'rgba(255,255,255,0.95)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '-0.01em', textShadow: '0 1px 8px rgba(0,0,0,0.6)', margin: 0 }}>{project.title}</p>
-
-                        {/* Desc */}
-                        {project.description && (
-                            <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '9.5px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', margin: 0 }}>{project.description}</p>
-                        )}
-
-                        {/* Tech chips */}
-                        {techStack.length > 0 && (
-                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '1px' }}>
-                                {techStack.slice(0, 2).map((t, i) => (
-                                    <span key={i} style={{ padding: '2px 8px', background: isActive ? 'rgba(82,183,136,0.18)' : 'rgba(201,162,58,0.15)', color: isActive ? '#52B788' : '#DAA520', borderRadius: '100px', fontSize: '8.5px', fontFamily: "'Inter',sans-serif", fontWeight: 700, border: `1px solid ${isActive ? 'rgba(82,183,136,0.35)' : 'rgba(201,162,58,0.3)'}`, whiteSpace: 'nowrap', letterSpacing: '0.04em', boxShadow: isActive ? '0 0 8px rgba(82,183,136,0.4)' : '0 0 8px rgba(201,162,58,0.25)' }}>{t}</span>
-                                ))}
-                                {techStack.length > 2 && <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.3)', fontFamily: "'Inter',sans-serif", alignSelf: 'center' }}>+{techStack.length - 2}</span>}
-                            </div>
-                        )}
+                        <h3 style={{
+                            fontFamily: "'Inter', sans-serif",
+                            fontSize: '22px',
+                            fontWeight: 800,
+                            color: 'var(--text)',
+                            textAlign: 'center',
+                            margin: 0,
+                            letterSpacing: '-0.02em',
+                            textTransform: 'uppercase',
+                            zIndex: 1,
+                            position: 'relative',
+                            lineHeight: 1.2
+                        }}>
+                            {project.title}
+                        </h3>
                     </div>
 
-                    {/* Corner shine */}
-                    <div style={{ position: 'absolute', top: 0, right: 0, width: '60px', height: '60px', background: 'radial-gradient(circle at top right,rgba(255,255,255,0.07),transparent 70%)', pointerEvents: 'none' }} />
-                    {/* Levitation glow */}
-                    <div style={{ position: 'absolute', bottom: '-12px', left: '10%', right: '10%', height: '14px', background: isActive ? 'rgba(45,106,79,0.5)' : 'rgba(201,162,58,0.3)', filter: 'blur(12px)', borderRadius: '50%' }} />
+                    {/* Bottom: Project Info Section ────────────────────────── */}
+                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: '22px', marginTop: 'auto' }}>
+                        <p style={{ 
+                            fontFamily: "'Inter', sans-serif", 
+                            fontSize: '11px', 
+                            fontWeight: 900, 
+                            color: 'var(--accent)', 
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.15em',
+                            margin: '0 0 10px 0',
+                            opacity: 0.9
+                        }}>
+                            Project Specification
+                        </p>
+                        <p style={{ 
+                            fontFamily: "'Inter', sans-serif", 
+                            fontSize: '14px', 
+                            color: 'var(--text)', 
+                            margin: 0,
+                            lineHeight: 1.6,
+                            opacity: 0.75,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                        }}>
+                            {project.description}
+                        </p>
+                    </div>
+
+                    {/* Subtle Hover Glow */}
+                    {isActive && (
+                        <div style={{ 
+                            position: 'absolute', 
+                            inset: 0, 
+                            background: 'radial-gradient(circle at top right, rgba(255,255,255,0.03) 0%, transparent 60%)', 
+                            pointerEvents: 'none' 
+                        }} />
+                    )}
                 </div>
 
-                {/* Steel flatcar deck */}
+                {/* Industrial Flatcar Deck */}
                 <div style={{
-                    height: '22px', margin: '0',
-                    background: 'linear-gradient(180deg,#1e2c3a 0%,#121c27 55%,#080f18 100%)',
-                    borderRadius: '3px 3px 0 0',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)',
+                    height: '24px', margin: '0 4px',
+                    background: 'linear-gradient(180deg, #1e1e24 0%, #121216 60%, #08080a 100%)',
+                    borderRadius: '4px 4px 0 0',
+                    boxShadow: '0 6px 15px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.05)',
                     position: 'relative',
+                    border: '1px solid #101014'
                 }}>
-                    {[20, 50, 80, 110, 140, 170, 200].map(x => (
-                        <div key={x} style={{ position: 'absolute', top: 0, bottom: 0, left: x, width: '1px', background: 'rgba(255,255,255,0.04)' }} />
+                    {[20, 60, 100, 140, 180, 220, 260].map(x => (
+                        <div key={x} style={{ position: 'absolute', top: 0, bottom: 0, left: x, width: '1.5px', background: 'rgba(0,0,0,0.3)', boxShadow: '0.5px 0 0 rgba(255,255,255,0.03)' }} />
                     ))}
-                    <div style={{ position: 'absolute', top: '5px', left: '8px', right: '8px', height: '3px', background: 'linear-gradient(90deg,#2d3e50,#4a6070,#2d3e50)', borderRadius: '2px' }} />
                 </div>
 
-                {/* Wheel trucks */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 18px' }}>
-                    <div style={{ display: 'flex', gap: '9px' }}><Wheel size={21} /><Wheel size={21} /></div>
-                    <div style={{ display: 'flex', gap: '9px' }}><Wheel size={21} /><Wheel size={21} /></div>
+                {/* Industrial Wheel Trucks */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 25px', marginTop: '2px' }}>
+                    <div style={{ display: 'flex', gap: '10px' }}><Wheel size={24} /><Wheel size={24} /></div>
+                    <div style={{ display: 'flex', gap: '10px' }}><Wheel size={24} /><Wheel size={24} /></div>
                 </div>
             </div>
 
-            {/* Coupler */}
-            <div style={{ width: '12px', height: '4px', background: 'linear-gradient(180deg,#444,#222)', borderRadius: '2px', alignSelf: 'center', marginBottom: '18px', boxShadow: '0 1px 4px rgba(0,0,0,0.6)' }} />
+            {/* Heavy Coupler */}
+            <div style={{ width: '18px', height: '6px', background: 'linear-gradient(180deg, #2a2a2a, #0a0a0a)', borderRadius: '4px', alignSelf: 'center', marginBottom: '22px', boxShadow: '0 2px 6px rgba(0,0,0,0.8)' }} />
         </div>
     );
 }
@@ -275,7 +345,7 @@ function useDragScroll(ref) {
     const onMouseMove = useCallback((e) => {
         if (!isDragging.current) return;
         e.preventDefault();
-        ref.current.scrollLeft = scrollLeftPos.current - (e.pageX - ref.current.offsetLeft - startX.current) * 1.5;
+        ref.current.scrollLeft = scrollLeftPos.current - (e.pageX - ref.current.offsetLeft - startX.current) * 1.8;
     }, [ref]);
     const onMouseUp = useCallback(() => {
         isDragging.current = false;
@@ -297,15 +367,23 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
     useEffect(() => {
         if (!scrollRef.current || projects.length === 0) return;
         autoScrollRef.current = setInterval(() => {
-            if (!scrollRef.current || selectedProject) return;
+            if (!scrollRef.current || selectedProject || isDraggingRef.current) return;
             const el = scrollRef.current;
             if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) { el.scrollLeft = 0; }
-            else { el.scrollLeft += 0.8; }
+            else { el.scrollLeft += 0.9; }
         }, 30);
         return () => clearInterval(autoScrollRef.current);
     }, [projects.length, selectedProject]);
 
-    const handleCarClick = p => setSelectedProject(p);
+    const isDraggingRef = useRef(false);
+    const handleMouseDown = (e) => { isDraggingRef.current = false; onMouseDown(e); };
+    const handleMouseMove = (e) => { isDraggingRef.current = true; onMouseMove(e); };
+    const handleMouseUp = () => { onMouseUp(); setTimeout(() => { isDraggingRef.current = false; }, 80); };
+
+    const handleCarClick = p => {
+        if (isDraggingRef.current) return;
+        setSelectedProject(p);
+    };
     const handleClosePanel = () => setSelectedProject(null);
     const handleDelete = async (project) => {
         try {
@@ -326,52 +404,67 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
 
     return (
         <>
-            <section style={{ padding: '80px 0 130px', position: 'relative', zIndex: 1 }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', padding: '0 40px' }}>
-                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '34px', fontWeight: 700, color: '#1C1C1C' }}>Projects</h2>
-                    {!readOnly && <button onClick={() => setShowAddModal(true)} className="btn-primary">+ Add Project</button>}
+            <section id="projects" style={{ padding: '80px 0 100px', position: 'relative', zIndex: 1, background: 'var(--bg)', transition: 'background 0.4s ease' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '0 40px' }}>
+                    <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '38px', fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', textTransform: 'uppercase' }}>Projects</h2>
+                    {!readOnly && (
+                        <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Project</button>
+                    )}
                 </div>
 
                 {projects.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '60px 48px', fontFamily: 'Inter, sans-serif', fontSize: 15, color: '#6B6560' }}>
-                        No projects yet. Click <strong style={{ color: '#2D6A4F' }}>+ Add Project</strong> to get started.
+                    <div style={{ textAlign: 'center', padding: '100px 48px', fontFamily: "'Inter', sans-serif", fontSize: 16, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px dashed var(--border)', margin: '0 40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
+                        No projects yet. Click <strong style={{ color: 'var(--accent)' }}>+ Add Project</strong> to start your train journey.
                     </div>
                 ) : (
-                    <div style={{ position: 'relative' }}>
-                        {/* Ballast bed */}
+                    <div style={{ position: 'relative', cursor: 'grab' }}>
+                        
+                        {/* Realistic High-Depth Ballast/Track Bed */}
                         <div style={{
-                            position: 'absolute', bottom: 0, left: 0, right: 0, height: '62px',
-                            background: 'linear-gradient(180deg,#2e2010 0%,#1a1208 60%,#0c0905 100%)',
+                            position: 'absolute', bottom: 0, left: 0, right: 0, height: '70px',
+                            background: 'linear-gradient(180deg, #322618 0%, #1a1208 50%, #050402 100%)',
+                            borderTop: '1px solid rgba(255,255,255,0.05)',
                         }}>
-                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle,rgba(90,65,30,0.55) 1px,transparent 1px)', backgroundSize: '7px 7px' }} />
+                            {/* Gravel texture layers */}
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(100,80,50,0.4) 1px, transparent 1px)', backgroundSize: '6px 6px', opacity: 0.8 }} />
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(50,40,20,0.6) 1.5px, transparent 1.5px)', backgroundSize: '11px 11px', backgroundPosition: '3px 3px' }} />
                         </div>
 
-                        {/* Sleepers/ties */}
-                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', gap: '20px', overflow: 'hidden', padding: '0 8px' }}>
-                            {Array.from({ length: 120 }).map((_, i) => (
-                                <div key={i} style={{ flexShrink: 0, width: '11px', height: '34px', background: 'linear-gradient(90deg,#3a2918,#5c4232,#3a2918)', borderRadius: '2px', boxShadow: '0 3px 6px rgba(0,0,0,0.6)' }} />
+                        {/* Heavy Oak Sleepers/Ties */}
+                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', gap: '22px', overflow: 'hidden', padding: '0 8px' }}>
+                            {Array.from({ length: 100 }).map((_, i) => (
+                                <div key={i} style={{ 
+                                    flexShrink: 0, width: '13px', height: '36px', 
+                                    background: 'linear-gradient(90deg, #3a2918, #4d3827, #3a2918)', 
+                                    borderRadius: '1px', 
+                                    boxShadow: '0 3px 6px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.03)',
+                                    border: '1px solid rgba(0,0,0,0.4)',
+                                }} />
                             ))}
                         </div>
 
-                        {/* Rail top */}
-                        <div style={{ position: 'absolute', bottom: '34px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg,#7a8a9a 0%,#b8c8d8 25%,#e8f0f8 50%,#b8c8d8 75%,#6a7a8a 100%)', boxShadow: '0 3px 10px rgba(0,0,0,0.6)' }} />
-                        {/* Rail bottom */}
-                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg,#7a8a9a 0%,#b8c8d8 25%,#e8f0f8 50%,#b8c8d8 75%,#6a7a8a 100%)', boxShadow: '0 3px 10px rgba(0,0,0,0.6)' }} />
+                        {/* Cold-Rolled Steel Rails */}
+                        <div style={{ position: 'absolute', bottom: '38px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg, #44505c 0%, #a4b0bc 20%, #e8f0f8 45%, #a4b0bc 70%, #303a44 100%)', boxShadow: '0 4px 12px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.2)' }} />
+                        <div style={{ position: 'absolute', bottom: '18px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg, #44505c 0%, #a4b0bc 20%, #e8f0f8 45%, #a4b0bc 70%, #303a44 100%)', boxShadow: '0 4px 12px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.2)' }} />
 
-                        {/* Scrollable train */}
+                        {/* Rail Side Depth */}
+                        <div style={{ position: 'absolute', bottom: '34px', left: 0, right: 0, height: '4px', background: 'rgba(0,0,0,0.6)', filter: 'blur(1px)' }} />
+                        <div style={{ position: 'absolute', bottom: '14px', left: 0, right: 0, height: '4px', background: 'rgba(0,0,0,0.6)', filter: 'blur(1px)' }} />
+
+                        {/* Scrollable train assemblage */}
                         <div
                             ref={scrollRef}
-                            onMouseDown={onMouseDown}
-                            onMouseMove={onMouseMove}
-                            onMouseUp={onMouseUp}
-                            onMouseLeave={onMouseUp}
-                            style={{ display: 'flex', alignItems: 'flex-end', overflowX: 'auto', overflowY: 'visible', paddingLeft: 60, paddingBottom: 62, paddingTop: 24, cursor: 'grab', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                            onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseMove}
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                            style={{ display: 'flex', alignItems: 'flex-end', overflowX: 'auto', overflowY: 'visible', paddingLeft: 80, paddingBottom: 65, paddingTop: 40, scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
                             <Engine />
                             {projects.map((p, i) => (
                                 <TrainCar key={p._id} project={p} index={i} isActive={selectedProject?._id === p._id} onClick={() => handleCarClick(p)} />
                             ))}
-                            <div style={{ flexShrink: 0, width: '80px' }} />
+                            <div style={{ flexShrink: 0, width: '120px' }} />
                         </div>
                     </div>
                 )}
@@ -394,9 +487,14 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
             />
 
             <style>{`
-                @keyframes levitate { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-11px)} }
-                @keyframes smokeRise { 0%{transform:translateY(0) scale(1);opacity:0.65} 100%{transform:translateY(-45px) scale(2.8);opacity:0} }
-                @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+                @keyframes levitate { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-12px)} }
+                @keyframes smokeRise { 
+                    0%{transform:translateY(0) scale(0.6); opacity:0} 
+                    20%{opacity:0.6}
+                    100%{transform:translateY(-60px) scale(3.5); opacity:0} 
+                }
+                @keyframes spin { from{transform:rotate(360deg)} to{transform:rotate(0)} }
+                #projects::-webkit-scrollbar { display: none; }
             `}</style>
         </>
     );

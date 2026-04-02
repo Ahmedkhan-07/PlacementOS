@@ -18,6 +18,7 @@ export default function EditCertificateModal({ isOpen, onClose, certificate, onC
     const [issuer, setIssuer] = useState('');
     const [month, setMonth] = useState('');
     const [year, setYear] = useState('');
+    const [credentialUrl, setCredentialUrl] = useState('');
     const [fileUrl, setFileUrl] = useState('');
     const [thumbnailUrl, setThumbnailUrl] = useState('');
     const [fileType, setFileType] = useState('image');
@@ -31,6 +32,7 @@ export default function EditCertificateModal({ isOpen, onClose, certificate, onC
             setIssuer(certificate.issuer || '');
             const parsed = parseDateIssued(certificate.dateIssued);
             setMonth(parsed.month); setYear(parsed.year);
+            setCredentialUrl(certificate.credentialUrl || '');
             setFileUrl(certificate.fileUrl || '');
             setThumbnailUrl(certificate.thumbnailUrl || '');
             setFileType(certificate.fileType || 'image');
@@ -65,7 +67,7 @@ export default function EditCertificateModal({ isOpen, onClose, certificate, onC
         try {
             const res = await fetch(`/api/certificates?id=${certificate._id}`, {
                 method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, issuer, dateIssued, fileUrl, thumbnailUrl, fileType }),
+                body: JSON.stringify({ name, issuer, dateIssued, fileUrl, thumbnailUrl, fileType, credentialUrl }),
             });
             if (res.ok) { toast.success('Certificate updated! 🏆'); onCertificateUpdated?.(); onClose(); }
             else toast.error('Failed to update');
@@ -90,6 +92,10 @@ export default function EditCertificateModal({ isOpen, onClose, certificate, onC
                 <div style={{ marginBottom: '16px' }}>
                     <label style={lbl}>Issuer / Organization</label>
                     <input className="fancy-input" value={issuer} onChange={e => setIssuer(e.target.value)} />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                    <label style={lbl}>Credential Link (URL) 🔗</label>
+                    <input className="fancy-input" value={credentialUrl} onChange={e => setCredentialUrl(e.target.value)} placeholder="https://..." />
                 </div>
                 <div style={{ marginBottom: '16px', display: 'flex', gap: '12px' }}>
                     <div style={{ flex: 1 }}>

@@ -8,17 +8,17 @@ import toast from 'react-hot-toast';
 
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
-import ExpiryBanner from '@/components/dashboard/ExpiryBanner';
 import ProfileHero from '@/components/dashboard/ProfileHero';
-import TypewriterSummary from '@/components/dashboard/TypewriterSummary';
-import SkillsBrain from '@/components/dashboard/SkillsBrain';
+import AboutOverview from '@/components/dashboard/AboutOverview';
+import SkillsArsenal from '@/components/dashboard/SkillsArsenal';
 import EducationSection from '@/components/dashboard/EducationSection';
 import ResumeSection from '@/components/dashboard/ResumeSection';
 import TrainSection from '@/components/dashboard/TrainSection';
 import CertificateTrain from '@/components/dashboard/CertificateTrain';
 import AchievementBus from '@/components/dashboard/AchievementBus';
-import SocialLinks from '@/components/dashboard/SocialLinks';
+import ContactSection from '@/components/dashboard/ContactSection';
 import PremiumCTA from '@/components/dashboard/PremiumCTA';
+import SupportSection from '@/components/dashboard/SupportSection';
 import EditProfilePanel from '@/components/panels/EditProfilePanel';
 import PremiumModal from '@/components/modals/PremiumModal';
 
@@ -144,10 +144,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Calculate expiry days
-    const daysUntilExpiry = userData?.dataExpiresAt
-        ? Math.ceil((new Date(userData.dataExpiresAt) - Date.now()) / (1000 * 60 * 60 * 24))
-        : null;
 
     if (!isLoaded || loading) {
         return (
@@ -181,25 +177,22 @@ export default function DashboardPage() {
             />
             <Navbar />
             <main style={{ paddingTop: '70px', position: 'relative', zIndex: 1 }}>
-                {/* Expiry Banner */}
-                {!userData?.isPremium && daysUntilExpiry !== null && (
-                    <ExpiryBanner
-                        daysLeft={daysUntilExpiry}
-                        onUpgrade={() => setShowPremiumModal(true)}
-                    />
-                )}
-
                 {/* Section 1: Profile Hero */}
                 <ProfileHero
                     user={userData}
                     onEditProfile={() => setShowEditProfile(true)}
                 />
 
-                {/* Section 2: Typewriter Summary */}
-                <TypewriterSummary user={userData} resume={resume} />
+                {/* Section 2: About / Overview */}
+                <AboutOverview 
+                    user={userData} 
+                    resume={resume} 
+                    projectsCount={projects.length} 
+                    certificatesCount={certificates.length} 
+                />
 
-                {/* Section 3: Skills Brain Animation — merge user.skills + resume.skills */}
-                <SkillsBrain skills={[
+                {/* Section 3: Skills Arsenal — merge user.skills + resume.skills */}
+                <SkillsArsenal skills={[
                     ...new Set([
                         ...(userData?.skills || []),
                         ...(resume?.skills || []),
@@ -234,8 +227,8 @@ export default function DashboardPage() {
                     onRefreshAchievements={refreshAchievements}
                 />
 
-                {/* Section 9: Social Links — always pass live userData */}
-                <SocialLinks user={userData} />
+                {/* Section 9: Contact Section — always pass live userData */}
+                <ContactSection user={userData} />
 
                 {/* Section 10: Premium CTA */}
                 <PremiumCTA
@@ -244,6 +237,9 @@ export default function DashboardPage() {
                     onRefreshUser={refreshUser}
                 />
             </main>
+
+            {/* Support Section */}
+            <SupportSection user={userData} />
 
             <Footer />
 

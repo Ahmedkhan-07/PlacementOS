@@ -9,9 +9,9 @@ export async function PATCH(req) {
     const data = await req.json();
 
     const allowedFields = [
-        'name', 'headline', 'bio', 'profilePicUrl', 'skills',
+        'name', 'headline', 'bio', 'profilePicUrl', 'skills', 'contactEmail',
         'linkedinUrl', 'githubUrl', 'leetcodeUrl', 'hackerrankUrl',
-        'codeforcesUrl', 'twitterUrl', 'websiteUrl', 'isPublic',
+        'codeforcesUrl', 'twitterUrl', 'websiteUrl', 'isPublic', 'openToOpportunities'
     ];
 
     const updates = {};

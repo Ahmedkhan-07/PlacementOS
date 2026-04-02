@@ -15,13 +15,15 @@ const P = ({ children }) => (
 );
 
 export default function ContactUs() {
-    return (
-        <LegalLayout title="Contact Us" lastUpdated="March 2, 2026">
+    const websiteUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://placementos.in';
 
-            <P>We're here to help. Whether you have a question about your account, a technical issue, a payment query, or a legal/privacy concern — reach out and we'll respond as soon as possible.</P>
+    return (
+        <LegalLayout title="Contact Us" lastUpdated="April 2, 2026">
+
+            <P>We're here to help. Whether you have a question about your account, a technical issue, or a legal/privacy concern — reach out and we'll respond as soon as possible.</P>
 
             {/* Contact Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', margin: '32px 0' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', margin: '32px 0' }}>
                 {[
                     {
                         icon: '📧',
@@ -31,16 +33,9 @@ export default function ContactUs() {
                         href: 'mailto:placematedotcom@gmail.com',
                     },
                     {
-                        icon: '💳',
-                        title: 'Payment & Billing',
-                        desc: 'Premium subscription, refund requests, and payment disputes.',
-                        value: 'placematedotcom@gmail.com',
-                        href: 'mailto:placematedotcom@gmail.com',
-                    },
-                    {
                         icon: '🔒',
                         title: 'Privacy & Legal',
-                        desc: 'Data deletion requests, GDPR/DPDP queries, and legal notices.',
+                        desc: 'Data deletion requests, data queries, and legal notices.',
                         value: 'placematedotcom@gmail.com',
                         href: 'mailto:placematedotcom@gmail.com',
                     },
@@ -72,7 +67,6 @@ export default function ContactUs() {
                 {[
                     'Your registered email address (the one used to sign in to PlacementOS).',
                     'A clear description of your issue or request.',
-                    'For payment issues: your Razorpay Payment ID (from the payment confirmation email).',
                     'Screenshots or screen recordings of any errors you are experiencing (if applicable).',
                     'The date and time the issue occurred.',
                 ].map((li, i) => (
@@ -93,8 +87,6 @@ export default function ContactUs() {
                     <tbody>
                         {[
                             ['General support', '1–2 business days'],
-                            ['Payment / Billing', '2–3 business days'],
-                            ['Refund requests', '5–7 business days'],
                             ['Privacy / Legal', '3–5 business days'],
                             ['Partnerships', '5–7 business days'],
                         ].map(([type, time], i) => (
@@ -111,10 +103,9 @@ export default function ContactUs() {
             <S>Business Details</S>
             <P>
                 <strong>Platform:</strong> PlacementOS<br />
-                <strong>Website:</strong> <a href="https://placement-os-nine.vercel.app" style={{ color: 'var(--accent)', textDecoration: 'none' }}>placement-os-nine.vercel.app</a><br />
+                <strong>Website:</strong> <a href={websiteUrl} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{websiteUrl.replace('https://', '').replace('http://', '').replace(/\/$/, '')}</a><br />
                 <strong>Email:</strong> placematedotcom@gmail.com<br />
                 <strong>Country:</strong> India<br />
-                <strong>Payment Partner:</strong> Razorpay Payment Solutions Pvt. Ltd.<br />
                 <strong>Developer:</strong> <a href="https://www.linkedin.com/in/ahmed-yasin-khan-4489992ba/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Ahmed Yasin Khan</a>
             </P>
 

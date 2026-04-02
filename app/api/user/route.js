@@ -27,16 +27,25 @@ export async function POST(req) {
 
     await connectDB();
 
-    const existing = await User.findOne({ username: sanitized });
-    if (existing) {
-        return Response.json({ error: 'Username already taken' }, { status: 409 });
+    try {
+        const existingUsername = await User.findOne({ username: sanitized });
+        if (existingUsername) {
+            return Response.json({ error: 'Username already taken' }, { status: 409 });
+        }
+
+        const existingUser = await User.findOne({ clerkId: userId });
+        if (existingUser) {
+            return Response.json({ error: 'Account already initialized' }, { status: 400 });
+        }
+
+        const user = await User.create({
+            clerkId: userId,
+            username: sanitized,
+        });
+
+        return Response.json({ user }, { status: 201 });
+    } catch (err) {
+        console.error('Signup Error:', err);
+        return Response.json({ error: err.message || 'Signup failed' }, { status: 500 });
     }
-
-    const user = await User.create({
-        clerkId: userId,
-        username: sanitized,
-        dataExpiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    });
-
-    return Response.json({ user }, { status: 201 });
 }

@@ -5,6 +5,7 @@ const CertificateSchema = new mongoose.Schema({
     name: { type: String, required: true },
     issuer: { type: String, default: '' },
     dateIssued: { type: String, default: '' },
+    credentialUrl: { type: String, default: '' },
     fileUrl: { type: String, default: '' },
     fileType: { type: String, enum: ['image', 'pdf'], default: 'image' },
     thumbnailUrl: { type: String, default: '' },

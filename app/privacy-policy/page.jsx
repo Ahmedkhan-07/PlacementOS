@@ -29,7 +29,6 @@ export default function PrivacyPolicy() {
                 <Li><strong>Account Data:</strong> Name, email address, and profile image, collected via Clerk authentication (Google/email sign-in).</Li>
                 <Li><strong>Portfolio Content:</strong> Projects, certificates, achievements, skills, education records, resume data, bio, and headline that you add to your portfolio.</Li>
                 <Li><strong>Uploaded Media:</strong> Images and files you upload for projects, certificates, and achievements. These are stored securely via our cloud file storage provider.</Li>
-                <Li><strong>Payment Information:</strong> When you purchase a premium subscription, payment is processed through <strong>Razorpay</strong>. We do not store your credit/debit card number, UPI PIN, net banking credentials, or CVV. Razorpay processes and stores payment data in accordance with its own privacy policy and PCI-DSS standards.</Li>
                 <Li><strong>Usage Data:</strong> Pages visited, features accessed, browser type, IP address, device information, and timestamps, collected automatically for security and platform improvement.</Li>
                 <Li><strong>Communications:</strong> Any emails or messages you send to our support team.</Li>
             </ul>
@@ -37,28 +36,26 @@ export default function PrivacyPolicy() {
             <S>2. How We Use Your Information</S>
             <ul style={{ paddingLeft: '22px', marginBottom: '20px' }}>
                 <Li>To create and manage your PlacementOS account and portfolio.</Li>
-                <Li>To enable premium features such as PDF export and public shareable portfolio links.</Li>
-                <Li>To process your subscription payments via Razorpay.</Li>
-                <Li>To send you transactional emails (account activation, payment confirmation, expiry reminders).</Li>
+                <Li>To enable premium features such as PDF export and public shareable portfolio links (unlocked by sharing).</Li>
+                <Li>To send you transactional emails (account activation, updates, expiry reminders).</Li>
                 <Li>To monitor and prevent fraudulent or abusive use of the platform.</Li>
                 <Li>To improve platform performance, security, and user experience.</Li>
                 <Li>To comply with applicable legal obligations under Indian law.</Li>
             </ul>
 
             <S>3. Public Portfolio Visibility</S>
-            <P>Premium users may generate a publicly shareable link to their portfolio. <strong>When you enable a public portfolio link, the content of your portfolio — including your name, projects, certificates, achievements, and any other information you have added — becomes accessible to anyone with that link without requiring login.</strong> You are solely responsible for the content you choose to publish publicly. You may disable the public link at any time from your dashboard, at which point the portfolio will no longer be publicly accessible.</P>
+            <P>Users who unlock premium features by sharing may generate a publicly shareable link to their portfolio. <strong>When you enable a public portfolio link, the content of your portfolio — including your name, projects, certificates, achievements, and any other information you have added — becomes accessible to anyone with that link without requiring login.</strong> You are solely responsible for the content you choose to publish publicly. You may disable the public link at any time from your dashboard, at which point the portfolio will no longer be publicly accessible.</P>
 
             <S>4. Third-Party Services</S>
             <P>PlacementOS integrates with the following third-party services. Each operates under its own privacy policy:</P>
             <ul style={{ paddingLeft: '22px', marginBottom: '20px' }}>
                 <Li><strong>Clerk (clerk.com):</strong> Authentication and user identity management.</Li>
-                <Li><strong>Razorpay (razorpay.com):</strong> Payment processing for premium subscriptions. We share only the minimum data required (order amount, email) for transaction processing.</Li>
                 <Li><strong>MongoDB Atlas:</strong> Database for storing user portfolio data.</Li>
                 <Li><strong>Cloud Storage (e.g., Cloudinary / UploadThing):</strong> Storage for user-uploaded files and images.</Li>
             </ul>
 
             <S>5. Data Retention</S>
-            <P>We retain your data for as long as your account remains active. Free-tier user data is subject to an expiry policy (visible in your dashboard). Premium user data is retained for the active subscription duration and up to 90 days after subscription expiry, unless you request earlier deletion. Payment records are retained as required by Indian financial regulations (typically 7 years).</P>
+            <P>We retain your data for as long as your account remains active. Free-tier user data is subject to an expiry policy (visible in your dashboard). Premium user data (unlocked by sharing) is retained as long as your account is active, unless you request earlier deletion.</P>
 
             <S>6. Data Security</S>
             <P>We implement industry-standard security measures including HTTPS encryption, access-controlled databases, and secure authentication via Clerk. However, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security of data transmitted to or stored on our platform.</P>

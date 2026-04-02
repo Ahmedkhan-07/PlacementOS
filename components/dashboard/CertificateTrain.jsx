@@ -11,123 +11,132 @@ function Wheel({ size = 26 }) {
     return (
         <div style={{
             width: size, height: size, borderRadius: '50%', flexShrink: 0,
-            background: 'radial-gradient(circle at 38% 32%, #4a4a4a, #111)',
-            border: '2px solid #2a2a2a',
+            background: 'radial-gradient(circle at 35% 35%, #4a4a4a, #1a1a1a 70%)',
+            border: '2px solid #222',
             boxShadow: '0 4px 10px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.06)',
             position: 'relative',
-            animation: 'spin 1.1s linear infinite',
+            animation: 'spin 1.2s linear infinite',
         }}>
+            {/* Spokes */}
             {[0, 45, 90, 135].map(a => (
                 <div key={a} style={{
                     position: 'absolute', top: '50%', left: '50%',
-                    width: '42%', height: '1.5px',
-                    background: 'rgba(110,110,110,0.7)',
+                    width: '44%', height: '1.5px',
+                    background: 'rgba(255,255,255,0.05)',
                     transformOrigin: 'left center',
                     transform: `translateY(-50%) rotate(${a}deg)`,
                 }} />
             ))}
+            {/* Center Cap */}
             <div style={{
                 position: 'absolute', top: '50%', left: '50%',
-                width: '30%', height: '30%',
-                background: 'radial-gradient(circle,#D4A017,#8B6200)',
+                width: '32%', height: '32%',
+                background: 'radial-gradient(circle at 30% 30%,#D4A017,#8B6200)',
                 borderRadius: '50%',
                 transform: 'translate(-50%,-50%)',
-                boxShadow: '0 0 4px rgba(212,160,23,0.5)',
+                boxShadow: '0 0 4px rgba(212,160,23,0.5), inset 0 1px 1px rgba(255,255,255,0.1)',
+                border: '1px solid rgba(0,0,0,0.2)',
             }} />
         </div>
     );
 }
 
-/* ─── Locomotive Engine (faces LEFT — mirror of projects train) ──────── */
+/* ─── Locomotive Engine (faces LEFT) ────────────────────────────────── */
 function CertEngine() {
     return (
         <div style={{ display: 'flex', alignItems: 'flex-end', flexShrink: 0, flexDirection: 'row-reverse' }}>
-            <div style={{ position: 'relative', width: '250px', height: '170px' }}>
+            {/* Heavy Coupler (right end) */}
+            <div style={{ width: '18px', height: '6px', background: 'linear-gradient(180deg,#333,#1a1a1a)', borderRadius: '4px', alignSelf: 'center', marginBottom: '18px', boxShadow: '0 4px 8px rgba(0,0,0,0.8)' }} />
 
-                {/* Smoke (from stack on right since mirrored) */}
-                {[0, 1, 2, 3].map(i => (
+            <div style={{ position: 'relative', width: '320px', height: '260px' }}>
+
+                {/* Smoke System (Mirrored) */}
+                {[0, 1, 2, 3, 4, 5].map(i => (
                     <div key={i} style={{
-                        position: 'absolute', top: `${-18 - i * 18}px`, right: `${30 + i * 7}px`,
-                        width: `${10 + i * 6}px`, height: `${10 + i * 6}px`,
-                        background: `rgba(150,150,150,${0.55 - i * 0.12})`,
-                        borderRadius: '50%', filter: `blur(${2 + i * 1.5}px)`,
-                        animation: 'smokeRise 2.8s ease-out infinite',
-                        animationDelay: `${i * 0.6}s`,
+                        position: 'absolute', top: `${-30 - i * 22}px`, right: `${40 + i * 10}px`,
+                        width: `${16 + i * 10}px`, height: `${16 + i * 10}px`,
+                        background: `radial-gradient(circle, rgba(200,200,200,${0.3 - i * 0.05}) 0%, rgba(80,80,80,0) 75%)`,
+                        borderRadius: '50%', filter: `blur(${4 + i * 2.5}px)`,
+                        animation: 'smokeRise 3.5s ease-out infinite reverse',
+                        animationDelay: `${i * 0.4}s`,
                     }} />
                 ))}
 
-                {/* Stack */}
+                {/* Heavy Cast-Iron Stack */}
                 <div style={{
-                    position: 'absolute', top: '-24px', right: '26px',
-                    width: '18px', height: '28px',
-                    background: 'linear-gradient(180deg,#111,#1e1e1e)',
-                    borderRadius: '2px 2px 0 0',
-                }}>
-                    <div style={{ position: 'absolute', top: '-5px', right: '-5px', width: '28px', height: '7px', background: '#111', borderRadius: '4px 4px 0 0' }} />
-                </div>
-
-                {/* Main hood */}
-                <div style={{
-                    position: 'absolute', bottom: '30px', right: '60px', width: '162px', height: '78px',
-                    background: 'linear-gradient(175deg,#1a2a1a 0%,#0f1a0f 55%,#070e07 100%)',
+                    position: 'absolute', top: '-10px', right: '32px',
+                    width: '24px', height: '45px',
+                    background: 'linear-gradient(90deg, #0a0a0a 0%, #202020 30%, #0a0a0a 100%)',
                     borderRadius: '4px 4px 0 0',
-                    boxShadow: '0 6px 24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.06)',
+                    boxShadow: 'inset 0 0 15px rgba(0,0,0,0.6)',
                 }}>
-                    {/* Gold stripe */}
-                    <div style={{ position: 'absolute', top: '14px', left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg,#B8860B,#F5C518,#DAA520,#F5C518,#B8860B)' }} />
-                    {/* Hatch panels */}
-                    {[12, 44, 76, 108].map((x, i) => (
-                        <div key={i} style={{ position: 'absolute', top: '26px', left: `${x}px`, width: '22px', height: '32px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '2px' }} />
-                    ))}
-                    {/* Dome */}
-                    <div style={{ position: 'absolute', top: '-16px', right: '42px', width: '48px', height: '20px', background: 'linear-gradient(180deg,#1e3020,#142214)', borderRadius: '50% 50% 0 0', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.06)' }} />
+                    <div style={{ position: 'absolute', top: '-8px', right: '-6px', width: '36px', height: '10px', background: '#050505', borderRadius: '5px 5px 2px 2px', borderBottom: '1px solid #1a1a1a' }} />
                 </div>
 
-                {/* Cab (right side, mirrored) */}
+                {/* Massive Boiler Assembly */}
+                <div style={{
+                    position: 'absolute', bottom: '30px', right: '65px', width: '220px', height: '115px',
+                    background: 'linear-gradient(175deg, #222 0%, #151515 45%, #050505 100%)',
+                    borderRadius: '50px 8px 6px 6px',
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.9), inset 0 2px 4px rgba(255,255,255,0.06)',
+                    overflow: 'hidden',
+                }}>
+                    <div style={{ position: 'absolute', top: '5px', right: '20px', left: '50px', height: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', filter: 'blur(3px)' }} />
+                    <div style={{ position: 'absolute', top: '22px', left: 0, right: 0, height: '5px', background: 'linear-gradient(90deg, #333, #666, #333)', opacity: 0.3 }} />
+                    
+                    {[25, 75, 125, 175].map((x, i) => (
+                        <div key={i} style={{ position: 'absolute', bottom: '20px', right: `${x}px`, width: '3px', height: '80px', background: 'rgba(0,0,0,0.5)', boxShadow: '-1px 0 0 rgba(255,255,255,0.02)' }} />
+                    ))}
+                    
+                    {/* Steam Dome */}
+                    <div style={{ position: 'absolute', top: '-25px', right: '60px', width: '65px', height: '35px', background: 'linear-gradient(180deg,#1a1a1a,#0a0a0a)', borderRadius: '50% 50% 0 0', boxShadow: 'inset 0 5px 8px rgba(255,255,255,0.05),0 4px 6px rgba(0,0,0,0.5)' }} />
+                </div>
+
+                {/* Command Cab */}
                 <div style={{
                     position: 'absolute', bottom: '30px', right: '0px',
-                    width: '65px', height: '95px',
-                    background: 'linear-gradient(155deg,#1e341e,#122012,#070e07)',
-                    borderRadius: '5px 5px 0 0',
-                    boxShadow: '0 6px 22px rgba(0,0,0,0.7)',
+                    width: '85px', height: '155px',
+                    background: 'linear-gradient(155deg, #222, #111, #050505)',
+                    borderRadius: '10px 10px 6px 6px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    boxShadow: 'inset 0 2px 5px rgba(255,255,255,0.05)',
+                    overflow: 'hidden'
                 }}>
-                    <div style={{ position: 'absolute', top: '10px', left: '7px', right: '7px', height: '34px', background: 'linear-gradient(180deg,rgba(90,200,130,0.22),rgba(30,110,60,0.12))', border: '1.5px solid rgba(90,200,130,0.28)', borderRadius: '3px', boxShadow: 'inset 0 0 10px rgba(90,200,130,0.15)' }}>
-                        <div style={{ position: 'absolute', top: '5px', left: '5px', width: '7px', height: '14px', background: 'rgba(255,255,255,0.18)', borderRadius: '1px', transform: 'skewX(-8deg)' }} />
+                    {/* Golden Window Outlining */}
+                    <div style={{ position: 'absolute', top: '15px', right: '15px', width: '35px', height: '40px', background: '#020202', borderRadius: '4px', border: '1.5px solid #8B6200', boxShadow: 'inset 0 0 10px rgba(139,98,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '100%', height: '1px', background: 'rgba(139,98,0,0.2)' }} />
                     </div>
-                    <div style={{ position: 'absolute', bottom: '34px', left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg,#F5C518,transparent)' }} />
-                    {/* Headlights */}
-                    <div style={{ position: 'absolute', bottom: '18px', right: '8px', width: '13px', height: '13px', background: 'radial-gradient(circle,#fffbe0,#F5C518)', borderRadius: '50%', boxShadow: '0 0 14px 5px rgba(245,197,24,0.75),0 0 32px 10px rgba(245,197,24,0.3)' }} />
-                    <div style={{ position: 'absolute', bottom: '18px', left: '8px', width: '10px', height: '10px', background: 'radial-gradient(circle,#fff,rgba(245,197,24,0.8))', borderRadius: '50%', boxShadow: '0 0 10px 3px rgba(245,197,24,0.6)' }} />
                 </div>
 
-                {/* Nose (left side) */}
-                <div style={{ position: 'absolute', bottom: '30px', left: '0px', width: '22px', height: '78px', background: 'linear-gradient(270deg,#070e07,#102010)', borderRadius: '6px 0 0 0' }}>
-                    <div style={{ position: 'absolute', top: '16px', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '14px', background: 'radial-gradient(circle,#fffbe0,#F5C518)', borderRadius: '50%', boxShadow: '0 0 18px 6px rgba(245,197,24,0.9),0 0 50px 16px rgba(245,197,24,0.4)' }} />
+                {/* Pilot (Front End Facing Left) */}
+                <div style={{
+                    position: 'absolute', bottom: '30px', left: '0px',
+                    width: '40px', height: '115px',
+                    background: 'linear-gradient(-90deg, #0a0a0a, #1a1a1a)',
+                    borderRadius: '15px 0 6px 15px',
+                }}>
+                    <div style={{ position: 'absolute', top: '25px', left: '50%', transform: 'translateX(-50%)', width: '22px', height: '22px', background: 'radial-gradient(circle, #fff, #ffe0e0 40%, #ff8c00)', borderRadius: '50%', boxShadow: '0 0 30px 15px rgba(255,140,0,0.3), 0 0 70px 30px rgba(255,140,0,0.05)' }} />
                 </div>
 
-                {/* Underframe */}
-                <div style={{ position: 'absolute', bottom: '24px', left: '0px', right: '4px', height: '8px', background: 'linear-gradient(180deg,#0a1a0a,#040904)', borderRadius: '0 0 2px 2px' }} />
+                {/* Underframe Skirting */}
+                <div style={{ position: 'absolute', bottom: '18px', left: '5px', right: '0px', height: '15px', background: 'linear-gradient(180deg,#1a1a1a,#000)', borderRadius: '6px', boxShadow: '0 3px 6px rgba(0,0,0,0.6)' }} />
 
-                {/* Wheel bogies */}
-                <div style={{ position: 'absolute', bottom: '-2px', left: '8px', display: 'flex', gap: '12px' }}>
-                    <Wheel size={26} /><Wheel size={26} />
-                </div>
-                <div style={{ position: 'absolute', bottom: '-2px', right: '14px', display: 'flex', gap: '12px' }}>
-                    <Wheel size={26} /><Wheel size={26} />
-                </div>
+                {/* Bogies */}
+                <div style={{ position: 'absolute', bottom: '-8px', right: '16px', display: 'flex', gap: '18px' }}><Wheel size={34} /><Wheel size={34} /></div>
+                <div style={{ position: 'absolute', bottom: '-8px', left: '22px', display: 'flex', gap: '18px' }}><Wheel size={34} /><Wheel size={34} /></div>
 
-                {/* Connecting rod */}
-                <div style={{ position: 'absolute', bottom: '11px', left: '22px', right: '28px', height: '3px', background: 'linear-gradient(90deg,#333,#555,#333)', borderRadius: '2px' }} />
+                {/* Drive Rod */}
+                <div style={{ position: 'absolute', bottom: '12px', right: '35px', left: '40px', height: '8px', background: 'linear-gradient(180deg,#555,#222,#111)', borderRadius: '5px', boxShadow: '0 3px 6px rgba(0,0,0,0.7)', border: '1.2px solid #1a1a1a' }} />
             </div>
-
-            {/* Coupler (left side) */}
-            <div style={{ width: '14px', height: '5px', background: 'linear-gradient(180deg,#4a4a4a,#252525)', borderRadius: '3px', alignSelf: 'center', marginBottom: '16px', boxShadow: '0 2px 6px rgba(0,0,0,0.6)' }} />
         </div>
     );
 }
 
 /* ─── Flatcar + Floating Certificate Card ───────────────────────────── */
 function CertCar({ certificate, isActive, onClick, index }) {
+    const displayIndex = (index + 1).toString().padStart(2, '0');
+    const watermarkText = (certificate.issuer || certificate.name.split(' ')[0]).toUpperCase();
+
     const formatDate = (d) => {
         if (!d) return '';
         try { return new Date(d).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }); } catch { return ''; }
@@ -135,95 +144,204 @@ function CertCar({ certificate, isActive, onClick, index }) {
 
     return (
         <div style={{ display: 'flex', alignItems: 'flex-end', flexShrink: 0, flexDirection: 'row-reverse' }}>
-            <div style={{ position: 'relative', width: '264px' }}>
+            <div style={{ position: 'relative', width: '310px' }}>
 
-                {/* ── PREMIUM CERT CARD ─────────────────────────────────── */}
+                {/* ── PREMIUM CERTIFICATE CARD ───────────────────────────────── */}
                 <div
                     onClick={onClick}
+                    className="card"
                     style={{
-                        margin: '0 8px 14px',
+                        margin: '0 8px 18px',
                         background: isActive
-                            ? 'linear-gradient(135deg,rgba(30,22,5,0.97),rgba(50,36,8,0.95))'
-                            : 'linear-gradient(135deg,rgba(18,14,4,0.95),rgba(30,22,8,0.93))',
-                        backdropFilter: 'blur(22px)',
-                        WebkitBackdropFilter: 'blur(22px)',
+                            ? 'linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%)'
+                            : 'var(--surface)',
                         borderRadius: '20px',
                         border: isActive
-                            ? '1.5px solid rgba(245,215,110,0.75)'
-                            : '1.5px solid rgba(201,162,58,0.38)',
+                            ? '2.5px solid var(--gold)'
+                            : '1.5px solid var(--border)',
                         boxShadow: isActive
-                            ? '0 -14px 45px rgba(212,160,23,0.55), 0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(245,215,110,0.15)'
-                            : '0 -8px 30px rgba(201,162,58,0.2), 0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)',
-                        cursor: 'pointer', overflow: 'hidden',
-                        animation: 'levitate 3.2s ease-in-out infinite',
-                        animationDelay: `${index * 0.5}s`,
-                        transition: 'border-color 0.35s, box-shadow 0.35s, background 0.35s',
+                            ? '0 20px 50px rgba(201, 162, 58, 0.15), inset 0 1px 1px rgba(255,255,255,0.05)'
+                            : '0 12px 30px rgba(0,0,0,0.05), inset 0 1px 1px rgba(255,255,255,0.02)',
+                        cursor: 'pointer',
+                        padding: '24px',
+                        height: '240px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                        overflow: 'hidden',
                         userSelect: 'none',
-                        display: 'flex', height: '126px', position: 'relative',
+                        transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                        transform: isActive ? 'translateY(-10px)' : 'translateY(0)',
+                    }}
+                    onMouseEnter={(e) => {
+                        if (!isActive) {
+                            e.currentTarget.style.transform = 'translateY(-6px)';
+                            e.currentTarget.style.borderColor = 'var(--gold)';
+                            e.currentTarget.style.boxShadow = '0 15px 30px rgba(201, 162, 58, 0.12)';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (!isActive) {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.borderColor = 'var(--border)';
+                            e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.05)';
+                        }
                     }}
                 >
-                    {/* ── Image/thumbnail — full height, fades right ── */}
-                    <div style={{ width: '104px', flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
-                        {(certificate.fileUrl || certificate.thumbnailUrl) ? (
-                            <img
-                                src={certificate.thumbnailUrl || certificate.fileUrl}
-                                alt={certificate.name}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', opacity: 0.8 }}
-                            />
-                        ) : (
-                            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(160deg,#2a1a02,#5c3a0a,#B8860B)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>🏆</div>
-                        )}
-                        {/* Right-edge fade */}
-                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,transparent 35%,rgba(18,14,4,0.96))' }} />
-                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '28px', background: 'linear-gradient(180deg,transparent,rgba(0,0,0,0.65))' }} />
-                        {/* Gold shimmer top bar */}
-                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: isActive ? 'linear-gradient(90deg,#DAA520,#FFD700,#DAA520)' : 'linear-gradient(90deg,#8a6c00,#C9A23A,#8a6c00)', boxShadow: isActive ? '0 0 10px rgba(255,215,0,0.9)' : '0 0 6px rgba(201,162,58,0.5)' }} />
+                    {/* Top Right: Large Number (Mirrored) */}
+                    <div style={{ 
+                        fontFamily: "'Inter', sans-serif", 
+                        fontSize: '28px', 
+                        fontWeight: 900, 
+                        color: isActive ? 'var(--gold)' : 'var(--text-muted)',
+                        opacity: isActive ? 1 : 0.6,
+                        marginBottom: '10px',
+                        textAlign: 'right'
+                    }}>
+                        {displayIndex}
                     </div>
 
-                    {/* ── Right: label + name + issuer + date ── */}
-                    <div style={{ flex: 1, padding: '13px 14px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '5px', overflow: 'hidden' }}>
-                        <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '8px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: isActive ? 'rgba(245,215,110,0.9)' : 'rgba(201,162,58,0.7)', margin: 0 }}>CERTIFICATE</p>
-                        <p style={{ fontFamily: "'Playfair Display',serif", fontSize: '13.5px', fontWeight: 700, color: 'rgba(255,255,255,0.95)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.2, letterSpacing: '-0.01em', textShadow: '0 1px 8px rgba(0,0,0,0.7)', margin: 0 }}>{certificate.name}</p>
-                        {certificate.issuer && (
-                            <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '10px', color: isActive ? '#FFD700' : '#C9A23A', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textShadow: isActive ? '0 0 10px rgba(255,215,0,0.6)' : 'none' }}>{certificate.issuer}</p>
-                        )}
-                        {certificate.dateIssued && (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '1px 8px', background: 'rgba(201,162,58,0.15)', border: '1px solid rgba(201,162,58,0.3)', borderRadius: '100px', width: 'fit-content' }}>
-                                <span style={{ fontSize: '8px' }}>📅</span>
-                                <span style={{ fontFamily: "'Inter',sans-serif", fontSize: '9px', color: 'rgba(201,162,58,0.85)', fontWeight: 600 }}>{formatDate(certificate.dateIssued)}</span>
-                            </span>
-                        )}
+                    {/* Middle: Cert Title with Watermark */}
+                    <div style={{ 
+                        flex: 1, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        position: 'relative'
+                    }}>
+                        {/* Faded Background Text */}
+                        <div style={{
+                            position: 'absolute',
+                            fontSize: '60px',
+                            fontWeight: 900,
+                            letterSpacing: '0.05em',
+                            color: isActive ? 'var(--gold)' : 'var(--text-muted)',
+                            opacity: isActive ? 0.04 : 0.02,
+                            textAlign: 'center',
+                            zIndex: 0,
+                            pointerEvents: 'none',
+                            textTransform: 'uppercase',
+                        }}>
+                            {watermarkText}
+                        </div>
+
+                        {/* Actual Title */}
+                        <h3 style={{
+                            fontFamily: "'Playfair Display', serif",
+                            fontSize: '22px',
+                            fontWeight: 800,
+                            color: 'var(--text)',
+                            textAlign: 'center',
+                            margin: 0,
+                            zIndex: 1,
+                            position: 'relative',
+                            lineHeight: 1.2
+                        }}>
+                            {certificate.name}
+                        </h3>
                     </div>
 
-                    {/* Corner shine */}
-                    <div style={{ position: 'absolute', top: 0, right: 0, width: '60px', height: '60px', background: 'radial-gradient(circle at top right,rgba(255,215,0,0.08),transparent 70%)', pointerEvents: 'none' }} />
-                    {/* Levitation glow */}
-                    <div style={{ position: 'absolute', bottom: '-12px', left: '10%', right: '10%', height: '14px', background: isActive ? 'rgba(212,160,23,0.55)' : 'rgba(201,162,58,0.3)', filter: 'blur(12px)', borderRadius: '50%' }} />
+                    {/* Bottom: Info Section ────────────────────────── */}
+                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px', marginTop: 'auto' }}>
+                        <p style={{ 
+                            fontFamily: "'Inter', sans-serif", 
+                            fontSize: '10px', 
+                            fontWeight: 900, 
+                            color: 'var(--gold)', 
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.15em',
+                            margin: '0 0 10px 0'
+                        }}>
+                            Registered Credential
+                        </p>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ 
+                                width: '32px', height: '32px', borderRadius: '8px', 
+                                background: 'var(--gold)', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '14px', border: '1px solid var(--border)',
+                                opacity: 0.1
+                            }}>🏆</div>
+                            <div>
+                                <p style={{ 
+                                    fontFamily: "'Inter', sans-serif", 
+                                    fontSize: '13px', 
+                                    color: 'var(--text)', 
+                                    margin: 0,
+                                    fontWeight: 700,
+                                    lineHeight: 1
+                                }}>
+                                    {certificate.issuer}
+                                </p>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <p style={{ 
+                                        fontFamily: "'Inter', sans-serif", 
+                                        fontSize: '11px', 
+                                        color: 'var(--text-muted)', 
+                                        margin: '2px 0 0 0'
+                                    }}>
+                                        Verified Achievement
+                                    </p>
+                                    {certificate.credentialUrl && (
+                                        <a 
+                                            href={certificate.credentialUrl} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            style={{ 
+                                                fontSize: '10px', 
+                                                color: 'var(--gold)', 
+                                                textDecoration: 'none', 
+                                                fontWeight: 800,
+                                                letterSpacing: '0.05em',
+                                                borderBottom: '1.5px solid var(--gold)',
+                                                marginTop: '2px',
+                                                display: 'inline-block'
+                                            }}
+                                        >
+                                            VERIFY ↗
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Golden Sheen */}
+                    {isActive && (
+                        <div style={{ 
+                            position: 'absolute', 
+                            inset: 0, 
+                            background: 'radial-gradient(circle at center, rgba(212,160,23,0.03) 0%, transparent 70%)', 
+                            pointerEvents: 'none' 
+                        }} />
+                    )}
                 </div>
 
-                {/* Steel flatcar deck */}
+                {/* Industrial Flatcar Deck */}
                 <div style={{
-                    height: '22px',
-                    background: 'linear-gradient(180deg,#1e2c1e 0%,#121e12 55%,#080f08 100%)',
-                    borderRadius: '3px 3px 0 0',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04)',
+                    height: '24px', margin: '0 4px',
+                    background: 'linear-gradient(180deg,#1e2c1e 0%,#121e12 60%,#080f08 100%)',
+                    borderRadius: '4px 4px 0 0',
+                    boxShadow: '0 6px 15px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.05)',
                     position: 'relative',
+                    border: '1px solid #060a06',
                 }}>
-                    {[20, 50, 80, 110, 140, 170, 200].map(x => (
-                        <div key={x} style={{ position: 'absolute', top: 0, bottom: 0, left: x, width: '1px', background: 'rgba(255,255,255,0.04)' }} />
+                    {[25, 65, 105, 145, 185, 225, 265].map(x => (
+                        <div key={x} style={{ position: 'absolute', top: 0, bottom: 0, left: x, width: '1.5px', background: 'rgba(0,0,0,0.3)', boxShadow: '0.5px 0 0 rgba(255,255,255,0.03)' }} />
                     ))}
-                    <div style={{ position: 'absolute', top: '5px', left: '8px', right: '8px', height: '3px', background: 'linear-gradient(90deg,#2d3e2d,#4a604a,#2d3e2d)', borderRadius: '2px' }} />
                 </div>
 
-                {/* Wheel trucks */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 18px' }}>
-                    <div style={{ display: 'flex', gap: '9px' }}><Wheel size={21} /><Wheel size={21} /></div>
-                    <div style={{ display: 'flex', gap: '9px' }}><Wheel size={21} /><Wheel size={21} /></div>
+                {/* Industrial Wheel trucks */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 25px', marginTop: '2px' }}>
+                    <div style={{ display: 'flex', gap: '10px' }}><Wheel size={24} /><Wheel size={24} /></div>
+                    <div style={{ display: 'flex', gap: '10px' }}><Wheel size={24} /><Wheel size={24} /></div>
                 </div>
             </div>
 
-            {/* Coupler */}
-            <div style={{ width: '12px', height: '4px', background: 'linear-gradient(180deg,#444,#222)', borderRadius: '2px', alignSelf: 'center', marginBottom: '18px', boxShadow: '0 1px 4px rgba(0,0,0,0.6)' }} />
+            {/* Heavy Coupler */}
+            <div style={{ width: '16px', height: '5px', background: 'linear-gradient(180deg,#2a2a2a,#0a0a0a)', borderRadius: '3px', alignSelf: 'center', marginBottom: '22px', boxShadow: '0 2px 6px rgba(0,0,0,0.8)' }} />
         </div>
     );
 }
@@ -242,7 +360,7 @@ function useDragScroll(ref) {
     const onMouseMove = useCallback((e) => {
         if (!isDragging.current) return;
         e.preventDefault();
-        ref.current.scrollLeft = scrollLeftPos.current - (e.pageX - ref.current.offsetLeft - startX.current) * 1.5;
+        ref.current.scrollLeft = scrollLeftPos.current - (e.pageX - ref.current.offsetLeft - startX.current) * 1.8;
     }, [ref]);
     const onMouseUp = useCallback(() => {
         isDragging.current = false;
@@ -261,21 +379,30 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
     const submittingRef = useRef(false);
     const { onMouseDown, onMouseMove, onMouseUp } = useDragScroll(scrollRef);
 
-    // Certificates train auto-scrolls right-to-left (engine is at the right end)
     useEffect(() => {
         if (!scrollRef.current || certificates.length === 0) return;
-        // Start at the far right so engine is visible first
-        scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
+        if (scrollRef.current.scrollLeft === 0) {
+            scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
+        }
         autoScrollRef.current = setInterval(() => {
-            if (!scrollRef.current || selectedCert) return;
+            if (!scrollRef.current || selectedCert || isDraggingRef.current) return;
             const el = scrollRef.current;
             if (el.scrollLeft <= 0) { el.scrollLeft = el.scrollWidth; }
-            else { el.scrollLeft -= 0.8; }
+            else { el.scrollLeft -= 0.9; }
         }, 30);
         return () => clearInterval(autoScrollRef.current);
     }, [certificates.length, selectedCert]);
 
-    const handleCarClick = c => setSelectedCert(c);
+    const isDraggingRef = useRef(false);
+    const handleMouseDown = (e) => { isDraggingRef.current = false; onMouseDown(e); };
+    const handleMouseMove = (e) => { isDraggingRef.current = true; onMouseMove(e); };
+    const handleMouseUp = () => { onMouseUp(); setTimeout(() => { isDraggingRef.current = false; }, 80); };
+
+    const handleCarClick = c => {
+        if (isDraggingRef.current) return;
+        setSelectedCert(c);
+    };
+
     const handleClosePanel = () => setSelectedCert(null);
     const handleDelete = async (cert) => {
         try {
@@ -296,44 +423,48 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
 
     return (
         <>
-            <section style={{ padding: '80px 0 130px', position: 'relative', zIndex: 1 }}>
-                <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', padding: '0 40px' }}>
-                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: '34px', fontWeight: 700, color: '#1C1C1C' }}>Certificates</h2>
-                    {!readOnly && <button onClick={() => setShowAddModal(true)} className="btn-gold">+ Add Certificate</button>}
+            <section id="certificates" style={{ padding: '80px 0 100px', position: 'relative', zIndex: 1, background: 'var(--bg)', transition: 'background 0.4s ease' }}>
+                <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '0 40px' }}>
+                    <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '38px', fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', textTransform: 'uppercase' }}>Certificates</h2>
+                    {!readOnly && (
+                        <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Certificate</button>
+                    )}
                 </div>
 
                 {certificates.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '60px 48px', fontFamily: 'Inter, sans-serif', fontSize: 15, color: '#6B6560' }}>
-                        No certificates yet. Click <strong style={{ color: '#B8860B' }}>+ Add Certificate</strong> to get started.
+                    <div style={{ textAlign: 'center', padding: '100px 48px', fontFamily: "'Inter', sans-serif", fontSize: 16, color: 'var(--text-muted)', background: 'var(--surface)', border: '1px dashed var(--border)', margin: '0 40px', borderRadius: '24px' }}>
+                        No certificates yet. Click <strong style={{ color: 'var(--accent)' }}>+ Add Certificate</strong> to start your train journey.
                     </div>
                 ) : (
-                    <div style={{ position: 'relative' }}>
-                        {/* Ballast bed */}
-                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '62px', background: 'linear-gradient(180deg,#2e2010 0%,#1a1208 60%,#0c0905 100%)' }}>
-                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle,rgba(90,65,30,0.55) 1px,transparent 1px)', backgroundSize: '7px 7px' }} />
+                    <div style={{ position: 'relative', cursor: 'grab' }}>
+                        
+                        {/* High-Depth Ballast/Track Bed */}
+                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '70px', background: 'linear-gradient(180deg, #322618 0%, #1a1208 50%, #050402 100%)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(100,80,50,0.4) 1px, transparent 1px)', backgroundSize: '6px 6px', opacity: 0.8 }} />
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(50,40,20,0.6) 1.5px, transparent 1.5px)', backgroundSize: '11px 11px', backgroundPosition: '3px 3px' }} />
                         </div>
 
-                        {/* Sleepers */}
-                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', gap: '20px', overflow: 'hidden', padding: '0 8px' }}>
-                            {Array.from({ length: 120 }).map((_, i) => (
-                                <div key={i} style={{ flexShrink: 0, width: '11px', height: '34px', background: 'linear-gradient(90deg,#3a2918,#5c4232,#3a2918)', borderRadius: '2px', boxShadow: '0 3px 6px rgba(0,0,0,0.6)' }} />
+                        {/* Heavy Oak Sleepers */}
+                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', gap: '22px', overflow: 'hidden', padding: '0 8px' }}>
+                            {Array.from({ length: 100 }).map((_, i) => (
+                                <div key={i} style={{ flexShrink: 0, width: '13px', height: '36px', background: 'linear-gradient(90deg, #3a2918, #4d3827, #3a2918)', borderRadius: '1px', boxShadow: '0 3px 6px rgba(0,0,0,0.8)', border: '1px solid rgba(0,0,0,0.4)' }} />
                             ))}
                         </div>
 
-                        {/* Rails */}
-                        <div style={{ position: 'absolute', bottom: '34px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg,#7a8a9a 0%,#b8c8d8 25%,#e8f0f8 50%,#b8c8d8 75%,#6a7a8a 100%)', boxShadow: '0 3px 10px rgba(0,0,0,0.6)' }} />
-                        <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg,#7a8a9a 0%,#b8c8d8 25%,#e8f0f8 50%,#b8c8d8 75%,#6a7a8a 100%)', boxShadow: '0 3px 10px rgba(0,0,0,0.6)' }} />
+                        {/* Cold-Rolled Steel Rails */}
+                        <div style={{ position: 'absolute', bottom: '38px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg, #44505c 0%, #a4b0bc 20%, #e8f0f8 45%, #a4b0bc 70%, #303a44 100%)', boxShadow: '0 4px 12px rgba(0,0,0,0.7)', inset: '0 1px 1px rgba(255,255,255,0.2)' }} />
+                        <div style={{ position: 'absolute', bottom: '18px', left: 0, right: 0, height: '8px', background: 'linear-gradient(180deg, #44505c 0%, #a4b0bc 20%, #e8f0f8 45%, #a4b0bc 70%, #303a44 100%)', boxShadow: '0 4px 12px rgba(0,0,0,0.7)', inset: '0 1px 1px rgba(255,255,255,0.2)' }} />
 
-                        {/* Scrollable train — engine at right end, cars scroll left */}
+                        {/* Scrollable Assemblage — Mirror Layout */}
                         <div
                             ref={scrollRef}
-                            onMouseDown={onMouseDown}
-                            onMouseMove={onMouseMove}
-                            onMouseUp={onMouseUp}
-                            onMouseLeave={onMouseUp}
-                            style={{ display: 'flex', alignItems: 'flex-end', overflowX: 'auto', overflowY: 'visible', paddingRight: 60, paddingLeft: 60, paddingBottom: 62, paddingTop: 24, cursor: 'grab', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                            onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseMove}
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                            style={{ display: 'flex', alignItems: 'flex-end', overflowX: 'auto', overflowY: 'visible', paddingRight: 80, paddingLeft: 80, paddingBottom: 65, paddingTop: 40, scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
-                            <div style={{ flexShrink: 0, width: '80px' }} />
+                            <div style={{ flexShrink: 0, width: '120px' }} />
                             {certificates.map((c, i) => (
                                 <CertCar key={c._id} certificate={c} index={i} isActive={selectedCert?._id === c._id} onClick={() => handleCarClick(c)} />
                             ))}
@@ -348,9 +479,14 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
             <EditCertificateModal isOpen={!!editingCert} onClose={() => setEditingCert(null)} certificate={editingCert} onCertificateUpdated={() => { setEditingCert(null); onRefreshCertificates?.(); }} />
 
             <style>{`
-                @keyframes levitate { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-11px)} }
-                @keyframes smokeRise { 0%{transform:translateY(0) scale(1);opacity:0.65} 100%{transform:translateY(-45px) scale(2.8);opacity:0} }
-                @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+                @keyframes levitate { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-12px)} }
+                @keyframes smokeRise { 
+                    0%{transform:translateY(0) scale(0.6); opacity:0} 
+                    20%{opacity:0.6}
+                    100%{transform:translateY(-60px) scale(3.5); opacity:0} 
+                }
+                @keyframes spin { from{transform:rotate(360deg)} to{transform:rotate(0)} }
+                #certificates::-webkit-scrollbar { display: none; }
             `}</style>
         </>
     );

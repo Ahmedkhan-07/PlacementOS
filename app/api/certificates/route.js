@@ -46,7 +46,15 @@ export async function PUT(req) {
     await connectDB();
     const certificate = await Certificate.findOneAndUpdate(
         { _id: id, userId },
-        { $set: { name: data.name, issuer: data.issuer, dateIssued: data.dateIssued, fileUrl: data.fileUrl, thumbnailUrl: data.thumbnailUrl, fileType: data.fileType } },
+        { $set: { 
+            name: data.name, 
+            issuer: data.issuer, 
+            dateIssued: data.dateIssued, 
+            fileUrl: data.fileUrl, 
+            thumbnailUrl: data.thumbnailUrl, 
+            fileType: data.fileType,
+            credentialUrl: data.credentialUrl
+        } },
         { new: true }
     );
     if (!certificate) return Response.json({ error: 'Not found' }, { status: 404 });

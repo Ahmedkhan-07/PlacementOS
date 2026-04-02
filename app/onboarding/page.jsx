@@ -130,7 +130,7 @@ export default function OnboardingPage() {
                     marginBottom: '32px',
                     fontWeight: 600,
                 }}>
-                    placement-os-nine.vercel.app/u/{username || 'your-username'}
+                    {(process.env.NEXT_PUBLIC_APP_URL?.replace('https://', '')?.replace('http://', '')?.replace(/\/$/, '') || 'placementos.in')}/u/{username || 'your-username'}
                 </p>
 
                 <form onSubmit={handleSubmit}>

@@ -3,16 +3,30 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
+const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+        const envUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '');
+        return envUrl || window.location.origin;
+    }
+    return '';
+};
+
 const BENEFITS = [
     'Your data is saved permanently — never resets',
-    'Public portfolio: placement-os-nine.vercel.app/u/your-username',
+    'Public portfolio: your-domain.com/u/your-username', // Placeholder changed in UI
     'Share your link with recruiters, HR, and companies',
-    'Download your full portfolio as a beautiful PDF',
     '👑 Royal Premium Badge on your profile',
 ];
 
 export default function PremiumModal({ isOpen, onClose, onSuccess }) {
     const [loading, setLoading] = useState(false);
+    const [shared, setShared] = useState(false);
+    const [displayUrl, setDisplayUrl] = useState('');
+
+    useEffect(() => {
+        const url = process.env.NEXT_PUBLIC_APP_URL?.replace('https://', '')?.replace('http://', '')?.replace(/\/$/, '') || 'placementos.in';
+        setDisplayUrl(url);
+    }, []);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -21,50 +35,49 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
         return () => window.removeEventListener('keydown', handleEsc);
     }, [isOpen, onClose]);
 
-    const handlePayment = async () => {
+    const handleUnlock = async () => {
         setLoading(true);
         try {
-            const res = await fetch('/api/razorpay/create-order', { method: 'POST' });
-            const { orderId, amount } = await res.json();
-
-            const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-                amount,
-                currency: 'INR',
-                order_id: orderId,
-                name: 'PlacementOS Premium',
-                description: 'Lifetime Premium Access',
-                handler: async (response) => {
-                    try {
-                        const verifyRes = await fetch('/api/razorpay/verify', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature,
-                            }),
-                        });
-                        if (verifyRes.ok) {
-                            toast.success('Welcome to Premium! 👑');
-                            onSuccess?.();
-                            onClose();
-                        } else {
-                            toast.error('Payment verification failed');
-                        }
-                    } catch {
-                        toast.error('Verification error');
-                    }
-                },
-                modal: { ondismiss: () => setLoading(false) },
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.open();
+            const res = await fetch('/api/premium/unlock', { method: 'POST' });
+            if (res.ok) {
+                toast.success('Welcome to Premium! 👑');
+                onSuccess?.();
+                onClose();
+            } else {
+                toast.error('Failed to unlock premium. Please try again.');
+            }
         } catch {
-            toast.error('Could not initiate payment');
+            toast.error('An error occurred. Check your connection.');
         }
         setLoading(false);
+    };
+
+    const handleShare = async () => {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || window.location.origin;
+        const shareData = {
+            title: 'PlacementOS - Ultimate Job Placement Platform',
+            text: 'I found this amazing platform to build my placement portfolio! Check it out.',
+            url: baseUrl,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                setShared(true);
+                toast.success('Link shared! You can now unlock premium.');
+                // Auto unlock after successful share
+                await handleUnlock();
+            } else {
+                // Fallback: Copy to clipboard
+                await navigator.clipboard.writeText(shareData.url);
+                setShared(true);
+                toast.success('Link copied! Share it with a friend then click Unlock.');
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                toast.error('Sharing failed. Please try copying the link.');
+            }
+        }
     };
 
     if (!isOpen) return null;
@@ -120,7 +133,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
                     textAlign: 'center',
                     marginBottom: '8px',
                 }}>
-                    Unlock Premium
+                    Unlock Premium FREE
                 </h2>
                 <p style={{
                     fontFamily: "'Inter', sans-serif",
@@ -129,7 +142,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
                     textAlign: 'center',
                     marginBottom: '32px',
                 }}>
-                    Everything you need to stand out to every recruiter
+                    Help us grow by sharing this link to unlock premium features forever!
                 </p>
 
                 {/* Benefits */}
@@ -148,42 +161,58 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
                                 color: '#1C1C1C',
                                 lineHeight: 1.5,
                             }}>
-                                {b}
+                                {i === 1 ? b.replace('your-domain.com', displayUrl) : b}
                             </span>
                         </div>
                     ))}
                 </div>
 
-                {/* Price */}
+                {/* Share Section */}
                 <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                    {/* Discount badge */}
-                    <div style={{ display: 'inline-block', background: '#C0392B', color: '#fff', fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 700, padding: '4px 12px', borderRadius: '100px', marginBottom: '10px', letterSpacing: '0.05em' }}>
-                        93% OFF 🔥
+                    <div style={{ 
+                        display: 'inline-block', 
+                        background: '#2D6A4F', 
+                        color: '#fff', 
+                        fontFamily: "'Inter', sans-serif", 
+                        fontSize: '12px', 
+                        fontWeight: 700, 
+                        padding: '4px 12px', 
+                        borderRadius: '100px', 
+                        marginBottom: '10px', 
+                        letterSpacing: '0.05em' 
+                    }}>
+                        SPECIAL OFFER: SHARE TO UNLOCK 🚀
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '12px' }}>
-                        {/* Strikethrough original */}
-                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '26px', color: '#aaa', textDecoration: 'line-through', fontWeight: 500 }}>
-                            ₹399
-                        </span>
-                        {/* Actual price */}
-                        <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '58px', fontWeight: 700, color: '#2D6A4F', lineHeight: 1 }}>
-                            ₹29
-                        </span>
-                    </div>
-                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#6B6560', marginTop: '6px' }}>
-                        one-time payment · limited time offer
-                    </p>
+                    {shared ? (
+                        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: '#2D6A4F', fontWeight: 600 }}>
+                            Sharing almost complete! Unlock now.
+                        </p>
+                    ) : (
+                        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: '#6B6560' }}>
+                            No payment required. Just share and enjoy.
+                        </p>
+                    )}
                 </div>
 
-                {/* Pay Button */}
-                <button
-                    onClick={handlePayment}
-                    disabled={loading}
-                    className="btn-gold"
-                    style={{ width: '100%', justifyContent: 'center', padding: '18px', fontSize: '16px' }}
-                >
-                    {loading ? '⏳ Processing...' : 'Unlock Premium →'}
-                </button>
+                {/* Share/Unlock Button */}
+                {!shared ? (
+                    <button
+                        onClick={handleShare}
+                        className="btn-gold"
+                        style={{ width: '100%', justifyContent: 'center', padding: '18px', fontSize: '16px' }}
+                    >
+                        Share with 1 Friend →
+                    </button>
+                ) : (
+                    <button
+                        onClick={handleUnlock}
+                        disabled={loading}
+                        className="btn-gold"
+                        style={{ width: '100%', justifyContent: 'center', padding: '18px', fontSize: '16px', background: '#2D6A4F' }}
+                    >
+                        {loading ? '⏳ Processing...' : 'Unlock Now ✨'}
+                    </button>
+                )}
 
                 {/* Fine print */}
                 <p style={{
@@ -193,7 +222,7 @@ export default function PremiumModal({ isOpen, onClose, onSuccess }) {
                     textAlign: 'center',
                     marginTop: '16px',
                 }}>
-                    One-time payment. No subscriptions. No renewals. Ever.
+                    Help 1 friend get placed to unlock your own premium access.
                 </p>
             </div>
 

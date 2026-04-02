@@ -14,6 +14,7 @@ export default function AddCertificateModal({ isOpen, onClose, onCertificateAdde
     const [issuer, setIssuer] = useState('');
     const [month, setMonth] = useState('');
     const [year, setYear] = useState('');
+    const [credentialUrl, setCredentialUrl] = useState('');
     const [fileUrl, setFileUrl] = useState('');
     const [fileType, setFileType] = useState('image');
     const [thumbnailUrl, setThumbnailUrl] = useState('');
@@ -29,7 +30,7 @@ export default function AddCertificateModal({ isOpen, onClose, onCertificateAdde
     }, [isOpen, onClose]);
 
     const resetForm = () => {
-        setName(''); setIssuer(''); setMonth(''); setYear('');
+        setName(''); setIssuer(''); setMonth(''); setYear(''); setCredentialUrl('');
         setFileUrl(''); setFileType('image'); setThumbnailUrl(''); setErrors({});
     };
 
@@ -71,7 +72,7 @@ export default function AddCertificateModal({ isOpen, onClose, onCertificateAdde
             const res = await fetch('/api/certificates', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, issuer, dateIssued, fileUrl, fileType, thumbnailUrl }),
+                body: JSON.stringify({ name, issuer, dateIssued, fileUrl, fileType, thumbnailUrl, credentialUrl }),
             });
             if (res.ok) {
                 toast.success('Certificate added! 🏆');
@@ -133,6 +134,21 @@ export default function AddCertificateModal({ isOpen, onClose, onCertificateAdde
                         Issuer / Organization
                     </label>
                     <input className="fancy-input" value={issuer} onChange={e => setIssuer(e.target.value)} placeholder="Amazon Web Services" />
+                </div>
+
+                {/* Credential Link */}
+                <div style={{ marginBottom: '22px' }}>
+                    <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500, color: '#1C1C1C', display: 'block', marginBottom: '6px' }}>
+                        Credential Link (URL) 🔗
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                        <input 
+                            className="fancy-input" 
+                            value={credentialUrl} 
+                            onChange={e => setCredentialUrl(e.target.value)} 
+                            placeholder="https://coursera.org/shared/..." 
+                        />
+                    </div>
                 </div>
 
                 {/* Date */}

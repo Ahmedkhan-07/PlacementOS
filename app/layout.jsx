@@ -1,6 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from 'react-hot-toast';
-import Script from 'next/script';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import './globals.css';
 
@@ -16,10 +15,6 @@ export default function RootLayout({ children }) {
             <html lang="en">
                 <body style={{ position: 'relative', zIndex: 1 }}>
                     <ThemeProvider>
-                        <Script
-                            src="https://checkout.razorpay.com/v1/checkout.js"
-                            strategy="lazyOnload"
-                        />
                         <Toaster
                             position="top-right"
                             toastOptions={{

@@ -34,13 +34,13 @@ export default function TermsAndConditions() {
             <ul style={{ paddingLeft: '22px', marginBottom: '20px' }}>
                 <Li>Create and manage an online placement portfolio including projects, certificates, achievements, education details, and skills.</Li>
                 <Li>Build and preview a professional resume from within the dashboard.</Li>
-                <Li><strong>[Premium Only]</strong> Download the portfolio and resume as a formatted PDF document.</Li>
-                <Li><strong>[Premium Only]</strong> Generate a public shareable link to your portfolio, accessible without login.</Li>
+                <Li><strong>[Premium Only]</strong> Download the portfolio and resume as a formatted PDF document (unlocked by sharing).</Li>
+                <Li><strong>[Premium Only]</strong> Generate a public shareable link to your portfolio, accessible without login (unlocked by sharing).</Li>
             </ul>
             <P>We reserve the right to modify, suspend, or discontinue any feature at any time with or without notice.</P>
 
-            <S>4. Premium Subscription</S>
-            <P>Certain features of PlacementOS are available only to premium subscribers. Premium access is obtained by purchasing a subscription through our platform. Payment is processed exclusively via <strong>Razorpay</strong>, a regulated payment gateway. Subscription details, pricing, and duration are displayed at the time of purchase. Subscriptions are non-transferable and associated with a single user account.</P>
+            <S>4. Premium Access</S>
+            <P>Certain features of PlacementOS are available only as premium features. Premium access is obtained for FREE by sharing the platform with at least one other user through the "Unlock Premium" feature in the dashboard. Upon successful sharing, premium features are unlocked permanently for your account. We reserve the right to modify the methods of unlocking premium access at any time.</P>
 
             <S>5. User Content</S>
             <P>You retain full ownership of all content you upload to PlacementOS ("User Content"), including text, images, links, and documents. By uploading content, you grant PlacementOS a non-exclusive, royalty-free, worldwide licence to host, display, and transmit your content solely for the purpose of providing the platform services to you.</P>
