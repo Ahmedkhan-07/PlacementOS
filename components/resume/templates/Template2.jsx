@@ -1,5 +1,31 @@
 export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
     const pi = data.personalInfo || {};
+    const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+    const Section = ({ title, children }) => {
+        const isSidebarSec = title === "Skills" || title === "Technical Skills" || title === "Languages" || title === "Interests";
+        return (
+            <div style={{ marginBottom: '20px' }}>
+                {isSidebarSec && (
+                    <style>{`
+                        .sidebar-section-content p { color: #FFFFFF !important; }
+                    `}</style>
+                )}
+                <h3 style={{
+                    fontSize: isSidebarSec ? '11px' : '13px',
+                    fontWeight: 700,
+                    color: isSidebarSec ? '#FFFFFF' : accentColor,
+                    textTransform: 'uppercase',
+                    letterSpacing: isSidebarSec ? '0.1em' : undefined,
+                    opacity: isSidebarSec ? 0.7 : undefined,
+                    marginBottom: '8px'
+                }}>{title}</h3>
+                <div className={isSidebarSec ? "sidebar-section-content" : ""}>
+                    {children}
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div style={{
@@ -14,79 +40,224 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Sidebar */}
             <div style={{ width: '35%', background: accentColor, color: '#FFFFFF', padding: '32px 20px' }}>
-                <h1 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '4px' }}>{pi.name || 'Your Name'}</h1>
-                <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '24px' }}>{pi.email}</p>
+                {data.showProfilePic !== false && (
+                    pi.profilePicUrl ? (
+                        <img
+                            src={pi.profilePicUrl}
+                            alt="Profile"
+                            style={{
+                                width: '80px', height: '80px', borderRadius: '50%',
+                                objectFit: 'cover', display: 'block', margin: '0 auto 16px',
+                                border: '2px solid rgba(255,255,255,0.5)'
+                            }}
+                        />
+                    ) : (
+                        <div style={{
+                            width: '80px', height: '80px', borderRadius: '50%',
+                            background: 'rgba(255,255,255,0.2)', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
+                            color: '#fff', fontSize: '24px', fontWeight: 700,
+                            border: '2px solid rgba(255,255,255,0.5)'
+                        }}>
+                            {initials}
+                        </div>
+                    )
+                )}
+
+                <h1 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '4px', textAlign: 'center' }}>{pi.name || 'Your Name'}</h1>
+                <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '24px', textAlign: 'center', wordBreak: 'break-all' }}>{pi.email}</p>
 
                 <div style={{ marginBottom: '20px' }}>
                     <h3 style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.7, marginBottom: '8px' }}>Contact</h3>
-                    {pi.phone && <p style={{ fontSize: '11px' }}>📞 {pi.phone}</p>}
-                    {pi.location && <p style={{ fontSize: '11px' }}>📍 {pi.location}</p>}
-                    {pi.linkedinUrl && <p style={{ fontSize: '11px', wordBreak: 'break-all' }}>🔗 {pi.linkedinUrl}</p>}
-                    {pi.githubUrl && <p style={{ fontSize: '11px', wordBreak: 'break-all' }}>🐙 {pi.githubUrl}</p>}
+                    {pi.phone && <p style={{ fontSize: '11px', marginBottom: '4px' }}>📞 {pi.phone}</p>}
+                    {pi.location && <p style={{ fontSize: '11px', marginBottom: '4px' }}>📍 {pi.location}</p>}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                        {pi.linkedinUrl && (
+                            <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px' }}>💼 LinkedIn</a>
+                        )}
+                        {pi.githubUrl && (
+                            <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px' }}>🐙 GitHub</a>
+                        )}
+                        {pi.leetcodeUrl && (
+                            <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px' }}>🟠 LeetCode</a>
+                        )}
+                        {pi.portfolioUrl && (
+                            <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px' }}>🌐 Portfolio</a>
+                        )}
+                    </div>
                 </div>
 
-                {data.skills?.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.7, marginBottom: '8px' }}>Skills</h3>
-                        {data.skills.map((s, i) => (
-                            <p key={i} style={{ fontSize: '11px', marginBottom: '3px' }}>• {s}</p>
-                        ))}
-                    </div>
+                {(data.skillsText || data.skills?.length > 0) && (
+                    <Section title="Technical Skills">
+                        <p style={{ fontSize: '10pt', color: '#4a4a4a', whiteSpace: 'pre-line', lineHeight: 1.4, margin: 0 }}>
+                            {data.skillsText || data.skills?.join(', ')}
+                        </p>
+                    </Section>
                 )}
 
-                {data.hobbies?.length > 0 && (
-                    <div>
-                        <h3 style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.7, marginBottom: '8px' }}>Interests</h3>
-                        {data.hobbies.map((h, i) => (
-                            <p key={i} style={{ fontSize: '11px', marginBottom: '3px' }}>• {h}</p>
-                        ))}
-                    </div>
+                {data.languages?.length > 0 && (
+                    <Section title="Languages">
+                        <p style={{ fontSize: '11px', margin: 0 }}>
+                            {data.languages.join(', ')}
+                        </p>
+                    </Section>
+                )}
+
+                {(data.interests?.length > 0 || data.hobbies?.length > 0) && (
+                    <Section title="Interests">
+                        <p style={{ fontSize: '11px', margin: 0 }}>
+                            {(data.interests || data.hobbies || []).join(', ')}
+                        </p>
+                    </Section>
                 )}
             </div>
 
             {/* Main Content */}
             <div style={{ width: '65%', padding: '32px 24px' }}>
+                {/* 1. Professional Summary */}
                 {data.summary && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Summary</h3>
-                        <p style={{ fontSize: '12px', color: '#4a4a4a' }}>{data.summary}</p>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Professional Summary</h3>
+                        <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0 }}>{data.summary}</p>
                     </div>
                 )}
 
-                {data.experience?.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Experience</h3>
-                        {data.experience.map((e, i) => (
-                            <div key={i} style={{ marginBottom: '10px' }}>
-                                <strong style={{ fontSize: '12px' }}>{e.role}</strong>
-                                <p style={{ fontSize: '11px', color: accentColor }}>{e.company} | {e.startDate} - {e.current ? 'Present' : e.endDate}</p>
-                                <p style={{ fontSize: '11px', color: '#4a4a4a' }}>{e.description}</p>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
+                {/* 2. Education */}
                 {data.education?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
                         <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Education</h3>
                         {data.education.map((e, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
-                                <strong style={{ fontSize: '12px' }}>{e.institution}</strong>
-                                <p style={{ fontSize: '11px', color: '#4a4a4a' }}>{e.degree} {e.field && `in ${e.field}`} | {e.startYear} - {e.endYear}</p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                    <strong style={{ fontSize: '12px' }}>{e.institution}</strong>
+                                    <span style={{ fontSize: '10px', color: '#6B6560' }}>{e.startYear} – {e.endYear}</span>
+                                </div>
+                                <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0 }}>
+                                    {e.degree}{e.field && ` in ${e.field}`}{e.grade && ` | Grade: ${e.grade}`}
+                                </p>
+                                {e.description && <p style={{ fontSize: '10px', color: '#4a4a4a', margin: 0, marginTop: '2px' }}>{e.description}</p>}
                             </div>
                         ))}
                     </div>
                 )}
 
+                {/* 3. Projects */}
                 {data.projects?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
                         <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Projects</h3>
                         {data.projects.map((p, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
-                                <strong style={{ fontSize: '12px' }}>{p.title}</strong>
-                                <p style={{ fontSize: '11px', color: '#4a4a4a' }}>{p.description}</p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                                        <strong style={{ fontSize: '12px' }}>{p.title}</strong>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            {p.githubUrl && (
+                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>GitHub</a>
+                                            )}
+                                            {p.demoUrl && (
+                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>Live</a>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {(p.startDate || p.endDate) && (
+                                        <span style={{ fontSize: '10px', color: '#6B6560' }}>
+                                            {p.startDate}{p.startDate && p.endDate ? ' – ' : ''}{p.endDate}
+                                        </span>
+                                    )}
+                                </div>
+                                {p.techStack?.length > 0 && (
+                                    <p style={{ fontSize: '10px', color: '#6B6560', fontStyle: 'italic', margin: 0, marginTop: '2px' }}>
+                                        {p.techStack.join(', ')}
+                                    </p>
+                                )}
+                                {p.description && (
+                                    <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0, marginTop: '4px' }}>{p.description}</p>
+                                )}
                             </div>
                         ))}
+                    </div>
+                )}
+
+                {/* 4. Work & Internship Experience */}
+                {data.experience?.length > 0 && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Work & Internship Experience</h3>
+                        {data.experience.map((e, i) => (
+                            <div key={i} style={{ marginBottom: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                    <strong style={{ fontSize: '12px' }}>{e.role}</strong>
+                                    <span style={{ fontSize: '10px', color: '#6B6560' }}>{e.startDate} – {e.current ? 'Present' : e.endDate}</span>
+                                </div>
+                                <p style={{ fontSize: '11px', color: accentColor, margin: '2px 0 4px' }}>{e.company}</p>
+                                {e.description && <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0 }}>{e.description}</p>}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* 5. Certifications */}
+                {data.certifications?.length > 0 && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Certifications</h3>
+                        {data.certifications.map((c, i) => (
+                            <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                <div>
+                                    <strong style={{ fontSize: '11px' }}>{c.title}</strong>
+                                    {c.description && <p style={{ fontSize: '10px', color: '#4a4a4a', margin: 0, marginTop: '2px' }}>{c.description}</p>}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    {c.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{c.year}</span>}
+                                    {c.url && (
+                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* 6. Achievements */}
+                {data.achievements?.length > 0 && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Achievements</h3>
+                        {data.achievements.map((a, i) => (
+                            <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                <div>
+                                    <strong style={{ fontSize: '11px' }}>{a.title}</strong>
+                                    {a.description && <p style={{ fontSize: '10px', color: '#4a4a4a', margin: 0, marginTop: '2px' }}>{a.description}</p>}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    {a.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{a.year}</span>}
+                                    {a.url && (
+                                        <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* 7. Leadership & Extracurricular Activities */}
+                {data.leadership?.length > 0 && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Leadership & Extracurricular Activities</h3>
+                        {data.leadership.map((l, i) => (
+                            <div key={i} style={{ marginBottom: '8px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <strong style={{ fontSize: '12px' }}>{l.role} — {l.organization}</strong>
+                                    <span style={{ fontSize: '10px', color: '#6B6560' }}>{l.startDate} – {l.endDate}</span>
+                                </div>
+                                {l.description && <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0, marginTop: '2px', whiteSpace: 'pre-line' }}>{l.description}</p>}
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* 8. References (Optional) */}
+                {data.references && (
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>References</h3>
+                        <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0 }}>{data.references}</p>
                     </div>
                 )}
             </div>

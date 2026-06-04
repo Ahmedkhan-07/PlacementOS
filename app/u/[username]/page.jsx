@@ -39,6 +39,11 @@ export default async function PublicPortfolio({ params }) {
         Achievement.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
     ]);
 
+    if (resume && user.profilePicUrl) {
+        if (!resume.personalInfo) resume.personalInfo = {};
+        resume.personalInfo.profilePicUrl = user.profilePicUrl;
+    }
+
     // Serialize MongoDB data (convert ObjectIds and dates to strings)
     const serialized = {
         user: JSON.parse(JSON.stringify(user)),

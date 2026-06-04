@@ -1,6 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { connectDB } from '@/lib/mongodb';
 import Resume from '@/models/Resume';
+import User from '@/models/User';
 
 export async function GET() {
     const { userId } = auth();
@@ -8,7 +9,15 @@ export async function GET() {
 
     await connectDB();
     const resume = await Resume.findOne({ userId });
-    return Response.json({ resume: resume || null });
+    const user = await User.findOne({ clerkId: userId });
+
+    let resumeObj = resume ? resume.toObject() : null;
+    if (resumeObj && user && user.profilePicUrl) {
+        if (!resumeObj.personalInfo) resumeObj.personalInfo = {};
+        resumeObj.personalInfo.profilePicUrl = user.profilePicUrl;
+    }
+
+    return Response.json({ resume: resumeObj });
 }
 
 export async function POST(req) {
@@ -18,6 +27,12 @@ export async function POST(req) {
     const data = await req.json();
 
     await connectDB();
+    const user = await User.findOne({ clerkId: userId });
+    if (user && user.profilePicUrl) {
+        if (!data.personalInfo) data.personalInfo = {};
+        data.personalInfo.profilePicUrl = user.profilePicUrl;
+    }
+
     const resume = await Resume.findOneAndUpdate(
         { userId },
         { $set: { ...data, updatedAt: new Date() } },

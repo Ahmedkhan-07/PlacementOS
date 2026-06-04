@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import ResumeBuilder from '@/components/resume/ResumeBuilder';
 import ResumePreview from '@/components/resume/ResumePreview';
 
-export default function ResumeSection({ resume, username, onSaveResume, readOnly = false }) {
+export default function ResumeSection({ resume, username, userProfilePic, onSaveResume, readOnly = false }) {
     const [revealed, setRevealed] = useState(false);
     const [showBuilder, setShowBuilder] = useState(false);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -371,6 +371,7 @@ export default function ResumeSection({ resume, username, onSaveResume, readOnly
             {!readOnly && showBuilder && (
                 <ResumeBuilder
                     resume={resume}
+                    userProfilePic={userProfilePic}
                     onClose={() => setShowBuilder(false)}
                     onSave={onSaveResume}
                 />

@@ -4,30 +4,54 @@ import { useState, useEffect } from 'react';
 import ResumePreview from '@/components/resume/ResumePreview';
 import toast from 'react-hot-toast';
 
-const STEPS = ['Personal Info', 'Summary', 'Education', 'Skills', 'Projects', 'Experience', 'Achievements', 'Hobbies'];
+const STEPS = [
+    'Personal Info', 
+    'Professional Summary', 
+    'Education', 
+    'Technical Skills', 
+    'Projects', 
+    'Work & Internship Experience', 
+    'Certifications', 
+    'Achievements', 
+    'Leadership & Extracurriculars', 
+    'Languages', 
+    'Interests', 
+    'References'
+];
 const DEGREES = ["Bachelor's", "Master's", 'PhD', 'Diploma', 'High School', 'Other'];
 const YEARS = Array.from({ length: 31 }, (_, i) => String(2000 + i));
 const ACCENT_COLORS = ['#2D6A4F', '#1B4332', '#C0392B', '#2C3E50', '#8E44AD', '#E67E22'];
 
-export default function ResumeBuilder({ resume, onClose, onSave }) {
+export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave }) {
     const [step, setStep] = useState(0);
     const [data, setData] = useState({
         templateId: resume?.templateId || 1,
         accentColor: resume?.accentColor || '#2D6A4F',
-        personalInfo: resume?.personalInfo || {},
+        personalInfo: {
+            ...resume?.personalInfo,
+            profilePicUrl: resume?.personalInfo?.profilePicUrl || userProfilePic || '',
+        },
+        showProfilePic: resume?.showProfilePic !== false,
         summary: resume?.summary || '',
         education: resume?.education || [],
         skills: resume?.skills || [],
         projects: resume?.projects || [],
         experience: resume?.experience || [],
+        certifications: resume?.certifications || [],
         achievements: resume?.achievements || [],
+        leadership: resume?.leadership || [],
+        languages: resume?.languages || [],
+        interests: resume?.interests || [],
         hobbies: resume?.hobbies || [],
+        references: resume?.references || '',
     });
     const [saving, setSaving] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
     const [originalText, setOriginalText] = useState(null);
     const [skillInput, setSkillInput] = useState('');
     const [hobbyInput, setHobbyInput] = useState('');
+    const [langInput, setLangInput] = useState('');
+    const [interestInput, setInterestInput] = useState('');
     const [suggestedSkills, setSuggestedSkills] = useState([]);
 
     useEffect(() => {
@@ -109,7 +133,34 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
             case 0: return (
                 <div>
                     <h3 style={stepTitle}>Personal Information</h3>
-                    {['name', 'email', 'phone', 'location', 'linkedinUrl', 'githubUrl', 'websiteUrl'].map(f => (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: '#FAFAF8', border: '1px solid #E8E0D4', borderRadius: '12px', marginBottom: '24px' }}>
+                        <div>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13.5px', fontWeight: 600, color: '#1C1C1C', display: 'block', marginBottom: '2px' }}>Display Profile Picture</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#6B6560' }}>Show your portfolio profile picture on the resume header</span>
+                        </div>
+                        <label style={{ position: 'relative', display: 'inline-block', width: '46px', height: '24px', cursor: 'pointer' }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.showProfilePic !== false} 
+                                onChange={e => update('showProfilePic', e.target.checked)}
+                                style={{ opacity: 0, width: 0, height: 0 }}
+                            />
+                            <span style={{
+                                position: 'absolute', inset: 0,
+                                background: data.showProfilePic !== false ? data.accentColor : '#E8E0D4',
+                                borderRadius: '24px', transition: 'all 0.25s ease',
+                                display: 'flex', alignItems: 'center', padding: '2px'
+                            }}>
+                                <span style={{
+                                    width: '20px', height: '20px', background: 'white',
+                                    borderRadius: '50%', transition: 'all 0.25s ease',
+                                    transform: data.showProfilePic !== false ? 'translateX(22px)' : 'translateX(0)',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }} />
+                            </span>
+                        </label>
+                    </div>
+                    {['name', 'email', 'phone', 'location', 'linkedinUrl', 'githubUrl', 'leetcodeUrl', 'portfolioUrl'].map(f => (
                         <div key={f} style={{ marginBottom: '16px' }}>
                             <label style={labelStyle}>{f.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).replace('Url', ' URL')}</label>
                             <input className="fancy-input" value={data.personalInfo[f] || ''} onChange={e => updatePI(f, e.target.value)} />
@@ -177,26 +228,17 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
             );
             case 3: return (
                 <div>
-                    <h3 style={stepTitle}>Skills</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
-                        {data.skills.map((s, i) => (
-                            <span key={i} className="tag-chip">{s}<span className="tag-chip-remove" onClick={() => update('skills', data.skills.filter((_, j) => j !== i))}>×</span></span>
-                        ))}
-                    </div>
-                    <input className="fancy-input" value={skillInput} onChange={e => setSkillInput(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); const s = skillInput.trim(); if (s && !data.skills.includes(s)) { update('skills', [...data.skills, s]); } setSkillInput(''); } }}
-                        placeholder="Type a skill + Enter" style={{ marginBottom: '12px' }} />
-                    <button onClick={suggestSkills} disabled={enhancing} className="btn-gold" style={{ padding: '8px 18px', fontSize: '12px' }}>
-                        {enhancing ? '⏳' : '✨ Suggest Skills'}
-                    </button>
-                    {suggestedSkills.length > 0 && (
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '12px' }}>
-                            {suggestedSkills.map((s, i) => (
-                                <button key={i} onClick={() => { if (!data.skills.includes(s)) update('skills', [...data.skills, s]); setSuggestedSkills(prev => prev.filter((_, j) => j !== i)); }}
-                                    className="btn-outline" style={{ padding: '6px 14px', fontSize: '12px' }}>{s}</button>
-                            ))}
-                        </div>
-                    )}
+                    <h3 style={stepTitle}>Technical Skills</h3>
+                    <p style={{ fontSize: '13px', color: '#6B6560', marginBottom: '12px' }}>
+                        Write your skills in any format. Example: Languages: JavaScript, Python | Frontend: React, Next.js
+                    </p>
+                    <textarea
+                        className="fancy-textarea"
+                        rows={10}
+                        value={data.skillsText || ''}
+                        onChange={e => update('skillsText', e.target.value)}
+                        placeholder="Languages: JavaScript, TypeScript, Python&#10;Frontend: React, Next.js, Tailwind CSS&#10;Backend: Node.js, Express.js&#10;Databases: MongoDB, PostgreSQL&#10;Tools: Git, Docker, Postman"
+                    />
                 </div>
             );
             case 4: return (
@@ -208,7 +250,7 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Project {i + 1}</span>
                                 <button onClick={() => removeListItem('projects', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
                             </div>
-                            {['title', 'githubUrl', 'demoUrl'].map(f => (
+                            {['title', 'startDate', 'endDate', 'githubUrl', 'demoUrl'].map(f => (
                                 <div key={f} style={{ marginBottom: '10px' }}>
                                     <label style={labelStyle}>{f.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).replace('Url', ' URL')}</label>
                                     <input className="fancy-input" value={proj[f] || ''} onChange={e => updateListItem('projects', i, f, e.target.value)} />
@@ -227,7 +269,7 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
             );
             case 5: return (
                 <div>
-                    <h3 style={stepTitle}>Work Experience</h3>
+                    <h3 style={stepTitle}>Work & Internship Experience</h3>
                     {data.experience.map((exp, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
@@ -257,8 +299,38 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
             );
             case 6: return (
                 <div>
-                    <h3 style={stepTitle}>Achievements & Awards</h3>
-                    {data.achievements.map((ach, i) => (
+                    <h3 style={stepTitle}>Certifications</h3>
+                    {(data.certifications || []).map((cert, i) => (
+                        <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                <span style={{ fontWeight: 600, fontSize: '14px' }}>Certification {i + 1}</span>
+                                <button onClick={() => removeListItem('certifications', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                            </div>
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Title</label>
+                                <input className="fancy-input" value={cert.title || ''} onChange={e => updateListItem('certifications', i, 'title', e.target.value)} />
+                            </div>
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Issuer / Description</label>
+                                <textarea className="fancy-textarea" rows={2} value={cert.description || ''} onChange={e => updateListItem('certifications', i, 'description', e.target.value)} />
+                            </div>
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Year</label>
+                                <input className="fancy-input" value={cert.year || ''} onChange={e => updateListItem('certifications', i, 'year', e.target.value)} />
+                            </div>
+                            <div>
+                                <label style={labelStyle}>Certificate URL</label>
+                                <input className="fancy-input" value={cert.url || ''} onChange={e => updateListItem('certifications', i, 'url', e.target.value)} placeholder="https://certificate-link.com" />
+                            </div>
+                        </div>
+                    ))}
+                    <button onClick={() => addListItem('certifications', {})} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Certification</button>
+                </div>
+            );
+            case 7: return (
+                <div>
+                    <h3 style={stepTitle}>Achievements</h3>
+                    {(data.achievements || []).map((ach, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Achievement {i + 1}</span>
@@ -274,28 +346,78 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
                                 <button onClick={() => aiEnhance(ach.description, 'achievement', t => updateListItem('achievements', i, 'description', t))}
                                     disabled={enhancing} className="btn-gold" style={{ position: 'absolute', top: '24px', right: '8px', padding: '4px 10px', fontSize: '11px' }}>✨</button>
                             </div>
-                            <div>
+                            <div style={{ marginBottom: '10px' }}>
                                 <label style={labelStyle}>Year</label>
                                 <input className="fancy-input" value={ach.year || ''} onChange={e => updateListItem('achievements', i, 'year', e.target.value)} />
+                            </div>
+                            <div>
+                                <label style={labelStyle}>Certificate URL</label>
+                                <input className="fancy-input" value={ach.url || ''} onChange={e => updateListItem('achievements', i, 'url', e.target.value)} placeholder="https://certificate-link.com" />
                             </div>
                         </div>
                     ))}
                     <button onClick={() => addListItem('achievements', {})} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Achievement</button>
                 </div>
             );
-            case 7: return (
+            case 8: return (
                 <div>
-                    <h3 style={stepTitle}>Hobbies & Interests</h3>
+                    <h3 style={stepTitle}>Leadership & Extracurricular Activities</h3>
+                    {(data.leadership || []).map((lead, i) => (
+                        <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                <span style={{ fontWeight: 600, fontSize: '14px' }}>Activity {i + 1}</span>
+                                <button onClick={() => removeListItem('leadership', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                            </div>
+                            {['role', 'organization', 'startDate', 'endDate'].map(f => (
+                                <div key={f} style={{ marginBottom: '10px' }}>
+                                    <label style={labelStyle}>{f.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}</label>
+                                    <input className="fancy-input" value={lead[f] || ''} onChange={e => updateListItem('leadership', i, f, e.target.value)} />
+                                </div>
+                            ))}
+                            <div>
+                                <label style={labelStyle}>Description</label>
+                                <textarea className="fancy-textarea" rows={3} value={lead.description || ''} onChange={e => updateListItem('leadership', i, 'description', e.target.value)} />
+                            </div>
+                        </div>
+                    ))}
+                    <button onClick={() => addListItem('leadership', {})} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Activity</button>
+                </div>
+            );
+            case 9: return (
+                <div>
+                    <h3 style={stepTitle}>Languages</h3>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
-                        {data.hobbies.map((h, i) => (
+                        {(data.languages || []).map((l, i) => (
                             <span key={i} className="tag-chip" style={{ background: 'rgba(107,101,96,0.1)', color: '#6B6560' }}>
-                                {h}<span className="tag-chip-remove" onClick={() => update('hobbies', data.hobbies.filter((_, j) => j !== i))}>×</span>
+                                {l}<span className="tag-chip-remove" onClick={() => update('languages', data.languages.filter((_, j) => j !== i))}>×</span>
                             </span>
                         ))}
                     </div>
-                    <input className="fancy-input" value={hobbyInput} onChange={e => setHobbyInput(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const h = hobbyInput.trim(); if (h && !data.hobbies.includes(h)) update('hobbies', [...data.hobbies, h]); setHobbyInput(''); } }}
-                        placeholder="Type a hobby + Enter" />
+                    <input className="fancy-input" value={langInput} onChange={e => setLangInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const l = langInput.trim(); if (l && !data.languages.includes(l)) update('languages', [...(data.languages || []), l]); setLangInput(''); } }}
+                        placeholder="Type a language + Enter" />
+                </div>
+            );
+            case 10: return (
+                <div>
+                    <h3 style={stepTitle}>Interests</h3>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+                        {(data.interests || []).map((interest, i) => (
+                            <span key={i} className="tag-chip" style={{ background: 'rgba(107,101,96,0.1)', color: '#6B6560' }}>
+                                {interest}<span className="tag-chip-remove" onClick={() => update('interests', data.interests.filter((_, j) => j !== i))}>×</span>
+                            </span>
+                        ))}
+                    </div>
+                    <input className="fancy-input" value={interestInput} onChange={e => setInterestInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const val = interestInput.trim(); if (val && !data.interests.includes(val)) update('interests', [...(data.interests || []), val]); setInterestInput(''); } }}
+                        placeholder="Type an interest + Enter" />
+                </div>
+            );
+            case 11: return (
+                <div>
+                    <h3 style={stepTitle}>References (Optional)</h3>
+                    <textarea className="fancy-textarea" rows={6} value={data.references || ''} onChange={e => update('references', e.target.value)}
+                        placeholder="E.g. Professional references available upon request..." />
                 </div>
             );
             default: return null;
@@ -316,14 +438,14 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
                     <div style={{ height: '6px', background: '#E8E0D4', borderRadius: '3px', overflow: 'hidden' }}>
                         <div style={{
                             height: '100%',
-                            width: `${((step + 1) / 8) * 100}%`,
+                            width: `${((step + 1) / 12) * 100}%`,
                             background: '#2D6A4F',
                             transition: 'width 0.3s ease',
                             borderRadius: '3px'
                         }} />
                     </div>
                     <p style={{ fontSize: '12px', color: '#6B6560', marginTop: '4px' }}>
-                        Step {step + 1} of 8 — {STEPS[step]}
+                        Step {step + 1} of 12 — {STEPS[step]}
                     </p>
                 </div>
                 <button onClick={onClose} className="btn-ghost" style={{ marginLeft: '16px', padding: '8px 16px', fontSize: '12px' }}>
@@ -371,7 +493,7 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
                             <button onClick={() => setStep(step - 1)} className="btn-ghost">← Back</button>
                         )}
                         <div style={{ marginLeft: 'auto' }}>
-                            {step < 7 ? (
+                            {step < 11 ? (
                                 <button onClick={() => setStep(step + 1)} className="btn-primary">Save & Next →</button>
                             ) : (
                                 <button onClick={handleSave} disabled={saving} className="btn-primary">
@@ -389,7 +511,7 @@ export default function ResumeBuilder({ resume, onClose, onSave }) {
                 }}>
                     {/* Template Switcher */}
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        {[1, 2, 3, 4, 5].map(id => (
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map(id => (
                             <button
                                 key={id}
                                 onClick={() => update('templateId', id)}

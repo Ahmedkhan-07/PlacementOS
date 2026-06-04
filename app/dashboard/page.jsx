@@ -130,18 +130,8 @@ export default function DashboardPage() {
         }
     };
 
-    const handleSaveResume = async (data) => {
-        const method = resume ? 'PATCH' : 'POST';
-        const res = await fetch('/api/resume', {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
-        if (res.ok) {
-            const { resume: r } = await res.json();
-            setResume(r);
-            toast.success('Resume saved! ✅');
-        }
+    const handleSaveResume = (savedResume) => {
+        setResume(savedResume);
     };
 
 
@@ -206,6 +196,7 @@ export default function DashboardPage() {
                 <ResumeSection
                     resume={resume}
                     username={userData?.username}
+                    userProfilePic={userData?.profilePicUrl}
                     onSaveResume={handleSaveResume}
                 />
 

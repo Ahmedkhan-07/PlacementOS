@@ -63,7 +63,7 @@ export default function Navbar() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                     {/* Anchor Links (only visible on dashboard) */}
                     {isDashboard && (
-                        <div style={{ display: 'none', '@media (min-width: 768px)': { display: 'flex' }, alignItems: 'center', gap: '20px', fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: 500 }}>
+                        <div className="dashboard-nav-links" style={{ alignItems: 'center', gap: '20px', fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: 500 }}>
                             <a href="#about" className="nav-link" style={{textDecoration: 'none'}} onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
                             <a href="#skills" className="nav-link" style={{textDecoration: 'none'}} onClick={(e) => { e.preventDefault(); document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' }); }}>Skills</a>
                             <a href="#projects" className="nav-link" style={{textDecoration: 'none'}} onClick={(e) => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}>Projects</a>

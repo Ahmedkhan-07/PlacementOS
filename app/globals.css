@@ -539,6 +539,17 @@ body::before {
   transform: scaleX(1);
 }
 
+.dashboard-nav-links {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .dashboard-nav-links {
+    display: flex;
+  }
+}
+
+
 /* ===== INPUT / TEXTAREA ===== */
 .fancy-input,
 .fancy-textarea {
