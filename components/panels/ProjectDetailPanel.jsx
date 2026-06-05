@@ -84,7 +84,12 @@ export default function ProjectDetailPanel({ project, isOpen, onClose, onDelete,
                             {/* ── Right: info */}
                             <div style={{ flex: 1, minWidth: '220px', paddingTop: '4px' }}>
                                 {/* Label */}
-                                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px', opacity: 0.85 }}>Project</p>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                    <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0, opacity: 0.85 }}>Project</p>
+                                    {project.isFromResume && (
+                                        <span style={{ fontSize: '10px', background: 'rgba(212,160,23,0.15)', color: '#8b6200', padding: '2px 8px', borderRadius: '100px', fontWeight: 600 }}>From Resume</span>
+                                    )}
+                                </div>
 
                                 {/* Title */}
                                 <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: '28px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.25, marginBottom: '14px', letterSpacing: '-0.01em' }}>

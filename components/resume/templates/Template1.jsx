@@ -228,9 +228,9 @@ export default function Template1({ data = {}, accentColor = '#2D6A4F' }) {
                 )}
 
                 {/* 10. Interests */}
-                {(data.interests?.length > 0 || data.hobbies?.length > 0) && (
+                {data.interests && data.interests.filter(i => i.trim() !== '').length > 0 && (
                     <Section title="Interests">
-                        <p style={{ fontSize: '10pt', color: '#4a4a4a', margin: 0 }}>{(data.interests || data.hobbies || []).join(', ')}</p>
+                        <p style={{ fontSize: '10pt', color: '#4a4a4a', margin: 0 }}>{data.interests.filter(i => i.trim() !== '').join(', ')}</p>
                     </Section>
                 )}
 

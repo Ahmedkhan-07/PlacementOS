@@ -474,9 +474,9 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
                 project={selectedProject}
                 isOpen={!!selectedProject}
                 onClose={handleClosePanel}
-                onEdit={!readOnly ? () => { setEditingProject(selectedProject); setSelectedProject(null); } : undefined}
-                onDelete={selectedProject && !readOnly ? () => handleDelete(selectedProject) : undefined}
-                readOnly={readOnly}
+                onEdit={!readOnly && !selectedProject?.isFromResume ? () => { setEditingProject(selectedProject); setSelectedProject(null); } : undefined}
+                onDelete={selectedProject && !readOnly && !selectedProject?.isFromResume ? () => handleDelete(selectedProject) : undefined}
+                readOnly={readOnly || selectedProject?.isFromResume}
             />
             {!readOnly && <AddProjectModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onProjectAdded={handleProjectAdded} />}
             <EditProjectModal

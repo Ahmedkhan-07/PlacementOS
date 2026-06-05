@@ -92,10 +92,10 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                     </Section>
                 )}
 
-                {(data.interests?.length > 0 || data.hobbies?.length > 0) && (
+                {data.interests && data.interests.filter(i => i.trim() !== '').length > 0 && (
                     <Section title="Interests">
                         <p style={{ fontSize: '10px', color: '#4a4a4a', margin: 0 }}>
-                            {(data.interests || data.hobbies || []).join(', ')}
+                            {data.interests.filter(i => i.trim() !== '').join(', ')}
                         </p>
                     </Section>
                 )}

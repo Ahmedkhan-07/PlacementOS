@@ -11,6 +11,24 @@ import AchievementBus from '@/components/dashboard/AchievementBus';
 import ContactSection from '@/components/dashboard/ContactSection';
 
 export default function PublicPortfolioClient({ user, resume, projects = [], certificates = [], achievements = [] }) {
+    const allProjects = [
+        ...(projects || []),
+        ...(resume?.projects || []).map((p, idx) => ({
+            ...p,
+            _id: p._id || `resume-proj-${idx}`,
+            isFromResume: true
+        }))
+    ];
+    const seenTitles = new Set();
+    const mergedProjects = [];
+    for (const p of allProjects) {
+        const titleNormalized = p.title?.trim().toLowerCase();
+        if (titleNormalized && !seenTitles.has(titleNormalized)) {
+            seenTitles.add(titleNormalized);
+            mergedProjects.push(p);
+        }
+    }
+
     return (
         <main style={{ position: 'relative', zIndex: 1 }}>
             {/* Navbar - minimal */}
@@ -32,20 +50,20 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                     </div>
                 </div>
             </nav>
-
+ 
             {/* Profile Hero — no edit button */}
             <div style={{ paddingTop: '70px' }}>
                 <ProfileHero user={user} />
             </div>
-
+ 
             {/* About / Overview */}
             <AboutOverview 
                 user={user} 
                 resume={resume} 
-                projectsCount={projects?.length || 0} 
+                projectsCount={mergedProjects.length} 
                 certificatesCount={certificates?.length || 0} 
             />
-
+ 
             {/* Skills Arsenal */}
             <SkillsArsenal skills={[
                 ...new Set([
@@ -53,10 +71,10 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                     ...(resume?.skills || []),
                 ])
             ]} />
-
+ 
             {/* Education Section */}
             <EducationSection education={resume?.education || []} />
-
+ 
             {/* Resume Section — read-only (no onSaveResume → no Edit button) */}
             {resume && (
                 <ResumeSection
@@ -65,11 +83,11 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                     readOnly
                 />
             )}
-
+ 
             {/* Projects Train — read-only */}
-            {projects.length > 0 && (
+            {mergedProjects.length > 0 && (
                 <TrainSection
-                    projects={projects}
+                    projects={mergedProjects}
                     readOnly
                 />
             )}

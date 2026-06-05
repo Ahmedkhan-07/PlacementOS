@@ -155,6 +155,24 @@ export default function DashboardPage() {
         );
     }
 
+    const allProjects = [
+        ...projects,
+        ...(resume?.projects || []).map((p, idx) => ({
+            ...p,
+            _id: p._id || `resume-proj-${idx}`,
+            isFromResume: true
+        }))
+    ];
+    const seenTitles = new Set();
+    const mergedProjects = [];
+    for (const p of allProjects) {
+        const titleNormalized = p.title?.trim().toLowerCase();
+        if (titleNormalized && !seenTitles.has(titleNormalized)) {
+            seenTitles.add(titleNormalized);
+            mergedProjects.push(p);
+        }
+    }
+
     return (
         <>
             <Toaster
@@ -177,7 +195,7 @@ export default function DashboardPage() {
                 <AboutOverview 
                     user={userData} 
                     resume={resume} 
-                    projectsCount={projects.length} 
+                    projectsCount={mergedProjects.length} 
                     certificatesCount={certificates.length} 
                 />
 
@@ -202,7 +220,7 @@ export default function DashboardPage() {
 
                 {/* Section 6: Projects Train */}
                 <TrainSection
-                    projects={projects}
+                    projects={mergedProjects}
                     onRefreshProjects={refreshProjects}
                 />
 
