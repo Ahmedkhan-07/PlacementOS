@@ -119,9 +119,9 @@ export default function Template8({ data = {}, accentColor = '#2D6A4F' }) {
                         <Section title="Education">
                             {data.education.map((e, i) => (
                                 <div key={i} style={{ marginBottom: '10px' }}>
-                                    <strong style={{ fontSize: '10pt', display: 'block' }}>{e.institution}</strong>
+                                    <strong style={{ fontSize: '10pt', display: 'block' }}>{e.institution}{e.university && `, ${e.university}`}</strong>
                                     <span style={{ fontSize: '9.5pt', color: '#4a4a4a', display: 'block' }}>{e.degree} {e.field && `in ${e.field}`}</span>
-                                    <span style={{ fontSize: '8.5pt', color: '#6B6560' }}>{e.startYear} – {e.endYear} {e.grade && `| Grade: ${e.grade}`}</span>
+                                    <span style={{ fontSize: '8.5pt', color: '#6B6560' }}>{e.startYear} – {e.endYear} {e.grade && `| ${e.gradeType || 'CGPA'}: ${e.grade}`}</span>
                                     {e.description && <p style={{ fontSize: '9pt', color: '#4a4a4a', margin: '2px 0 0' }}>{e.description}</p>}
                                 </div>
                             ))}

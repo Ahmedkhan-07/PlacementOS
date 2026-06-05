@@ -21,9 +21,11 @@ const ResumeSchema = new mongoose.Schema({
         institution: { type: String, default: '' },
         degree: { type: String, default: '' },
         field: { type: String, default: '' },
+        university: { type: String, default: '' },
         startYear: { type: String, default: '' },
         endYear: { type: String, default: '' },
         grade: { type: String, default: '' },
+        gradeType: { type: String, default: 'CGPA' },
         description: { type: String, default: '' },
     }],
     experience: [{

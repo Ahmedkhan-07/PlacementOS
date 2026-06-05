@@ -95,7 +95,7 @@ function EduCard({ edu, isLast }) {
                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{color: 'var(--accent)'}}>
                         <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
                      </svg>
-                    <span style={{ fontWeight: 500 }}>{edu.institution}</span>
+                    <span style={{ fontWeight: 500 }}>{edu.institution}{edu.university ? `, ${edu.university}` : ''}</span>
                 </div>
 
                 {edu.grade && (
@@ -115,7 +115,7 @@ function EduCard({ edu, isLast }) {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="var(--gold-light)"/>
                         </svg>
-                        Grade: {edu.grade}
+                        {edu.gradeType || 'CGPA'}: {edu.grade}
                     </div>
                 )}
             </div>

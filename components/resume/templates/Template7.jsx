@@ -115,11 +115,11 @@ export default function Template7({ data = {}, accentColor = '#2D6A4F' }) {
                     {data.education.map((e, i) => (
                         <div key={i} style={{ marginBottom: '10px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                <strong style={{ fontSize: '10.5pt' }}>{e.institution}</strong>
+                                <strong style={{ fontSize: '10.5pt' }}>{e.institution}{e.university && `, ${e.university}`}</strong>
                                 <span style={{ fontSize: '9pt', color: '#6B6560', fontFamily: "'Inter', sans-serif" }}>{e.startYear} – {e.endYear}</span>
                             </div>
                             <div style={{ fontSize: '9.5pt', color: '#4a4a4a' }}>
-                                {e.degree}{e.field && ` in ${e.field}`}{e.grade && ` (GPA: ${e.grade})`}
+                                {e.degree}{e.field && ` in ${e.field}`}{e.grade && ` (${e.gradeType || 'CGPA'}: ${e.grade})`}
                             </div>
                             {e.description && (
                                 <p style={{ fontSize: '9.5pt', color: '#4a4a4a', margin: 0, marginTop: '2px' }}>

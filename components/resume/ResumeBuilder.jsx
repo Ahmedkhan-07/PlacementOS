@@ -44,6 +44,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         interests: resume?.interests || [],
         hobbies: resume?.hobbies || [],
         references: resume?.references || '',
+        skillsText: resume?.skillsText || '',
     });
     const [saving, setSaving] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
@@ -186,44 +187,81 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
             case 2: return (
                 <div>
                     <h3 style={stepTitle}>Education</h3>
+                    <datalist id="degrees-list">
+                        {['B.Tech', 'M.Tech', 'B.Sc', 'M.Sc', 'Intermediate', 'SSC', "Bachelor's", "Master's", 'PhD', 'Diploma', 'High School'].map(d => <option key={d} value={d} />)}
+                    </datalist>
+                    <datalist id="years-list">
+                        {YEARS.map(y => <option key={y} value={y} />)}
+                    </datalist>
                     {data.education.map((edu, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Education {i + 1}</span>
                                 <button onClick={() => removeListItem('education', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
                             </div>
-                            {['institution', 'field', 'grade', 'description'].map(f => (
-                                <div key={f} style={{ marginBottom: '10px' }}>
-                                    <label style={labelStyle}>{f.charAt(0).toUpperCase() + f.slice(1)}</label>
-                                    <input className="fancy-input" value={edu[f] || ''} onChange={e => updateListItem('education', i, f, e.target.value)} />
-                                </div>
-                            ))}
+                            
+                            {/* Degree / Qualification name */}
                             <div style={{ marginBottom: '10px' }}>
-                                <label style={labelStyle}>Degree</label>
-                                <select className="fancy-input" value={edu.degree || ''} onChange={e => updateListItem('education', i, 'degree', e.target.value)}>
-                                    <option value="">Select</option>
-                                    {DEGREES.map(d => <option key={d} value={d}>{d}</option>)}
-                                </select>
+                                <label style={labelStyle}>Degree / Qualification name (e.g., B.Tech, Intermediate, SSC)</label>
+                                <input className="fancy-input" list="degrees-list" value={edu.degree || ''} onChange={e => updateListItem('education', i, 'degree', e.target.value)} placeholder="e.g. B.Tech" />
                             </div>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+
+                            {/* Specialization / Stream */}
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Specialization / Stream (e.g., Artificial Intelligence, MPC, etc.)</label>
+                                <input className="fancy-input" value={edu.field || ''} onChange={e => updateListItem('education', i, 'field', e.target.value)} placeholder="e.g. Artificial Intelligence" />
+                            </div>
+
+                            {/* Institution name */}
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Institution name (College / School name)</label>
+                                <input className="fancy-input" value={edu.institution || ''} onChange={e => updateListItem('education', i, 'institution', e.target.value)} placeholder="e.g. College / School name" />
+                            </div>
+
+                            {/* University / Board */}
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>University / Board (e.g., JNTUA, BIEAP, BSEAP etc.)</label>
+                                <input className="fancy-input" value={edu.university || ''} onChange={e => updateListItem('education', i, 'university', e.target.value)} placeholder="e.g. JNTUA" />
+                            </div>
+
+                            {/* Year of passing / Start Year */}
+                            <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={labelStyle}>Start Year</label>
-                                    <select className="fancy-input" value={edu.startYear || ''} onChange={e => updateListItem('education', i, 'startYear', e.target.value)}>
-                                        <option value="">Year</option>
-                                        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                                    </select>
+                                    <input className="fancy-input" list="years-list" value={edu.startYear || ''} onChange={e => updateListItem('education', i, 'startYear', e.target.value)} placeholder="Year" />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <label style={labelStyle}>End Year</label>
-                                    <select className="fancy-input" value={edu.endYear || ''} onChange={e => updateListItem('education', i, 'endYear', e.target.value)}>
-                                        <option value="">Year</option>
-                                        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
-                                    </select>
+                                    <label style={labelStyle}>Year of passing (e.g., 2026, 2022 etc.)</label>
+                                    <input className="fancy-input" list="years-list" value={edu.endYear || ''} onChange={e => updateListItem('education', i, 'endYear', e.target.value)} placeholder="Year" />
                                 </div>
+                            </div>
+
+                             {/* Score Type & Score Value */}
+                             <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                                 <div style={{ width: '30%' }}>
+                                     <label style={labelStyle}>Score Type</label>
+                                     <select className="fancy-input" value={edu.gradeType || 'CGPA'} onChange={e => updateListItem('education', i, 'gradeType', e.target.value)}>
+                                         <option value="CGPA">CGPA</option>
+                                         <option value="Percentage">Percentage</option>
+                                         <option value="GPA">GPA</option>
+                                         <option value="Marks">Marks</option>
+                                         <option value="Grade">Grade</option>
+                                     </select>
+                                 </div>
+                                 <div style={{ flex: 1 }}>
+                                     <label style={labelStyle}>Your Score</label>
+                                     <input className="fancy-input" value={edu.grade || ''} onChange={e => updateListItem('education', i, 'grade', e.target.value)} placeholder={edu.gradeType === 'Percentage' ? 'e.g. 95%' : edu.gradeType === 'CGPA' ? 'e.g. 9.2' : edu.gradeType === 'GPA' ? 'e.g. 3.8 / 4.0' : edu.gradeType === 'Marks' ? 'e.g. 920 / 1000' : 'e.g. A+'} />
+                                 </div>
+                             </div>
+
+                            {/* Description */}
+                            <div style={{ marginBottom: '10px' }}>
+                                <label style={labelStyle}>Description</label>
+                                <textarea className="fancy-textarea" rows={2} value={edu.description || ''} onChange={e => updateListItem('education', i, 'description', e.target.value)} placeholder="Extra details..." />
                             </div>
                         </div>
                     ))}
-                    <button onClick={() => addListItem('education', {})} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Education</button>
+                    <button onClick={() => addListItem('education', { gradeType: 'CGPA' })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Education</button>
                 </div>
             );
             case 3: return (

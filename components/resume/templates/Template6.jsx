@@ -114,8 +114,8 @@ export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
                                 <span style={{ fontSize: '9.5pt', color: '#6B6560' }}>{e.startYear} – {e.endYear}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                                <span style={{ color: accentColor, fontWeight: 600 }}>{e.institution}</span>
-                                {e.grade && <span style={{ fontSize: '9pt', color: '#6B6560' }}>Grade: {e.grade}</span>}
+                                <span style={{ color: accentColor, fontWeight: 600 }}>{e.institution}{e.university && `, ${e.university}`}</span>
+                                {e.grade && <span style={{ fontSize: '9pt', color: '#6B6560' }}>{e.gradeType || 'CGPA'}: {e.grade}</span>}
                             </div>
                             {e.description && (
                                 <p style={{ fontSize: '9.5pt', color: '#4a4a4a', margin: 0, marginTop: '4px', whiteSpace: 'pre-line' }}>
