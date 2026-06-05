@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 const fmt = (d) => { try { return new Date(d).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }); } catch { return d || ''; } };
 
-export default function CertificateDetailPanel({ certificate, isOpen, onClose, onDelete, onEdit, readOnly = false }) {
+export default function CertificateDetailPanel({ certificate, isOpen, onClose, onDelete, onEdit, readOnly = false, isOwner = false }) {
     const [confirmDelete, setConfirmDelete] = useState(false);
 
     useEffect(() => {
@@ -66,7 +66,12 @@ export default function CertificateDetailPanel({ certificate, isOpen, onClose, o
 
                             {/* ── Right: info */}
                             <div style={{ flex: 1, minWidth: '220px', paddingTop: '4px' }}>
-                                <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '11px', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>Certificate</p>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                    <p style={{ fontFamily: "'Inter',sans-serif", fontSize: '11px', fontWeight: 700, color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>Certificate</p>
+                                    {certificate.isFromResume && (
+                                        <span style={{ fontSize: '10px', background: 'rgba(201,162,58,0.15)', color: '#8b6200', padding: '2px 8px', borderRadius: '100px', fontWeight: 600 }}>From Resume</span>
+                                    )}
+                                </div>
 
                                 <h3 style={{ fontFamily: "'Playfair Display',serif", fontSize: '28px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.25, marginBottom: '10px', letterSpacing: '-0.01em' }}>
                                     {certificate.name}
@@ -98,7 +103,7 @@ export default function CertificateDetailPanel({ certificate, isOpen, onClose, o
                         </div>
 
                         {/* Actions */}
-                        {!readOnly && !certificate._id?.startsWith('demo-cert-') && (
+                        {!readOnly && !certificate._id?.startsWith('demo-cert-') ? (
                             <div style={{ borderTop: '1px solid rgba(0,0,0,0.07)', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 44px 36px', flexWrap: 'wrap', gap: '10px' }}>
                                 {onEdit && (
                                     <button onClick={onEdit} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '9px 18px', borderRadius: '100px', border: '1.5px solid #B8860B', color: '#B8860B', background: 'transparent', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
@@ -121,7 +126,13 @@ export default function CertificateDetailPanel({ certificate, isOpen, onClose, o
                                     </div>
                                 )}
                             </div>
-                        )}
+                        ) : certificate.isFromResume && isOwner ? (
+                            <div style={{ borderTop: '1px solid rgba(0,0,0,0.07)', marginTop: 'auto', padding: '16px 44px 36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, color: '#8b6200', background: 'rgba(201,162,58,0.1)', padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(201,162,58,0.2)', textAlign: 'center' }}>
+                                    💡 This certificate is fetched from your Resume. Manage or update it in the <strong>Resume Builder</strong>.
+                                </span>
+                            </div>
+                        ) : null}
                     </div>
                 )}
             </div>

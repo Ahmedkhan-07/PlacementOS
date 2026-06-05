@@ -10,6 +10,27 @@ import CertificateTrain from '@/components/dashboard/CertificateTrain';
 import AchievementBus from '@/components/dashboard/AchievementBus';
 import ContactSection from '@/components/dashboard/ContactSection';
 
+const extractSkillsFromText = (skillsText) => {
+    if (!skillsText) return [];
+    const lines = skillsText.split(/[\n|;]/);
+    const extracted = [];
+    for (const line of lines) {
+        const parts = line.split(':');
+        const skillList = parts.length > 1 ? parts[1] : parts[0];
+        const skills = skillList.split(',');
+        for (const s of skills) {
+            const trimmed = s.trim();
+            if (trimmed && trimmed.length < 40) {
+                const cleaned = trimmed.replace(/^\*\*|\*\*$/g, '').trim();
+                if (cleaned) {
+                    extracted.push(cleaned);
+                }
+            }
+        }
+    }
+    return extracted;
+};
+
 export default function PublicPortfolioClient({ user, resume, projects = [], certificates = [], achievements = [] }) {
     const allProjects = [
         ...(projects || []),
@@ -26,6 +47,28 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
         if (titleNormalized && !seenTitles.has(titleNormalized)) {
             seenTitles.add(titleNormalized);
             mergedProjects.push(p);
+        }
+    }
+
+    const allCertificates = [
+        ...(certificates || []),
+        ...(resume?.certifications || []).map((c, idx) => ({
+            ...c,
+            _id: c._id || `resume-cert-${idx}`,
+            name: c.title,
+            issuer: c.description,
+            dateIssued: c.year,
+            credentialUrl: c.url,
+            isFromResume: true
+        }))
+    ];
+    const seenCertNames = new Set();
+    const mergedCertificates = [];
+    for (const c of allCertificates) {
+        const nameNormalized = c.name?.trim().toLowerCase();
+        if (nameNormalized && !seenCertNames.has(nameNormalized)) {
+            seenCertNames.add(nameNormalized);
+            mergedCertificates.push(c);
         }
     }
 
@@ -61,7 +104,7 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                 user={user} 
                 resume={resume} 
                 projectsCount={mergedProjects.length} 
-                certificatesCount={certificates?.length || 0} 
+                certificatesCount={mergedCertificates.length} 
             />
  
             {/* Skills Arsenal */}
@@ -69,6 +112,7 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                 ...new Set([
                     ...(user?.skills || []),
                     ...(resume?.skills || []),
+                    ...extractSkillsFromText(resume?.skillsText)
                 ])
             ]} />
  
@@ -91,11 +135,11 @@ export default function PublicPortfolioClient({ user, resume, projects = [], cer
                     readOnly
                 />
             )}
-
+ 
             {/* Certificates Train — read-only */}
-            {certificates.length > 0 && (
+            {mergedCertificates.length > 0 && (
                 <CertificateTrain
-                    certificates={certificates}
+                    certificates={mergedCertificates}
                     readOnly
                 />
             )}

@@ -45,6 +45,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         hobbies: resume?.hobbies || [],
         references: resume?.references || '',
         skillsText: resume?.skillsText || '',
+        boldSkillsHeader: resume?.boldSkillsHeader || false,
     });
     const [saving, setSaving] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
@@ -267,6 +268,33 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
             case 3: return (
                 <div>
                     <h3 style={stepTitle}>Technical Skills</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: '#FAFAF8', border: '1px solid #E8E0D4', borderRadius: '12px', marginBottom: '20px' }}>
+                        <div>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13.5px', fontWeight: 600, color: '#1C1C1C', display: 'block', marginBottom: '2px' }}>Auto-bold Category Headers</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#6B6560' }}>Automatically bold text before a colon (e.g., "Languages: ..."). Or wrap text in **double asterisks** for custom bolding.</span>
+                        </div>
+                        <label style={{ position: 'relative', display: 'inline-block', width: '46px', height: '24px', cursor: 'pointer', flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.boldSkillsHeader === true} 
+                                onChange={e => update('boldSkillsHeader', e.target.checked)}
+                                style={{ opacity: 0, width: 0, height: 0 }}
+                            />
+                            <span style={{
+                                position: 'absolute', inset: 0,
+                                background: data.boldSkillsHeader === true ? data.accentColor : '#E8E0D4',
+                                borderRadius: '24px', transition: 'all 0.25s ease',
+                                display: 'flex', alignItems: 'center', padding: '2px'
+                            }}>
+                                <span style={{
+                                    width: '20px', height: '20px', background: 'white',
+                                    borderRadius: '50%', transition: 'all 0.25s ease',
+                                    transform: data.boldSkillsHeader === true ? 'translateX(22px)' : 'translateX(0)',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }} />
+                            </span>
+                        </label>
+                    </div>
                     <p style={{ fontSize: '13px', color: '#6B6560', marginBottom: '12px' }}>
                         Write your skills in any format. Example: Languages: JavaScript, Python | Frontend: React, Next.js
                     </p>

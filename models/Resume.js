@@ -70,6 +70,7 @@ const ResumeSchema = new mongoose.Schema({
     interests: [{ type: String }],
     references: { type: String, default: '' },
     skillsText: { type: String, default: '' },
+    boldSkillsHeader: { type: Boolean, default: false },
     showProfilePic: { type: Boolean, default: true },
     updatedAt: { type: Date, default: Date.now },
 });

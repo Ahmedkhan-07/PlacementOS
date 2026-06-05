@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import ProjectDetailPanel from '@/components/panels/ProjectDetailPanel';
 import AddProjectModal from '@/components/modals/AddProjectModal';
 import EditProjectModal from '@/components/modals/EditProjectModal';
+import ManageProjectsModal from '@/components/modals/ManageProjectsModal';
 
 /* ─── Wheel ─────────────────────────────────────────────────────────── */
 function Wheel({ size = 28 }) {
@@ -359,6 +360,7 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
     const [selectedProject, setSelectedProject] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
+    const [showManageModal, setShowManageModal] = useState(false);
     const scrollRef = useRef(null);
     const autoScrollRef = useRef(null);
     const submittingRef = useRef(false);
@@ -408,7 +410,10 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
                 <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '0 40px' }}>
                     <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '38px', fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', textTransform: 'uppercase' }}>Projects</h2>
                     {!readOnly && (
-                        <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Project</button>
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <button onClick={() => setShowManageModal(true)} className="btn-outline" style={{ padding: '12px 28px', fontSize: '13px', borderColor: 'var(--accent)', color: 'var(--accent)' }}>🛠️ Manage Projects</button>
+                            <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Project</button>
+                        </div>
                     )}
                 </div>
 
@@ -484,6 +489,12 @@ export default function TrainSection({ projects, onRefreshProjects, readOnly = f
                 onClose={() => setEditingProject(null)}
                 project={editingProject}
                 onProjectUpdated={() => { setEditingProject(null); onRefreshProjects?.(); }}
+            />
+            <ManageProjectsModal
+                isOpen={showManageModal}
+                onClose={() => setShowManageModal(false)}
+                projects={projects}
+                onRefresh={onRefreshProjects}
             />
 
             <style>{`

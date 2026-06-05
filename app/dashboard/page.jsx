@@ -33,6 +33,27 @@ const dedup = (arr) => {
     });
 };
 
+const extractSkillsFromText = (skillsText) => {
+    if (!skillsText) return [];
+    const lines = skillsText.split(/[\n|;]/);
+    const extracted = [];
+    for (const line of lines) {
+        const parts = line.split(':');
+        const skillList = parts.length > 1 ? parts[1] : parts[0];
+        const skills = skillList.split(',');
+        for (const s of skills) {
+            const trimmed = s.trim();
+            if (trimmed && trimmed.length < 40) {
+                const cleaned = trimmed.replace(/^\*\*|\*\*$/g, '').trim();
+                if (cleaned) {
+                    extracted.push(cleaned);
+                }
+            }
+        }
+    }
+    return extracted;
+};
+
 export default function DashboardPage() {
     const { user: clerkUser, isLoaded } = useUser();
     const router = useRouter();
@@ -173,6 +194,28 @@ export default function DashboardPage() {
         }
     }
 
+    const allCertificates = [
+        ...certificates,
+        ...(resume?.certifications || []).map((c, idx) => ({
+            ...c,
+            _id: c._id || `resume-cert-${idx}`,
+            name: c.title,
+            issuer: c.description,
+            dateIssued: c.year,
+            credentialUrl: c.url,
+            isFromResume: true
+        }))
+    ];
+    const seenCertNames = new Set();
+    const mergedCertificates = [];
+    for (const c of allCertificates) {
+        const nameNormalized = c.name?.trim().toLowerCase();
+        if (nameNormalized && !seenCertNames.has(nameNormalized)) {
+            seenCertNames.add(nameNormalized);
+            mergedCertificates.push(c);
+        }
+    }
+
     return (
         <>
             <Toaster
@@ -196,14 +239,15 @@ export default function DashboardPage() {
                     user={userData} 
                     resume={resume} 
                     projectsCount={mergedProjects.length} 
-                    certificatesCount={certificates.length} 
+                    certificatesCount={mergedCertificates.length} 
                 />
 
-                {/* Section 3: Skills Arsenal — merge user.skills + resume.skills */}
+                {/* Section 3: Skills Arsenal — merge user.skills + resume.skills + parsed resume.skillsText */}
                 <SkillsArsenal skills={[
                     ...new Set([
                         ...(userData?.skills || []),
                         ...(resume?.skills || []),
+                        ...extractSkillsFromText(resume?.skillsText)
                     ])
                 ]} />
 
@@ -226,7 +270,7 @@ export default function DashboardPage() {
 
                 {/* Section 7: Certificates Train */}
                 <CertificateTrain
-                    certificates={certificates}
+                    certificates={mergedCertificates}
                     onRefreshCertificates={refreshCertificates}
                 />
 

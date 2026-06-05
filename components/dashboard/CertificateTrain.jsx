@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import CertificateDetailPanel from '@/components/panels/CertificateDetailPanel';
 import AddCertificateModal from '@/components/modals/AddCertificateModal';
 import EditCertificateModal from '@/components/modals/EditCertificateModal';
+import ManageCertificatesModal from '@/components/modals/ManageCertificatesModal';
 
 /* ─── Wheel ─────────────────────────────────────────────────────────── */
 function Wheel({ size = 26 }) {
@@ -188,17 +189,35 @@ function CertCar({ certificate, isActive, onClick, index }) {
                         }
                     }}
                 >
-                    {/* Top Right: Large Number (Mirrored) */}
-                    <div style={{ 
-                        fontFamily: "'Inter', sans-serif", 
-                        fontSize: '28px', 
-                        fontWeight: 900, 
-                        color: isActive ? 'var(--gold)' : 'var(--text-muted)',
-                        opacity: isActive ? 1 : 0.6,
-                        marginBottom: '10px',
-                        textAlign: 'right'
-                    }}>
-                        {displayIndex}
+                    {/* Top Section: Resume badge and Index Number */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                        <div>
+                            {certificate.isFromResume && (
+                                <span style={{
+                                    fontFamily: "'Inter', sans-serif",
+                                    fontSize: '9.5px',
+                                    fontWeight: 700,
+                                    background: isActive ? 'rgba(201,162,58,0.15)' : 'rgba(201,162,58,0.1)',
+                                    color: '#8b6200',
+                                    padding: '3px 8px',
+                                    borderRadius: '100px',
+                                    letterSpacing: '0.05em',
+                                    textTransform: 'uppercase',
+                                    border: '1px solid rgba(201,162,58,0.2)'
+                                }}>
+                                    Resume
+                                </span>
+                            )}
+                        </div>
+                        <div style={{ 
+                            fontFamily: "'Inter', sans-serif", 
+                            fontSize: '28px', 
+                            fontWeight: 900, 
+                            color: isActive ? 'var(--gold)' : 'var(--text-muted)',
+                            opacity: isActive ? 1 : 0.6,
+                        }}>
+                            {displayIndex}
+                        </div>
                     </div>
 
                     {/* Middle: Cert Title with Watermark */}
@@ -374,6 +393,7 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
     const [selectedCert, setSelectedCert] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingCert, setEditingCert] = useState(null);
+    const [showManageModal, setShowManageModal] = useState(false);
     const scrollRef = useRef(null);
     const autoScrollRef = useRef(null);
     const submittingRef = useRef(false);
@@ -427,7 +447,10 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
                 <div style={{ maxWidth: '1100px', margin: '0 auto 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '0 40px' }}>
                     <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: '38px', fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', textTransform: 'uppercase' }}>Certificates</h2>
                     {!readOnly && (
-                        <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Certificate</button>
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <button onClick={() => setShowManageModal(true)} className="btn-outline" style={{ padding: '12px 28px', fontSize: '13px', borderColor: 'var(--gold)', color: 'var(--gold)' }}>🛠️ Manage Certificates</button>
+                            <button onClick={() => setShowAddModal(true)} className="btn-primary" style={{ padding: '12px 28px', fontSize: '13px' }}>+ Add Certificate</button>
+                        </div>
                     )}
                 </div>
 
@@ -474,9 +497,23 @@ export default function CertificateTrain({ certificates, onRefreshCertificates, 
                 )}
             </section>
 
-            <CertificateDetailPanel certificate={selectedCert} isOpen={!!selectedCert} onClose={handleClosePanel} onEdit={!readOnly ? () => { setEditingCert(selectedCert); setSelectedCert(null); } : undefined} onDelete={selectedCert && !readOnly ? () => handleDelete(selectedCert) : undefined} readOnly={readOnly} />
+            <CertificateDetailPanel
+                certificate={selectedCert}
+                isOpen={!!selectedCert}
+                onClose={handleClosePanel}
+                onEdit={!readOnly && !selectedCert?.isFromResume ? () => { setEditingCert(selectedCert); setSelectedCert(null); } : undefined}
+                onDelete={selectedCert && !readOnly && !selectedCert?.isFromResume ? () => handleDelete(selectedCert) : undefined}
+                readOnly={readOnly || selectedCert?.isFromResume}
+                isOwner={!readOnly}
+            />
             {!readOnly && <AddCertificateModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onCertificateAdded={handleCertAdded} />}
             <EditCertificateModal isOpen={!!editingCert} onClose={() => setEditingCert(null)} certificate={editingCert} onCertificateUpdated={() => { setEditingCert(null); onRefreshCertificates?.(); }} />
+            <ManageCertificatesModal
+                isOpen={showManageModal}
+                onClose={() => setShowManageModal(false)}
+                certificates={certificates}
+                onRefresh={onRefreshCertificates}
+            />
 
             <style>{`
                 @keyframes levitate { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-12px)} }
