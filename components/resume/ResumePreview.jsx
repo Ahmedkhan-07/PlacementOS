@@ -23,9 +23,16 @@ const templates = {
 export default function ResumePreview({ data, templateId = 1, accentColor = '#2D6A4F', compact = false }) {
     const Template = templates[templateId] || Template1;
 
+    const filteredData = {
+        ...(data || {}),
+        education: data?.education?.filter(edu => !edu.hidden) || [],
+        projects: data?.projects?.filter(proj => !proj.hidden) || [],
+        certifications: data?.certifications?.filter(cert => !cert.hidden) || [],
+    };
+
     return (
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: compact ? '10px' : '13px' }}>
-            <Template data={data || {}} accentColor={accentColor} />
+            <Template data={filteredData} accentColor={accentColor} />
         </div>
     );
 }

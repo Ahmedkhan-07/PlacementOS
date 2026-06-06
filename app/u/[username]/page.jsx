@@ -32,22 +32,31 @@ export default async function PublicPortfolio({ params }) {
     // We removed the strict `!user.isPublic` check so it doesn't block by default.
 
     // Fetch all data for the user
-    const [resume, projects, certificates, achievements] = await Promise.all([
+    const [resumeDoc, projects, certificates, achievements] = await Promise.all([
         Resume.findOne({ userId: user.clerkId }).lean(),
         Project.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
         Certificate.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
         Achievement.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
     ]);
 
-    if (resume && user.profilePicUrl) {
-        if (!resume.personalInfo) resume.personalInfo = {};
-        resume.personalInfo.profilePicUrl = user.profilePicUrl;
+    let activeResume = null;
+    if (resumeDoc) {
+        if (resumeDoc.resumes && resumeDoc.resumes.length > 0) {
+            activeResume = resumeDoc.resumes.find(r => r.isActive) || resumeDoc.resumes[0];
+        } else {
+            activeResume = resumeDoc;
+        }
+    }
+
+    if (activeResume && user.profilePicUrl) {
+        if (!activeResume.personalInfo) activeResume.personalInfo = {};
+        activeResume.personalInfo.profilePicUrl = user.profilePicUrl;
     }
 
     // Serialize MongoDB data (convert ObjectIds and dates to strings)
     const serialized = {
         user: JSON.parse(JSON.stringify(user)),
-        resume: resume ? JSON.parse(JSON.stringify(resume)) : null,
+        resume: activeResume ? JSON.parse(JSON.stringify(activeResume)) : null,
         projects: JSON.parse(JSON.stringify(projects)),
         certificates: JSON.parse(JSON.stringify(certificates)),
         achievements: JSON.parse(JSON.stringify(achievements)),

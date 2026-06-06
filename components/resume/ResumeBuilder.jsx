@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import ResumePreview from '@/components/resume/ResumePreview';
 import toast from 'react-hot-toast';
 
@@ -48,6 +49,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         boldSkillsHeader: resume?.boldSkillsHeader || false,
     });
     const [saving, setSaving] = useState(false);
+    const [showExitConfirm, setShowExitConfirm] = useState(false);
     const [enhancing, setEnhancing] = useState(false);
     const [originalText, setOriginalText] = useState(null);
     const [skillInput, setSkillInput] = useState('');
@@ -55,15 +57,49 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
     const [langInput, setLangInput] = useState('');
     const [interestInput, setInterestInput] = useState('');
     const [suggestedSkills, setSuggestedSkills] = useState([]);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const esc = (e) => { if (e.key === 'Escape') onClose(); };
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const esc = (e) => { if (e.key === 'Escape') setShowExitConfirm(true); };
         document.addEventListener('keydown', esc);
         return () => document.removeEventListener('keydown', esc);
-    }, [onClose]);
+    }, []);
 
     const update = (key, val) => setData(prev => ({ ...prev, [key]: val }));
     const updatePI = (key, val) => setData(prev => ({ ...prev, personalInfo: { ...prev.personalInfo, [key]: val } }));
+
+    const commitCurrentInputs = () => {
+        let updatedData = null;
+        if (langInput.trim()) {
+            const l = langInput.trim();
+            if (!data.languages.includes(l)) {
+                const newLangs = [...(data.languages || []), l];
+                setData(prev => {
+                    const next = { ...prev, languages: newLangs };
+                    updatedData = next;
+                    return next;
+                });
+            }
+            setLangInput('');
+        }
+        if (interestInput.trim()) {
+            const val = interestInput.trim();
+            if (!data.interests.includes(val)) {
+                const newInts = [...(data.interests || []), val];
+                setData(prev => {
+                    const next = { ...prev, interests: newInts };
+                    updatedData = next;
+                    return next;
+                });
+            }
+            setInterestInput('');
+        }
+        return updatedData;
+    };
 
     const aiEnhance = async (text, context, onResult) => {
         if (!text?.trim()) return;
@@ -111,17 +147,77 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
 
     const handleSave = async () => {
         setSaving(true);
+        let finalData = { ...data };
+        if (langInput.trim()) {
+            const l = langInput.trim();
+            if (!finalData.languages.includes(l)) {
+                finalData.languages = [...(finalData.languages || []), l];
+            }
+            setLangInput('');
+        }
+        if (interestInput.trim()) {
+            const val = interestInput.trim();
+            if (!finalData.interests.includes(val)) {
+                finalData.interests = [...(finalData.interests || []), val];
+            }
+            setInterestInput('');
+        }
+        setData(finalData);
+
         try {
             const res = await fetch('/api/resume', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    resumeId: resume?._id || null,
+                    data: finalData,
+                }),
             });
             if (res.ok) {
                 const result = await res.json();
                 toast.success('Resume saved! ✅');
-                onSave(result.resume);
+                onSave(result.resume, resume?._id || null);
                 onClose();
+            }
+        } catch {
+            toast.error('Save failed');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleSaveOnly = async () => {
+        setSaving(true);
+        let finalData = { ...data };
+        if (langInput.trim()) {
+            const l = langInput.trim();
+            if (!finalData.languages.includes(l)) {
+                finalData.languages = [...(finalData.languages || []), l];
+            }
+            setLangInput('');
+        }
+        if (interestInput.trim()) {
+            const val = interestInput.trim();
+            if (!finalData.interests.includes(val)) {
+                finalData.interests = [...(finalData.interests || []), val];
+            }
+            setInterestInput('');
+        }
+        setData(finalData);
+
+        try {
+            const res = await fetch('/api/resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    resumeId: resume?._id || null,
+                    data: finalData,
+                }),
+            });
+            if (res.ok) {
+                const result = await res.json();
+                toast.success('Progress saved! ✅');
+                onSave(result.resume, resume?._id || null);
             }
         } catch {
             toast.error('Save failed');
@@ -195,10 +291,46 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                         {YEARS.map(y => <option key={y} value={y} />)}
                     </datalist>
                     {data.education.map((edu, i) => (
-                        <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ fontWeight: 600, fontSize: '14px' }}>Education {i + 1}</span>
-                                <button onClick={() => removeListItem('education', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                        <div key={i} className="card" style={{ 
+                            padding: '20px', 
+                            marginBottom: '12px',
+                            opacity: edu.hidden ? 0.6 : 1,
+                            borderStyle: edu.hidden ? 'dashed' : 'solid',
+                            transition: 'all 0.25s ease'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
+                                <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    Education {i + 1}
+                                    {edu.hidden && (
+                                        <span style={{ 
+                                            fontSize: '11px', 
+                                            fontWeight: 500, 
+                                            color: '#C0392B', 
+                                            background: 'rgba(192, 57, 43, 0.1)', 
+                                            padding: '2px 8px', 
+                                            borderRadius: '10px' 
+                                        }}>
+                                            Hidden
+                                        </span>
+                                    )}
+                                </span>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        onClick={() => updateListItem('education', i, 'hidden', !edu.hidden)} 
+                                        className="btn-icon" 
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            borderColor: edu.hidden ? '#C0392B' : '#E8E0D4',
+                                            background: edu.hidden ? 'rgba(192, 57, 43, 0.05)' : 'white'
+                                        }}
+                                        title={edu.hidden ? "Show on Resume" : "Hide from Resume"}
+                                    >
+                                        {edu.hidden ? '👁️' : '🙈'}
+                                    </button>
+                                    <button onClick={() => removeListItem('education', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             
                             {/* Degree / Qualification name */}
@@ -262,7 +394,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             </div>
                         </div>
                     ))}
-                    <button onClick={() => addListItem('education', { gradeType: 'CGPA' })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Education</button>
+                    <button onClick={() => addListItem('education', { gradeType: 'CGPA', hidden: false })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Education</button>
                 </div>
             );
             case 3: return (
@@ -311,10 +443,46 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                 <div>
                     <h3 style={stepTitle}>Projects</h3>
                     {data.projects.map((proj, i) => (
-                        <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ fontWeight: 600, fontSize: '14px' }}>Project {i + 1}</span>
-                                <button onClick={() => removeListItem('projects', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                        <div key={i} className="card" style={{ 
+                            padding: '20px', 
+                            marginBottom: '12px',
+                            opacity: proj.hidden ? 0.6 : 1,
+                            borderStyle: proj.hidden ? 'dashed' : 'solid',
+                            transition: 'all 0.25s ease'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
+                                <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    Project {i + 1}
+                                    {proj.hidden && (
+                                        <span style={{ 
+                                            fontSize: '11px', 
+                                            fontWeight: 500, 
+                                            color: '#C0392B', 
+                                            background: 'rgba(192, 57, 43, 0.1)', 
+                                            padding: '2px 8px', 
+                                            borderRadius: '10px' 
+                                        }}>
+                                            Hidden
+                                        </span>
+                                    )}
+                                </span>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        onClick={() => updateListItem('projects', i, 'hidden', !proj.hidden)} 
+                                        className="btn-icon" 
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            borderColor: proj.hidden ? '#C0392B' : '#E8E0D4',
+                                            background: proj.hidden ? 'rgba(192, 57, 43, 0.05)' : 'white'
+                                        }}
+                                        title={proj.hidden ? "Show on Resume" : "Hide from Resume"}
+                                    >
+                                        {proj.hidden ? '👁️' : '🙈'}
+                                    </button>
+                                    <button onClick={() => removeListItem('projects', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             {['title', 'startDate', 'endDate', 'githubUrl', 'demoUrl'].map(f => (
                                 <div key={f} style={{ marginBottom: '10px' }}>
@@ -330,7 +498,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             </div>
                         </div>
                     ))}
-                    <button onClick={() => addListItem('projects', { techStack: [] })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Project</button>
+                    <button onClick={() => addListItem('projects', { techStack: [], hidden: false })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Project</button>
                 </div>
             );
             case 5: return (
@@ -367,10 +535,46 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                 <div>
                     <h3 style={stepTitle}>Certifications</h3>
                     {(data.certifications || []).map((cert, i) => (
-                        <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                <span style={{ fontWeight: 600, fontSize: '14px' }}>Certification {i + 1}</span>
-                                <button onClick={() => removeListItem('certifications', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                        <div key={i} className="card" style={{ 
+                            padding: '20px', 
+                            marginBottom: '12px',
+                            opacity: cert.hidden ? 0.6 : 1,
+                            borderStyle: cert.hidden ? 'dashed' : 'solid',
+                            transition: 'all 0.25s ease'
+                        }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
+                                <span style={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    Certification {i + 1}
+                                    {cert.hidden && (
+                                        <span style={{ 
+                                            fontSize: '11px', 
+                                            fontWeight: 500, 
+                                            color: '#C0392B', 
+                                            background: 'rgba(192, 57, 43, 0.1)', 
+                                            padding: '2px 8px', 
+                                            borderRadius: '10px' 
+                                        }}>
+                                            Hidden
+                                        </span>
+                                    )}
+                                </span>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        onClick={() => updateListItem('certifications', i, 'hidden', !cert.hidden)} 
+                                        className="btn-icon" 
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            borderColor: cert.hidden ? '#C0392B' : '#E8E0D4',
+                                            background: cert.hidden ? 'rgba(192, 57, 43, 0.05)' : 'white'
+                                        }}
+                                        title={cert.hidden ? "Show on Resume" : "Hide from Resume"}
+                                    >
+                                        {cert.hidden ? '👁️' : '🙈'}
+                                    </button>
+                                    <button onClick={() => removeListItem('certifications', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             <div style={{ marginBottom: '10px' }}>
                                 <label style={labelStyle}>Title</label>
@@ -390,7 +594,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             </div>
                         </div>
                     ))}
-                    <button onClick={() => addListItem('certifications', {})} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Certification</button>
+                    <button onClick={() => addListItem('certifications', { hidden: false })} className="btn-outline" style={{ padding: '10px 20px', fontSize: '13px' }}>+ Add Certification</button>
                 </div>
             );
             case 7: return (
@@ -459,9 +663,15 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             </span>
                         ))}
                     </div>
-                    <input className="fancy-input" value={langInput} onChange={e => setLangInput(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const l = langInput.trim(); if (l && !data.languages.includes(l)) update('languages', [...(data.languages || []), l]); setLangInput(''); } }}
-                        placeholder="Type a language + Enter" />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <input className="fancy-input" style={{ flex: 1 }} value={langInput} onChange={e => setLangInput(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commitCurrentInputs(); } }}
+                            onBlur={commitCurrentInputs}
+                            placeholder="Type a language (e.g. English, French) + Enter" />
+                        <button type="button" className="btn-primary" onClick={commitCurrentInputs} style={{ padding: '0 16px', fontSize: '13px', borderRadius: '10px', flexShrink: 0 }}>
+                            Add
+                        </button>
+                    </div>
                 </div>
             );
             case 10: return (
@@ -474,9 +684,15 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             </span>
                         ))}
                     </div>
-                    <input className="fancy-input" value={interestInput} onChange={e => setInterestInput(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const val = interestInput.trim(); if (val && !data.interests.includes(val)) update('interests', [...(data.interests || []), val]); setInterestInput(''); } }}
-                        placeholder="Type an interest + Enter" />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <input className="fancy-input" style={{ flex: 1 }} value={interestInput} onChange={e => setInterestInput(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commitCurrentInputs(); } }}
+                            onBlur={commitCurrentInputs}
+                            placeholder="Type an interest (e.g. Reading, Hiking) + Enter" />
+                        <button type="button" className="btn-primary" onClick={commitCurrentInputs} style={{ padding: '0 16px', fontSize: '13px', borderRadius: '10px', flexShrink: 0 }}>
+                            Add
+                        </button>
+                    </div>
                 </div>
             );
             case 11: return (
@@ -490,56 +706,101 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         }
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <div style={{
-            position: 'fixed', inset: 0, background: '#FAF7F2', zIndex: 60,
+            position: 'fixed', inset: 0, background: 'var(--bg)', zIndex: 99999,
             display: 'flex', flexDirection: 'column', overflow: 'hidden',
         }}>
             {/* Top Bar */}
             <div style={{
-                background: '#FFFFFF', borderBottom: '1px solid #E8E0D4', padding: '12px 24px',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                background: 'var(--surface)', 
+                borderBottom: '1px solid var(--border)', 
+                padding: '14px 28px',
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                flexShrink: 0, 
+                gap: '24px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
             }}>
-                <div style={{ flex: 1 }}>
-                    <div style={{ height: '6px', background: '#E8E0D4', borderRadius: '3px', overflow: 'hidden' }}>
-                        <div style={{
-                            height: '100%',
-                            width: `${((step + 1) / 12) * 100}%`,
-                            background: '#2D6A4F',
-                            transition: 'width 0.3s ease',
-                            borderRadius: '3px'
-                        }} />
+                {/* Left side: Branding & Editing Context */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontFamily: "'Playfair Display', serif", fontSize: '20px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
+                        PlacementOS
+                    </span>
+                    <span style={{ height: '18px', width: '1px', background: 'var(--border)' }} />
+                    <div style={{ 
+                        background: 'rgba(45, 106, 79, 0.06)', 
+                        border: '1px solid rgba(45, 106, 79, 0.15)',
+                        color: 'var(--accent)', 
+                        padding: '4px 12px', 
+                        borderRadius: '20px', 
+                        fontSize: '12px', 
+                        fontWeight: 600,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                    }}>
+                        <span style={{ fontSize: '10px' }}>📝</span>
+                        Editing: <span style={{ fontWeight: 700 }}>{resume?.label || 'New Resume'}</span>
                     </div>
-                    <p style={{ fontSize: '12px', color: '#6B6560', marginTop: '4px' }}>
-                        Step {step + 1} of 12 — {STEPS[step]}
-                    </p>
                 </div>
-                <button onClick={onClose} className="btn-ghost" style={{ marginLeft: '16px', padding: '8px 16px', fontSize: '12px' }}>
-                    💾 Save & Exit
+
+                {/* Right: Exit Action */}
+                <button 
+                    onClick={() => setShowExitConfirm(true)} 
+                    className="btn-ghost" 
+                    style={{ 
+                        padding: '8px 16px', 
+                        fontSize: '13px', 
+                        fontWeight: 600,
+                        color: 'var(--engine-red)', 
+                        borderColor: 'var(--engine-red)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        borderRadius: '10px',
+                        transition: 'all 0.2s ease',
+                        flexShrink: 0 
+                    }}
+                    onMouseEnter={e => {
+                        e.currentTarget.style.background = 'rgba(192, 57, 43, 0.08)';
+                    }}
+                    onMouseLeave={e => {
+                        e.currentTarget.style.background = 'transparent';
+                    }}
+                >
+                    ✕ Exit Builder
                 </button>
             </div>
 
             {/* Step Navigation Pills */}
             <div style={{
-                display: 'flex', gap: '6px', flexWrap: 'wrap',
-                padding: '10px 24px', borderBottom: '1px solid #E8E0D4',
-                background: '#FAFAF8',
+                display: 'flex', 
+                gap: '8px', 
+                flexWrap: 'wrap',
+                padding: '12px 28px', 
+                borderBottom: '1px solid var(--border)',
+                background: 'var(--bg)',
             }}>
                 {STEPS.map((s, i) => (
                     <button
                         key={i}
-                        onClick={() => setStep(i)}
+                        onClick={() => { commitCurrentInputs(); setStep(i); }}
                         style={{
-                            padding: '5px 14px',
+                            padding: '6px 14px',
                             borderRadius: '20px',
                             fontSize: '12px',
                             fontFamily: "'Inter', sans-serif",
                             fontWeight: step === i ? 600 : 400,
                             cursor: 'pointer',
-                            border: step === i ? 'none' : '1px solid #E8E0D4',
-                            background: step === i ? '#2D6A4F' : '#FFFFFF',
-                            color: step === i ? '#FFFFFF' : '#6B6560',
+                            border: step === i ? 'none' : '1px solid var(--border)',
+                            background: step === i ? 'var(--accent)' : 'var(--surface)',
+                            color: step === i ? '#FFFFFF' : 'var(--text-muted)',
                             transition: 'all 0.2s ease',
+                            boxShadow: step === i ? '0 4px 10px rgba(45, 106, 79, 0.2)' : 'none'
                         }}
                     >
                         {s}
@@ -548,31 +809,37 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
             </div>
 
             {/* Main Content */}
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+            <div style={{ flex: 1, display: 'flex', overflow: 'hidden', background: 'var(--bg)' }}>
                 {/* Left: Form */}
                 <div style={{ flex: 1, overflow: 'auto', padding: '32px 28px', paddingBottom: '100px' }}>
                     {renderStep()}
 
                     {/* Navigation */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '32px', gap: '12px' }}>
-                        {step > 0 && (
-                            <button onClick={() => setStep(step - 1)} className="btn-ghost">← Back</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', gap: '12px', flexWrap: 'wrap' }}>
+                        {step > 0 ? (
+                            <button onClick={() => { commitCurrentInputs(); setStep(step - 1); }} className="btn-ghost">← Back</button>
+                        ) : (
+                            <div />
                         )}
-                        <div style={{ marginLeft: 'auto' }}>
-                            {step < 11 ? (
-                                <button onClick={() => setStep(step + 1)} className="btn-primary">Save & Next →</button>
-                            ) : (
-                                <button onClick={handleSave} disabled={saving} className="btn-primary">
-                                    {saving ? '⏳ Saving...' : '✅ Save Resume'}
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                            <button onClick={handleSaveOnly} disabled={saving} className="btn-outline" style={{ fontSize: '13px', padding: '10px 20px' }}>
+                                {saving ? '⏳ Saving...' : '💾 Save progress'}
+                            </button>
+                            {step < 11 && (
+                                <button onClick={() => { commitCurrentInputs(); setStep(step + 1); }} className="btn-primary" style={{ fontSize: '13px', padding: '10px 20px' }}>
+                                    Next Step →
                                 </button>
                             )}
+                            <button onClick={handleSave} disabled={saving} className="btn-gold" style={{ fontSize: '13px', padding: '10px 20px' }}>
+                                {saving ? '⏳ Saving...' : '✅ Save & Exit'}
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Right: Live Preview */}
                 <div style={{
-                    flex: 1, overflow: 'auto', background: '#FFFFFF', borderLeft: '1px solid #E8E0D4',
+                    flex: 1, overflow: 'auto', background: 'var(--surface)', borderLeft: '1px solid var(--border)',
                     padding: '20px', display: 'flex', flexDirection: 'column',
                 }}>
                     {/* Template Switcher */}
@@ -583,22 +850,22 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                                 onClick={() => update('templateId', id)}
                                 style={{
                                     padding: '8px 16px', borderRadius: '8px', fontSize: '12px', cursor: 'pointer',
-                                    background: data.templateId === id ? '#2D6A4F' : '#F0EBE3',
-                                    color: data.templateId === id ? '#fff' : '#1C1C1C',
+                                    background: data.templateId === id ? 'var(--accent)' : 'var(--skeleton)',
+                                    color: data.templateId === id ? '#fff' : 'var(--text)',
                                     border: 'none', fontWeight: 500, transition: 'all 0.2s ease',
                                 }}
                             >
                                 T{id}
                             </button>
                         ))}
-                        <span style={{ fontSize: '11px', color: '#6B6560', marginLeft: '8px' }}>Accent:</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '8px' }}>Accent:</span>
                         {ACCENT_COLORS.map(c => (
                             <button
                                 key={c}
                                 onClick={() => update('accentColor', c)}
                                 style={{
                                     width: '24px', height: '24px', borderRadius: '50%', background: c,
-                                    border: data.accentColor === c ? '3px solid #1C1C1C' : '2px solid #E8E0D4',
+                                    border: data.accentColor === c ? '3px solid var(--text)' : '2px solid var(--border)',
                                     cursor: 'pointer', transition: 'all 0.2s ease',
                                 }}
                             />
@@ -617,7 +884,32 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     </div>
                 </div>
             </div>
-        </div>
+
+            {/* Exit Confirmation Modal */}
+            {showExitConfirm && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(26, 31, 46, 0.4)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 100000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '24px', padding: '40px', maxWidth: '400px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}>
+                        <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
+                        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 700, color: 'var(--text)', marginBottom: '12px' }}>Unsaved Changes</h3>
+                        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '28px' }}>
+                            You are about to exit the resume builder. How would you like to proceed?
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <button className="btn-primary" onClick={handleSave} disabled={saving} style={{ width: '100%', padding: '12px' }}>
+                                {saving ? '⏳ Saving...' : '💾 Save & Exit'}
+                            </button>
+                            <button className="btn-outline" onClick={onClose} style={{ width: '100%', padding: '12px', color: 'var(--engine-red)', borderColor: 'var(--engine-red)' }}>
+                                🗑️ Exit Without Saving
+                            </button>
+                            <button className="btn-ghost" onClick={() => setShowExitConfirm(false)} style={{ width: '100%', padding: '12px' }}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>,
+        document.body
     );
 }
 

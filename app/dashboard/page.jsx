@@ -59,7 +59,8 @@ export default function DashboardPage() {
     const router = useRouter();
 
     const [userData, setUserData] = useState(null);
-    const [resume, setResume] = useState(null);
+    const [resumes, setResumes] = useState([]);
+    const resume = resumes.find(r => r.isActive) || resumes[0];
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [achievements, setAchievements] = useState([]);
@@ -88,8 +89,8 @@ export default function DashboardPage() {
             setUserData(user);
 
             if (resumeRes.ok) {
-                const { resume: r } = await resumeRes.json();
-                setResume(r);
+                const resumeData = await resumeRes.json();
+                setResumes(resumeData.resumes || []);
             }
 
             if (projRes.ok) {
@@ -151,9 +152,7 @@ export default function DashboardPage() {
         }
     };
 
-    const handleSaveResume = (savedResume) => {
-        setResume(savedResume);
-    };
+
 
 
     if (!isLoaded || loading) {
@@ -256,10 +255,9 @@ export default function DashboardPage() {
 
                 {/* Section 5: Resume */}
                 <ResumeSection
-                    resume={resume}
+                    resumes={resumes}
                     username={userData?.username}
-                    userProfilePic={userData?.profilePicUrl}
-                    onSaveResume={handleSaveResume}
+                    onResumesChange={setResumes}
                 />
 
                 {/* Section 6: Projects Train */}
