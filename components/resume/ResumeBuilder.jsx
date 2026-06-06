@@ -144,6 +144,15 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         items[idx] = { ...items[idx], [field]: val };
         update(key, items);
     };
+    const moveListItem = (key, idx, dir) => {
+        const items = [...data[key]];
+        if (dir === 'up' && idx > 0) {
+            [items[idx], items[idx - 1]] = [items[idx - 1], items[idx]];
+        } else if (dir === 'down' && idx < items.length - 1) {
+            [items[idx], items[idx + 1]] = [items[idx + 1], items[idx]];
+        }
+        update(key, items);
+    };
 
     const handleSave = async () => {
         setSaving(true);
@@ -316,6 +325,36 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                                 </span>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('education', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === data.education.length - 1}
+                                        onClick={() => moveListItem('education', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === data.education.length - 1 ? 0.3 : 1, 
+                                            cursor: i === data.education.length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button 
                                         onClick={() => updateListItem('education', i, 'hidden', !edu.hidden)} 
                                         className="btn-icon" 
                                         style={{ 
@@ -468,6 +507,36 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                                 </span>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('projects', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === data.projects.length - 1}
+                                        onClick={() => moveListItem('projects', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === data.projects.length - 1 ? 0.3 : 1, 
+                                            cursor: i === data.projects.length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button 
                                         onClick={() => updateListItem('projects', i, 'hidden', !proj.hidden)} 
                                         className="btn-icon" 
                                         style={{ 
@@ -506,9 +575,41 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     <h3 style={stepTitle}>Work & Internship Experience</h3>
                     {data.experience.map((exp, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Experience {i + 1}</span>
-                                <button onClick={() => removeListItem('experience', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('experience', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === data.experience.length - 1}
+                                        onClick={() => moveListItem('experience', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === data.experience.length - 1 ? 0.3 : 1, 
+                                            cursor: i === data.experience.length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button onClick={() => removeListItem('experience', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             {['company', 'role', 'startDate', 'endDate'].map(f => (
                                 <div key={f} style={{ marginBottom: '10px' }}>
@@ -560,6 +661,36 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                                 </span>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('certifications', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === data.certifications.length - 1}
+                                        onClick={() => moveListItem('certifications', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === data.certifications.length - 1 ? 0.3 : 1, 
+                                            cursor: i === data.certifications.length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button 
                                         onClick={() => updateListItem('certifications', i, 'hidden', !cert.hidden)} 
                                         className="btn-icon" 
                                         style={{ 
@@ -602,9 +733,41 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     <h3 style={stepTitle}>Achievements</h3>
                     {(data.achievements || []).map((ach, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Achievement {i + 1}</span>
-                                <button onClick={() => removeListItem('achievements', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('achievements', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === (data.achievements || []).length - 1}
+                                        onClick={() => moveListItem('achievements', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === (data.achievements || []).length - 1 ? 0.3 : 1, 
+                                            cursor: i === (data.achievements || []).length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button onClick={() => removeListItem('achievements', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             <div style={{ marginBottom: '10px' }}>
                                 <label style={labelStyle}>Title</label>
@@ -634,9 +797,41 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     <h3 style={stepTitle}>Leadership & Extracurricular Activities</h3>
                     {(data.leadership || []).map((lead, i) => (
                         <div key={i} className="card" style={{ padding: '20px', marginBottom: '12px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', alignItems: 'center' }}>
                                 <span style={{ fontWeight: 600, fontSize: '14px' }}>Activity {i + 1}</span>
-                                <button onClick={() => removeListItem('leadership', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button 
+                                        disabled={i === 0}
+                                        onClick={() => moveListItem('leadership', i, 'up')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === 0 ? 0.3 : 1, 
+                                            cursor: i === 0 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Up"
+                                    >
+                                        ↑
+                                    </button>
+                                    <button 
+                                        disabled={i === (data.leadership || []).length - 1}
+                                        onClick={() => moveListItem('leadership', i, 'down')}
+                                        className="btn-icon"
+                                        style={{ 
+                                            width: '32px', 
+                                            height: '32px', 
+                                            fontSize: '14px', 
+                                            opacity: i === (data.leadership || []).length - 1 ? 0.3 : 1, 
+                                            cursor: i === (data.leadership || []).length - 1 ? 'not-allowed' : 'pointer' 
+                                        }}
+                                        title="Move Down"
+                                    >
+                                        ↓
+                                    </button>
+                                    <button onClick={() => removeListItem('leadership', i)} className="btn-icon" style={{ width: '32px', height: '32px', fontSize: '14px' }}>🗑️</button>
+                                </div>
                             </div>
                             {['role', 'organization', 'startDate', 'endDate'].map(f => (
                                 <div key={f} style={{ marginBottom: '10px' }}>

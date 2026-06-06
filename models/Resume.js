@@ -22,12 +22,15 @@ const ResumeDataSchema = new mongoose.Schema({
     skills: [{ type: String }],
     education: [{
         institution: { type: String, default: '' },
+        university: { type: String, default: '' },
         degree: { type: String, default: '' },
         field: { type: String, default: '' },
         startYear: { type: String, default: '' },
         endYear: { type: String, default: '' },
         grade: { type: String, default: '' },
+        gradeType: { type: String, default: 'CGPA' },
         description: { type: String, default: '' },
+        hidden: { type: Boolean, default: false },
     }],
     experience: [{
         company: { type: String, default: '' },
@@ -45,6 +48,7 @@ const ResumeDataSchema = new mongoose.Schema({
         demoUrl: { type: String, default: '' },
         startDate: { type: String, default: '' },
         endDate: { type: String, default: '' },
+        hidden: { type: Boolean, default: false },
     }],
     achievements: [{
         title: { type: String, default: '' },
@@ -84,4 +88,8 @@ const UserResumesSchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.models.UserResumes || mongoose.model('UserResumes', UserResumesSchema, 'resumes');
+if (mongoose.models.UserResumes) {
+    delete mongoose.models.UserResumes;
+}
+
+export default mongoose.model('UserResumes', UserResumesSchema, 'resumes');
