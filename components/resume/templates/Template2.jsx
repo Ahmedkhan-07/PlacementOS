@@ -86,7 +86,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Sidebar */}
             <div style={{ width: '35%', background: sidebarBg, color: sidebarText, padding: '32px 20px', borderRight: sidebarBorder }}>
-                {data.showProfilePic !== false && (
+                {data.showProfilePic === true && (
                     pi.profilePicUrl ? (
                         <img
                             src={pi.profilePicUrl}

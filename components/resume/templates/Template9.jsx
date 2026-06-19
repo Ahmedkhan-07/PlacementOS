@@ -79,6 +79,8 @@ export default function Template9({ data = {}, accentColor = '#2D6A4F' }) {
         pi.portfolioUrl ? 'Portfolio' : null
     ].filter(Boolean);
 
+    const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
     return (
         <div style={{
             width: '794px',
@@ -92,6 +94,28 @@ export default function Template9({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                {data.showProfilePic === true && (
+                    pi.profilePicUrl ? (
+                        <img
+                            src={pi.profilePicUrl}
+                            alt="Profile"
+                            style={{
+                                width: '72px', height: '72px', borderRadius: '50%',
+                                objectFit: 'cover', display: 'block', margin: '0 auto 12px',
+                                border: `2px solid ${primaryColor}`
+                            }}
+                        />
+                    ) : (
+                        <div style={{
+                            width: '72px', height: '72px', borderRadius: '50%',
+                            background: primaryColor, display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px',
+                            color: '#fff', fontSize: '22px', fontWeight: 700
+                        }}>
+                            {initials}
+                        </div>
+                    )
+                )}
                 <h1 style={{
                     fontSize: '24pt',
                     fontWeight: 700,

@@ -75,7 +75,7 @@ const ResumeDataSchema = new mongoose.Schema({
     interests: [{ type: String }],
     references: { type: String, default: '' },
     boldSkillsHeader: { type: Boolean, default: false },
-    showProfilePic: { type: Boolean, default: true },
+    showProfilePic: { type: Boolean, default: false },
     updatedAt: { type: Date, default: Date.now },
 });
 

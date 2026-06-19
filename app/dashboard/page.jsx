@@ -257,6 +257,7 @@ export default function DashboardPage() {
                 <ResumeSection
                     resumes={resumes}
                     username={userData?.username}
+                    userProfilePic={userData?.profilePicUrl}
                     onResumesChange={setResumes}
                 />
 

@@ -35,7 +35,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Sidebar */}
             <div style={{ width: '30%', background: '#F5F3EF', padding: '32px 16px', borderRight: `3px solid ${accentColor}` }}>
-                {data.showProfilePic !== false && (
+                {data.showProfilePic === true && (
                     pi.profilePicUrl ? (
                         <img
                             src={pi.profilePicUrl}

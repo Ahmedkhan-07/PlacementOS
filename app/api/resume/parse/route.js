@@ -18,7 +18,7 @@ export async function POST(req) {
         try {
             // pdf-parse (new version) is class-based. Pass `data` as Uint8Array
             // in the constructor options — they map directly to pdfjs.getDocument().
-            const { PDFParse } = require('pdf-parse');
+            const { PDFParse } = await import('pdf-parse');
             const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: 0 });
             await parser.load();
             const textResult = await parser.getText();

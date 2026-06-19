@@ -36,7 +36,7 @@ export default function Template7({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                {data.showProfilePic !== false && (
+                {data.showProfilePic === true && (
                     pi.profilePicUrl ? (
                         <img
                             src={pi.profilePicUrl}

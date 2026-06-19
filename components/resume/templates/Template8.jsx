@@ -40,7 +40,7 @@ export default function Template8({ data = {}, accentColor = '#2D6A4F' }) {
                 padding: '36px 40px',
                 textAlign: 'center',
             }}>
-                {data.showProfilePic !== false && (
+                {data.showProfilePic === true && (
                     pi.profilePicUrl ? (
                         <img
                             src={pi.profilePicUrl}

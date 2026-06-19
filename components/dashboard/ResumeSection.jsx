@@ -6,7 +6,7 @@ import ResumeBuilder from '@/components/resume/ResumeBuilder';
 import ResumePreview from '@/components/resume/ResumePreview';
 import toast from 'react-hot-toast';
 
-export default function ResumeSection({ resumes: initialResumes = [], resume, username, onResumesChange, readOnly = false }) {
+export default function ResumeSection({ resumes: initialResumes = [], resume, username, onResumesChange, readOnly = false, userProfilePic }) {
     const normalizedResumes = Array.isArray(initialResumes) && initialResumes.length > 0
         ? initialResumes
         : (resume ? [resume] : []);
@@ -424,6 +424,7 @@ export default function ResumeSection({ resumes: initialResumes = [], resume, us
             {showBuilder && !readOnly && (
                 <ResumeBuilder
                     resume={editingResume}
+                    userProfilePic={userProfilePic}
                     onClose={() => { setShowBuilder(false); setEditingResume(null); }}
                     onSave={handleSave}
                 />

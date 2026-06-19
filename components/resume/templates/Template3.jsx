@@ -25,7 +25,7 @@ export default function Template3({ data = {}, accentColor = '#2D6A4F' }) {
         }}>
             {/* Centered Header */}
             <div style={{ marginBottom: '24px', borderBottom: `3px solid ${accentColor}`, paddingBottom: '16px', textAlign: 'center' }}>
-                {data.showProfilePic !== false && (
+                {data.showProfilePic === true && (
                     pi.profilePicUrl ? (
                         <img
                             src={pi.profilePicUrl}

@@ -41,7 +41,7 @@ export default function Template1({ data = {}, accentColor = '#2D6A4F' }) {
                 borderBottom: headerBorder
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', textAlign: 'center', width: '100%' }}>
-                    {data.showProfilePic !== false && pi.profilePicUrl && (
+                    {data.showProfilePic === true && pi.profilePicUrl && (
                         <img
                             src={pi.profilePicUrl}
                             alt="Profile"

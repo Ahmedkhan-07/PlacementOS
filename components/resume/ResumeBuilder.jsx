@@ -32,7 +32,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
             ...resume?.personalInfo,
             profilePicUrl: resume?.personalInfo?.profilePicUrl || userProfilePic || '',
         },
-        showProfilePic: resume?.showProfilePic !== false,
+        showProfilePic: resume?.showProfilePic === true,
         summary: resume?.summary || '',
         education: resume?.education || [],
         skills: resume?.skills || [],
