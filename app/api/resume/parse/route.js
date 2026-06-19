@@ -1,34 +1,6 @@
 import { NextResponse } from 'next/server';
 import groq from '@/lib/groq';
 
-// Polyfill browser DOM APIs that pdfjs-dist v5+ references in Node.js serverless environment.
-if (typeof globalThis.DOMMatrix === 'undefined') {
-    globalThis.DOMMatrix = class DOMMatrix {
-        constructor() {
-            this.a = 1; this.b = 0; this.c = 0; this.d = 1; this.e = 0; this.f = 0;
-            this.is2D = true;
-            this.isIdentity = true;
-        }
-    };
-}
-if (typeof globalThis.DOMMatrixReadOnly === 'undefined') {
-    globalThis.DOMMatrixReadOnly = globalThis.DOMMatrix;
-}
-if (typeof globalThis.ImageData === 'undefined') {
-    globalThis.ImageData = class ImageData {
-        constructor(width, height) {
-            this.width = width;
-            this.height = height;
-            this.data = new Uint8ClampedArray(width * height * 4);
-        }
-    };
-}
-if (typeof globalThis.Path2D === 'undefined') {
-    globalThis.Path2D = class Path2D {
-        constructor() {}
-    };
-}
-
 export async function POST(req) {
     try {
         const formData = await req.formData();
@@ -44,14 +16,11 @@ export async function POST(req) {
 
         let rawText = '';
         try {
-            // pdf-parse (new version) is class-based. Pass `data` as Uint8Array
-            // in the constructor options — they map directly to pdfjs.getDocument().
-            const { PDFParse } = await import('pdf-parse');
-            const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: 0 });
-            await parser.load();
-            const textResult = await parser.getText();
-            // getText() returns a TextResult object with a .text string property
-            rawText = (typeof textResult === 'string' ? textResult : textResult?.text) || '';
+            // pdf-parse v1.1.1 is standard Node.js server-compatible with no browser/canvas dependencies.
+            // Require it dynamically at runtime to prevent any build-time compilation issues.
+            const pdfParse = require('pdf-parse');
+            const parsed = await pdfParse(buffer);
+            rawText = parsed.text || '';
         } catch (pdfErr) {
             console.error('Failed to parse PDF binary:', pdfErr);
             return NextResponse.json(
