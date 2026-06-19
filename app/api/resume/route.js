@@ -7,7 +7,16 @@ async function getOrMigrateUserResumes(userId) {
     const rawDoc = await UserResumes.collection.findOne({ userId });
     if (!rawDoc) return null;
 
-    const isOldFormat = !Array.isArray(rawDoc.resumes);
+    const hasRootData = !!(
+        rawDoc.summary || 
+        rawDoc.skillsText || 
+        (rawDoc.personalInfo && (rawDoc.personalInfo.name || rawDoc.personalInfo.email || rawDoc.personalInfo.phone)) || 
+        (rawDoc.education && rawDoc.education.length > 0) ||
+        (rawDoc.experience && rawDoc.experience.length > 0) ||
+        (rawDoc.projects && rawDoc.projects.length > 0)
+    );
+
+    const isOldFormat = !Array.isArray(rawDoc.resumes) || (rawDoc.resumes.length === 0 && hasRootData);
 
     if (isOldFormat) {
         // Full migration of old single-resume document to nested format

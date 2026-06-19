@@ -27,7 +27,10 @@ export async function POST(req) {
         } catch (pdfErr) {
             console.error('Failed to parse PDF binary:', pdfErr);
             return NextResponse.json(
-                { error: 'Could not read the PDF document structure. Make sure it is a text-based PDF, not a scanned image.' },
+                { 
+                    error: `Could not read the PDF document structure. Error: ${pdfErr.message || pdfErr}`,
+                    details: pdfErr.stack || String(pdfErr)
+                },
                 { status: 400 }
             );
         }
