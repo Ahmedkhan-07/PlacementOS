@@ -1,4 +1,7 @@
 export default function Template7({ data = {}, accentColor = '#2D6A4F' }) {
+    if (accentColor === '#FFFFFF' || accentColor === '#ffffff') {
+        accentColor = '#1C1C1C';
+    }
     const pi = data.personalInfo || {};
     const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
@@ -202,7 +205,7 @@ export default function Template7({ data = {}, accentColor = '#2D6A4F' }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Inter', sans-serif", fontSize: '9pt' }}>
                                 {c.year && <span style={{ color: '#6B6560' }}>{c.year}</span>}
                                 {c.url && (
-                                    <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ color: accentColor, textDecoration: 'none' }}>[Link]</a>
+                                    <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ color: accentColor, textDecoration: 'none' }}>View →</a>
                                 )}
                             </div>
                         </div>
@@ -222,7 +225,7 @@ export default function Template7({ data = {}, accentColor = '#2D6A4F' }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Inter', sans-serif", fontSize: '9pt' }}>
                                 {a.year && <span style={{ color: '#6B6560' }}>{a.year}</span>}
                                 {a.url && (
-                                    <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ color: accentColor, textDecoration: 'none' }}>[Link]</a>
+                                    <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ color: accentColor, textDecoration: 'none' }}>View →</a>
                                 )}
                             </div>
                         </div>

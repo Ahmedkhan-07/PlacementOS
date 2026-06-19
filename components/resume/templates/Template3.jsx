@@ -1,4 +1,7 @@
 export default function Template3({ data = {}, accentColor = '#2D6A4F' }) {
+    if (accentColor === '#FFFFFF' || accentColor === '#ffffff') {
+        accentColor = '#1C1C1C';
+    }
     const pi = data.personalInfo || {};
     const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 

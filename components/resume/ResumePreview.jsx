@@ -8,6 +8,9 @@ import Template5 from '@/components/resume/templates/Template5';
 import Template6 from '@/components/resume/templates/Template6';
 import Template7 from '@/components/resume/templates/Template7';
 import Template8 from '@/components/resume/templates/Template8';
+import Template9 from '@/components/resume/templates/Template9';
+import Template10 from '@/components/resume/templates/Template10';
+import Template11 from '@/components/resume/templates/Template11';
 
 const templates = { 
     1: Template1, 
@@ -17,7 +20,10 @@ const templates = {
     5: Template5, 
     6: Template6,
     7: Template7,
-    8: Template8
+    8: Template8,
+    9: Template9,
+    10: Template10,
+    11: Template11
 };
 
 export default function ResumePreview({ data, templateId = 1, accentColor = '#2D6A4F', compact = false }) {

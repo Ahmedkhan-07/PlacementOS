@@ -4,7 +4,7 @@ const nextConfig = {
     domains: ['res.cloudinary.com'],
   },
   experimental: {
-    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium', 'pdf-parse'],
   },
 };
 

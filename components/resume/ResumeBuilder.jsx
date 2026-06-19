@@ -21,7 +21,7 @@ const STEPS = [
 ];
 const DEGREES = ["Bachelor's", "Master's", 'PhD', 'Diploma', 'High School', 'Other'];
 const YEARS = Array.from({ length: 31 }, (_, i) => String(2000 + i));
-const ACCENT_COLORS = ['#2D6A4F', '#1B4332', '#C0392B', '#2C3E50', '#8E44AD', '#E67E22'];
+const ACCENT_COLORS = ['#2D6A4F', '#1B4332', '#C0392B', '#2C3E50', '#8E44AD', '#E67E22', '#FFFFFF'];
 
 export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave }) {
     const [step, setStep] = useState(0);
@@ -58,10 +58,125 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
     const [interestInput, setInterestInput] = useState('');
     const [suggestedSkills, setSuggestedSkills] = useState([]);
     const [mounted, setMounted] = useState(false);
+    const [importing, setImporting] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    const handleImportResumeFile = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Reset file input value so same file can be uploaded again if needed
+        e.target.value = '';
+
+        // Check if there is already some data in the form to warn the user
+        const hasExistingData = 
+            (data.summary && data.summary.trim() !== '') || 
+            (data.skillsText && data.skillsText.trim() !== '') || 
+            (data.education && data.education.length > 0) || 
+            (data.projects && data.projects.length > 0) || 
+            (data.experience && data.experience.length > 0);
+
+        if (hasExistingData) {
+            const confirmOverwrite = window.confirm(
+                "Warning: Importing a resume will overwrite your current form inputs (Summary, Education, Projects, Experience, Skills, etc.). Are you sure you want to continue?"
+            );
+            if (!confirmOverwrite) return;
+        }
+
+        setImporting(true);
+        const toastId = toast.loading('Extracting details from PDF...');
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/resume/parse', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error || 'Parsing failed');
+            }
+
+            const parsed = await response.json();
+
+            // Safely map parsed results back to state
+            setData(prev => {
+                const updatedPI = { ...prev.personalInfo };
+                if (parsed.personalInfo) {
+                    if (parsed.personalInfo.name) updatedPI.name = parsed.personalInfo.name;
+                    if (parsed.personalInfo.email) updatedPI.email = parsed.personalInfo.email;
+                    if (parsed.personalInfo.phone) updatedPI.phone = parsed.personalInfo.phone;
+                    if (parsed.personalInfo.location) updatedPI.location = parsed.personalInfo.location;
+                }
+
+                return {
+                    ...prev,
+                    personalInfo: updatedPI,
+                    summary: parsed.summary || prev.summary,
+                    skillsText: parsed.skillsText || prev.skillsText,
+                    education: (parsed.education || []).map(edu => ({
+                        institution: edu.institution || '',
+                        degree: edu.degree || '',
+                        field: edu.field || '',
+                        startYear: edu.startYear || '',
+                        endYear: edu.endYear || '',
+                        grade: edu.grade || '',
+                        gradeType: edu.gradeType || 'CGPA',
+                        description: edu.description || '',
+                        hidden: false
+                    })),
+                    projects: (parsed.projects || []).map(p => ({
+                        title: p.title || '',
+                        techStack: p.techStack || [],
+                        startDate: p.startDate || '',
+                        endDate: p.endDate || '',
+                        description: p.description || '',
+                        githubUrl: '', // URLs left empty for user
+                        demoUrl: '',
+                        hidden: false
+                    })),
+                    experience: (parsed.experience || []).map(exp => ({
+                        role: exp.role || '',
+                        company: exp.company || '',
+                        startDate: exp.startDate || '',
+                        endDate: exp.endDate || '',
+                        current: exp.current || false,
+                        description: exp.description || '',
+                        hidden: false
+                    })),
+                    certifications: (parsed.certifications || []).map(c => ({
+                        title: c.title || '',
+                        description: c.description || '',
+                        year: c.year || '',
+                        url: '',
+                        hidden: false
+                    })),
+                    achievements: (parsed.achievements || []).map(a => ({
+                        title: a.title || '',
+                        description: a.description || '',
+                        year: a.year || '',
+                        url: '',
+                        hidden: false
+                    })),
+                    languages: parsed.languages || prev.languages,
+                    interests: parsed.interests || prev.interests
+                };
+            });
+
+            toast.success('Resume details extracted successfully! 🎉', { id: toastId });
+        } catch (error) {
+            console.error('Import error:', error);
+            toast.error(error.message || 'Failed to extract resume details. Ensure it is a valid text PDF.', { id: toastId, duration: 5000 });
+        } finally {
+            setImporting(false);
+        }
+    };
 
     useEffect(() => {
         const esc = (e) => { if (e.key === 'Escape') setShowExitConfirm(true); };
@@ -240,31 +355,69 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
             case 0: return (
                 <div>
                     <h3 style={stepTitle}>Personal Information</h3>
+
+                    {/* Parser Resume PDF Drop Zone */}
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        background: 'rgba(201, 162, 58, 0.04)',
+                        border: '1.5px dashed #C9A23A',
+                        borderRadius: '16px',
+                        padding: '20px',
+                        marginBottom: '24px',
+                        transition: 'all 0.3s ease',
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '20px' }}>✨</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
+                                Import Details from Existing Resume
+                            </span>
+                        </div>
+                        <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginBottom: '16px', lineHeight: 1.5 }}>
+                            Upload your current PDF resume, and AI will automatically fill out your profile details, education, skills, projects, and work experience!
+                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <input 
+                                type="file" 
+                                accept=".pdf" 
+                                id="resume-pdf-import-input"
+                                onChange={handleImportResumeFile} 
+                                style={{ display: 'none' }} 
+                            />
+                            <button 
+                                onClick={() => document.getElementById('resume-pdf-import-input')?.click()}
+                                disabled={importing}
+                                className="btn-gold" 
+                                style={{ padding: '10px 20px', fontSize: '13px', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                            >
+                                {importing ? (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="spin">
+                                            <line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                                        </svg>
+                                        Extracting Details...
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>📁</span> Select PDF Resume
+                                    </>
+                                )}
+                            </button>
+                            <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Supports PDF formats with text</span>
+                        </div>
+                    </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 18px', background: '#FAFAF8', border: '1px solid #E8E0D4', borderRadius: '12px', marginBottom: '24px' }}>
                         <div>
                             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13.5px', fontWeight: 600, color: '#1C1C1C', display: 'block', marginBottom: '2px' }}>Display Profile Picture</span>
                             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#6B6560' }}>Show your portfolio profile picture on the resume header</span>
                         </div>
-                        <label style={{ position: 'relative', display: 'inline-block', width: '46px', height: '24px', cursor: 'pointer' }}>
-                            <input 
-                                type="checkbox" 
-                                checked={data.showProfilePic !== false} 
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor }}>
+                            <input
+                                type="checkbox"
+                                checked={data.showProfilePic === true}
                                 onChange={e => update('showProfilePic', e.target.checked)}
-                                style={{ opacity: 0, width: 0, height: 0 }}
                             />
-                            <span style={{
-                                position: 'absolute', inset: 0,
-                                background: data.showProfilePic !== false ? data.accentColor : '#E8E0D4',
-                                borderRadius: '24px', transition: 'all 0.25s ease',
-                                display: 'flex', alignItems: 'center', padding: '2px'
-                            }}>
-                                <span style={{
-                                    width: '20px', height: '20px', background: 'white',
-                                    borderRadius: '50%', transition: 'all 0.25s ease',
-                                    transform: data.showProfilePic !== false ? 'translateX(22px)' : 'translateX(0)',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                }} />
-                            </span>
+                            <span className="fancy-toggle-slider" />
                         </label>
                     </div>
                     {['name', 'email', 'phone', 'location', 'linkedinUrl', 'githubUrl', 'leetcodeUrl', 'portfolioUrl'].map(f => (
@@ -444,26 +597,13 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13.5px', fontWeight: 600, color: '#1C1C1C', display: 'block', marginBottom: '2px' }}>Auto-bold Category Headers</span>
                             <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: '#6B6560' }}>Automatically bold text before a colon (e.g., "Languages: ..."). Or wrap text in **double asterisks** for custom bolding.</span>
                         </div>
-                        <label style={{ position: 'relative', display: 'inline-block', width: '46px', height: '24px', cursor: 'pointer', flexShrink: 0 }}>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor }}>
                             <input 
                                 type="checkbox" 
                                 checked={data.boldSkillsHeader === true} 
                                 onChange={e => update('boldSkillsHeader', e.target.checked)}
-                                style={{ opacity: 0, width: 0, height: 0 }}
                             />
-                            <span style={{
-                                position: 'absolute', inset: 0,
-                                background: data.boldSkillsHeader === true ? data.accentColor : '#E8E0D4',
-                                borderRadius: '24px', transition: 'all 0.25s ease',
-                                display: 'flex', alignItems: 'center', padding: '2px'
-                            }}>
-                                <span style={{
-                                    width: '20px', height: '20px', background: 'white',
-                                    borderRadius: '50%', transition: 'all 0.25s ease',
-                                    transform: data.boldSkillsHeader === true ? 'translateX(22px)' : 'translateX(0)',
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                }} />
-                            </span>
+                            <span className="fancy-toggle-slider" />
                         </label>
                     </div>
                     <p style={{ fontSize: '13px', color: '#6B6560', marginBottom: '12px' }}>
@@ -1038,33 +1178,61 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     padding: '20px', display: 'flex', flexDirection: 'column',
                 }}>
                     {/* Template Switcher */}
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-                        {[1, 2, 3, 4, 5, 6, 7, 8].map(id => (
-                            <button
-                                key={id}
-                                onClick={() => update('templateId', id)}
-                                style={{
-                                    padding: '8px 16px', borderRadius: '8px', fontSize: '12px', cursor: 'pointer',
-                                    background: data.templateId === id ? 'var(--accent)' : 'var(--skeleton)',
-                                    color: data.templateId === id ? '#fff' : 'var(--text)',
-                                    border: 'none', fontWeight: 500, transition: 'all 0.2s ease',
-                                }}
-                            >
-                                T{id}
-                            </button>
-                        ))}
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', marginLeft: '8px' }}>Accent:</span>
-                        {ACCENT_COLORS.map(c => (
-                            <button
-                                key={c}
-                                onClick={() => update('accentColor', c)}
-                                style={{
-                                    width: '24px', height: '24px', borderRadius: '50%', background: c,
-                                    border: data.accentColor === c ? '3px solid var(--text)' : '2px solid var(--border)',
-                                    cursor: 'pointer', transition: 'all 0.2s ease',
-                                }}
-                            />
-                        ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', background: 'var(--bg)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', boxSizing: 'border-box' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>Classic:</span>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                {[1, 2, 3, 4, 5, 6, 7, 8].map(id => (
+                                    <button
+                                        key={id}
+                                        onClick={() => update('templateId', id)}
+                                        style={{
+                                            padding: '6px 12px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer',
+                                            background: data.templateId === id ? 'var(--accent)' : 'var(--skeleton)',
+                                            color: data.templateId === id ? '#fff' : 'var(--text)',
+                                            border: 'none', fontWeight: 500, transition: 'all 0.2s ease',
+                                        }}
+                                    >
+                                        T{id}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>ATS Friendly:</span>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                {[9, 10, 11].map(id => (
+                                    <button
+                                        key={id}
+                                        onClick={() => update('templateId', id)}
+                                        style={{
+                                            padding: '6px 12px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer',
+                                            background: data.templateId === id ? 'var(--accent)' : 'var(--skeleton)',
+                                            color: data.templateId === id ? '#fff' : 'var(--text)',
+                                            border: 'none', fontWeight: 500, transition: 'all 0.2s ease',
+                                        }}
+                                    >
+                                        T{id} (ATS)
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '4px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>Accent:</span>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                {ACCENT_COLORS.map(c => (
+                                    <button
+                                        key={c}
+                                        onClick={() => update('accentColor', c)}
+                                        style={{
+                                            width: '20px', height: '20px', borderRadius: '50%', background: c,
+                                            border: data.accentColor === c ? '3px solid var(--text)' : '1.5px solid var(--border)',
+                                            cursor: 'pointer', transition: 'all 0.2s ease',
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     {/* Preview — A4 scaled to fit */}

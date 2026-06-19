@@ -2,6 +2,12 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
     const pi = data.personalInfo || {};
     const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
+    const isWhite = accentColor === '#FFFFFF' || accentColor === '#ffffff';
+    const resolvedAccent = isWhite ? '#1C1C1C' : accentColor;
+    const headerBg = isWhite ? '#FFFFFF' : accentColor;
+    const headerText = isWhite ? '#1C1C1C' : '#FFFFFF';
+    const headerBorder = isWhite ? '1px solid #E2E8F0' : 'none';
+
     const Section = ({ title, children }) => (
         <div style={{ marginBottom: '18px' }}>
             <h3 style={{ fontSize: '13px', fontWeight: 700, color: '#1C1C1C', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '10px', borderBottom: '1px solid #E8E0D4', paddingBottom: '4px' }}>{title}</h3>
@@ -20,7 +26,7 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
             lineHeight: 1.6
         }}>
             {/* Bold Header Banner */}
-            <div style={{ background: accentColor, padding: '32px 40px', color: '#FFFFFF', textAlign: 'center' }}>
+            <div style={{ background: headerBg, padding: '32px 40px', color: headerText, textAlign: 'center', borderBottom: headerBorder }}>
                 {data.showProfilePic !== false && (
                     pi.profilePicUrl ? (
                         <img
@@ -29,16 +35,16 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
                             style={{
                                 width: '72px', height: '72px', borderRadius: '50%',
                                 objectFit: 'cover', display: 'block', margin: '0 auto 12px',
-                                border: '2px solid rgba(255,255,255,0.5)'
+                                border: isWhite ? '2px solid #CBD5E0' : '2px solid rgba(255,255,255,0.5)'
                             }}
                         />
                     ) : (
                         <div style={{
                             width: '72px', height: '72px', borderRadius: '50%',
-                            background: 'rgba(255,255,255,0.2)', display: 'flex',
+                            background: isWhite ? '#E2E8F0' : 'rgba(255,255,255,0.2)', display: 'flex',
                             alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px',
-                            color: '#fff', fontSize: '22px', fontWeight: 700,
-                            border: '2px solid rgba(255,255,255,0.5)'
+                            color: isWhite ? '#1C1C1C' : '#fff', fontSize: '22px', fontWeight: 700,
+                            border: isWhite ? '2px solid #CBD5E0' : '2px solid rgba(255,255,255,0.5)'
                         }}>
                             {initials}
                         </div>
@@ -138,10 +144,10 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
                                         <strong style={{ fontSize: '11pt' }}>{p.title}</strong>
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             {p.githubUrl && (
-                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>GitHub</a>
+                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: resolvedAccent, textDecoration: 'none' }}>GitHub</a>
                                             )}
                                             {p.demoUrl && (
-                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>Live</a>
+                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: resolvedAccent, textDecoration: 'none' }}>Live</a>
                                             )}
                                         </div>
                                     </div>
@@ -173,7 +179,7 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
                                     <strong style={{ fontSize: '12px' }}>{e.role}</strong>
                                     <span style={{ fontSize: '10px', color: '#6B6560' }}>{e.startDate} — {e.current ? 'Present' : e.endDate}</span>
                                 </div>
-                                <p style={{ fontSize: '11px', color: accentColor, margin: '2px 0 4px' }}>at {e.company}</p>
+                                <p style={{ fontSize: '11px', color: resolvedAccent, margin: '2px 0 4px' }}>at {e.company}</p>
                                 {e.description && <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0, whiteSpace: 'pre-line' }}>{e.description}</p>}
                             </div>
                         ))}
@@ -192,7 +198,7 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {c.year && <span style={{ fontSize: '9pt', color: '#6B6560' }}>{c.year}</span>}
                                     {c.url && (
-                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: resolvedAccent, textDecoration: 'none' }}>View →</a>
                                     )}
                                 </div>
                             </div>
@@ -212,7 +218,7 @@ export default function Template4({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {a.year && <span style={{ fontSize: '9pt', color: '#6B6560' }}>{a.year}</span>}
                                     {a.url && (
-                                        <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                        <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: resolvedAccent, textDecoration: 'none' }}>View →</a>
                                     )}
                                 </div>
                             </div>

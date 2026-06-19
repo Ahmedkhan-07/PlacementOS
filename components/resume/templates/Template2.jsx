@@ -2,22 +2,68 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
     const pi = data.personalInfo || {};
     const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
+    const isWhite = accentColor === '#FFFFFF' || accentColor === '#ffffff';
+    const resolvedAccent = isWhite ? '#1C1C1C' : accentColor;
+    const sidebarBg = isWhite ? '#FAFAFA' : accentColor;
+    const sidebarText = isWhite ? '#1C1C1C' : '#FFFFFF';
+    const sidebarBorder = isWhite ? '1px solid #CBD5E0' : 'none';
+
+    const renderSkillsText = (text, boldHeader = false) => {
+        if (!text) return null;
+        const boldColor = isWhite ? '#1C1C1C' : '#FFFFFF';
+        return text.split('\n').map((line, lineIdx) => {
+            if (line.includes('**')) {
+                const parts = line.split('**');
+                return (
+                    <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>
+                        {parts.map((part, partIdx) => {
+                            if (partIdx % 2 === 1) {
+                                return <strong key={partIdx} style={{ fontWeight: 800, color: boldColor }}>{part}</strong>;
+                            }
+                            return part;
+                        })}
+                    </span>
+                );
+            }
+            if (boldHeader) {
+                const colonIdx = line.indexOf(':');
+                if (colonIdx > 0 && colonIdx < line.length - 1) {
+                    const category = line.slice(0, colonIdx);
+                    const skillsVal = line.slice(colonIdx);
+                    return (
+                        <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>
+                            <strong style={{ fontWeight: 800, color: boldColor }}>{category}</strong>{skillsVal}
+                        </span>
+                    );
+                }
+            }
+            return <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>{line}</span>;
+        });
+    };
+
     const Section = ({ title, children }) => {
         const isSidebarSec = title === "Skills" || title === "Technical Skills" || title === "Languages" || title === "Interests";
         return (
             <div style={{ marginBottom: '20px' }}>
-                {isSidebarSec && (
+                {isSidebarSec && !isWhite && (
                     <style>{`
                         .sidebar-section-content p { color: #FFFFFF !important; }
+                        .sidebar-section-content p strong { color: #FFFFFF !important; }
+                    `}</style>
+                )}
+                {isSidebarSec && isWhite && (
+                    <style>{`
+                        .sidebar-section-content p { color: #1C1C1C !important; }
+                        .sidebar-section-content p strong { color: #1C1C1C !important; }
                     `}</style>
                 )}
                 <h3 style={{
                     fontSize: isSidebarSec ? '11px' : '13px',
                     fontWeight: 700,
-                    color: isSidebarSec ? '#FFFFFF' : accentColor,
+                    color: isSidebarSec ? sidebarText : resolvedAccent,
                     textTransform: 'uppercase',
                     letterSpacing: isSidebarSec ? '0.1em' : undefined,
-                    opacity: isSidebarSec ? 0.7 : undefined,
+                    opacity: isSidebarSec && !isWhite ? 0.7 : undefined,
                     marginBottom: '8px'
                 }}>{title}</h3>
                 <div className={isSidebarSec ? "sidebar-section-content" : ""}>
@@ -39,7 +85,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
             lineHeight: 1.6
         }}>
             {/* Sidebar */}
-            <div style={{ width: '35%', background: accentColor, color: '#FFFFFF', padding: '32px 20px' }}>
+            <div style={{ width: '35%', background: sidebarBg, color: sidebarText, padding: '32px 20px', borderRight: sidebarBorder }}>
                 {data.showProfilePic !== false && (
                     pi.profilePicUrl ? (
                         <img
@@ -48,16 +94,16 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                             style={{
                                 width: '80px', height: '80px', borderRadius: '50%',
                                 objectFit: 'cover', display: 'block', margin: '0 auto 16px',
-                                border: '2px solid rgba(255,255,255,0.5)'
+                                border: isWhite ? '2px solid #CBD5E0' : '2px solid rgba(255,255,255,0.5)'
                             }}
                         />
                     ) : (
                         <div style={{
                             width: '80px', height: '80px', borderRadius: '50%',
-                            background: 'rgba(255,255,255,0.2)', display: 'flex',
+                            background: isWhite ? '#E2E8F0' : 'rgba(255,255,255,0.2)', display: 'flex',
                             alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
-                            color: '#fff', fontSize: '24px', fontWeight: 700,
-                            border: '2px solid rgba(255,255,255,0.5)'
+                            color: isWhite ? '#1C1C1C' : '#fff', fontSize: '24px', fontWeight: 700,
+                            border: isWhite ? '2px solid #CBD5E0' : '2px solid rgba(255,255,255,0.5)'
                         }}>
                             {initials}
                         </div>
@@ -117,7 +163,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 1. Professional Summary */}
                 {data.summary && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Professional Summary</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Professional Summary</h3>
                         <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0 }}>{data.summary}</p>
                     </div>
                 )}
@@ -125,7 +171,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 2. Education */}
                 {data.education?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Education</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Education</h3>
                         {data.education.map((e, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -144,7 +190,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 3. Projects */}
                 {data.projects?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Projects</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Projects</h3>
                         {data.projects.map((p, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -152,10 +198,10 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                                         <strong style={{ fontSize: '12px' }}>{p.title}</strong>
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             {p.githubUrl && (
-                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>GitHub</a>
+                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>GitHub</a>
                                             )}
                                             {p.demoUrl && (
-                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>Live</a>
+                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>Live</a>
                                             )}
                                         </div>
                                     </div>
@@ -181,14 +227,14 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 4. Work & Internship Experience */}
                 {data.experience?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Work & Internship Experience</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Work & Internship Experience</h3>
                         {data.experience.map((e, i) => (
                             <div key={i} style={{ marginBottom: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                     <strong style={{ fontSize: '12px' }}>{e.role}</strong>
                                     <span style={{ fontSize: '10px', color: '#6B6560' }}>{e.startDate} – {e.current ? 'Present' : e.endDate}</span>
                                 </div>
-                                <p style={{ fontSize: '11px', color: accentColor, margin: '2px 0 4px' }}>{e.company}</p>
+                                <p style={{ fontSize: '11px', color: resolvedAccent, margin: '2px 0 4px' }}>{e.company}</p>
                                 {e.description && <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0 }}>{e.description}</p>}
                             </div>
                         ))}
@@ -198,7 +244,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 5. Certifications */}
                 {data.certifications?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Certifications</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Certifications</h3>
                         {data.certifications.map((c, i) => (
                             <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                 <div>
@@ -208,7 +254,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {c.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{c.year}</span>}
                                     {c.url && (
-                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>View →</a>
                                     )}
                                 </div>
                             </div>
@@ -219,7 +265,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 6. Achievements */}
                 {data.achievements?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Achievements</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Achievements</h3>
                         {data.achievements.map((a, i) => (
                             <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                 <div>
@@ -229,7 +275,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {a.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{a.year}</span>}
                                     {a.url && (
-                                        <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                        <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>View →</a>
                                     )}
                                 </div>
                             </div>
@@ -240,7 +286,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 7. Leadership & Extracurricular Activities */}
                 {data.leadership?.length > 0 && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Leadership & Extracurricular Activities</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>Leadership & Extracurricular Activities</h3>
                         {data.leadership.map((l, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -256,7 +302,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 8. References (Optional) */}
                 {data.references && (
                     <div style={{ marginBottom: '20px' }}>
-                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>References</h3>
+                        <h3 style={{ fontSize: '13px', fontWeight: 700, color: resolvedAccent, textTransform: 'uppercase', marginBottom: '8px' }}>References</h3>
                         <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0 }}>{data.references}</p>
                     </div>
                 )}
@@ -308,34 +354,4 @@ const GlobeIcon = () => (
     </svg>
 );
 
-const renderSkillsText = (text, boldHeader = false) => {
-    if (!text) return null;
-    return text.split('\n').map((line, lineIdx) => {
-        if (line.includes('**')) {
-            const parts = line.split('**');
-            return (
-                <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>
-                    {parts.map((part, partIdx) => {
-                        if (partIdx % 2 === 1) {
-                            return <strong key={partIdx} style={{ fontWeight: 800, color: '#FFFFFF' }}>{part}</strong>;
-                        }
-                        return part;
-                    })}
-                </span>
-            );
-        }
-        if (boldHeader) {
-            const colonIdx = line.indexOf(':');
-            if (colonIdx > 0 && colonIdx < line.length - 1) {
-                const category = line.slice(0, colonIdx);
-                const skillsVal = line.slice(colonIdx);
-                return (
-                    <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>
-                        <strong style={{ fontWeight: 800, color: '#FFFFFF' }}>{category}</strong>{skillsVal}
-                    </span>
-                );
-            }
-        }
-        return <span key={lineIdx} style={{ display: 'block', minHeight: '1.2em' }}>{line}</span>;
-    });
-};
+
