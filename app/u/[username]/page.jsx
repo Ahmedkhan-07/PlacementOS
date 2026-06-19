@@ -6,6 +6,7 @@ import Project from '@/models/Project';
 import Certificate from '@/models/Certificate';
 import Achievement from '@/models/Achievement';
 import PublicPortfolioClient from './PublicPortfolioClient';
+import { getOrMigrateUserResumes } from '@/app/api/resume/route';
 
 export async function generateMetadata({ params }) {
     await connectDB();
@@ -31,20 +32,25 @@ export default async function PublicPortfolio({ params }) {
     // The public portfolio is accessible if the URL is shared. 
     // We removed the strict `!user.isPublic` check so it doesn't block by default.
 
-    // Fetch all data for the user
+    // Fetch all data for the user (automatically self-heals and migrates the resume if in legacy/empty state)
     const [resumeDoc, projects, certificates, achievements] = await Promise.all([
-        Resume.findOne({ userId: user.clerkId }).lean(),
+        getOrMigrateUserResumes(user.clerkId),
         Project.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
         Certificate.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
         Achievement.find({ userId: user.clerkId }).sort({ order: 1, createdAt: -1 }).lean(),
     ]);
 
+    // Convert to plain object if it is a Mongoose document to allow mutations
+    const resumeObj = resumeDoc && typeof resumeDoc.toObject === 'function' 
+        ? resumeDoc.toObject() 
+        : resumeDoc;
+
     let activeResume = null;
-    if (resumeDoc) {
-        if (resumeDoc.resumes && resumeDoc.resumes.length > 0) {
-            activeResume = resumeDoc.resumes.find(r => r.isActive) || resumeDoc.resumes[0];
+    if (resumeObj) {
+        if (resumeObj.resumes && resumeObj.resumes.length > 0) {
+            activeResume = resumeObj.resumes.find(r => r.isActive) || resumeObj.resumes[0];
         } else {
-            activeResume = resumeDoc;
+            activeResume = resumeObj;
         }
     }
 

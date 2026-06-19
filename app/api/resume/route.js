@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs';
 import { connectDB } from '@/lib/mongodb';
 import UserResumes from '@/models/Resume';
 
-async function getOrMigrateUserResumes(userId) {
+export async function getOrMigrateUserResumes(userId) {
     // 1. Fetch raw MongoDB document to bypass Mongoose schema limitations
     const rawDoc = await UserResumes.collection.findOne({ userId });
     if (!rawDoc) return null;

@@ -1,6 +1,34 @@
 import { NextResponse } from 'next/server';
 import groq from '@/lib/groq';
 
+// Polyfill browser DOM APIs that pdfjs-dist v5+ references in Node.js serverless environment.
+if (typeof globalThis.DOMMatrix === 'undefined') {
+    globalThis.DOMMatrix = class DOMMatrix {
+        constructor() {
+            this.a = 1; this.b = 0; this.c = 0; this.d = 1; this.e = 0; this.f = 0;
+            this.is2D = true;
+            this.isIdentity = true;
+        }
+    };
+}
+if (typeof globalThis.DOMMatrixReadOnly === 'undefined') {
+    globalThis.DOMMatrixReadOnly = globalThis.DOMMatrix;
+}
+if (typeof globalThis.ImageData === 'undefined') {
+    globalThis.ImageData = class ImageData {
+        constructor(width, height) {
+            this.width = width;
+            this.height = height;
+            this.data = new Uint8ClampedArray(width * height * 4);
+        }
+    };
+}
+if (typeof globalThis.Path2D === 'undefined') {
+    globalThis.Path2D = class Path2D {
+        constructor() {}
+    };
+}
+
 export async function POST(req) {
     try {
         const formData = await req.formData();
