@@ -1,3 +1,5 @@
+import { resolveSectionTitle } from '@/lib/resumeUtils';
+
 export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
     if (accentColor === '#FFFFFF' || accentColor === '#ffffff') {
         accentColor = '#1C1C1C';
@@ -16,7 +18,7 @@ export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
                 borderBottom: '2px solid #1C1C1C',
                 paddingBottom: '4px',
                 marginBottom: '12px',
-            }}>{title}</h3>
+            }}>{resolveSectionTitle(title, data.atsStandardSectionNames)}</h3>
             {children}
         </div>
     );
@@ -80,20 +82,20 @@ export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
                     color: '#6B6560',
                     fontWeight: 500
                 }}>
-                    {pi.email && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}><MailIcon /> {pi.email}</span>}
-                    {pi.phone && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}><PhoneIcon /> {pi.phone}</span>}
-                    {pi.location && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}><MapPinIcon /> {pi.location}</span>}
+                    {pi.email && <a href={`mailto:${pi.email}`} style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><MailIcon /> {pi.email}</a>}
+                    {pi.phone && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><PhoneIcon /> {pi.phone}</span>}
+                    {pi.location && <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><MapPinIcon /> {pi.location}</span>}
                     {pi.linkedinUrl && (
-                        <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><LinkedinIcon /> LinkedIn</a>
+                        <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><LinkedinIcon /> {pi.linkedinLabel || 'LinkedIn'}</a>
                     )}
                     {pi.githubUrl && (
-                        <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><GithubIcon /> GitHub</a>
+                        <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><GithubIcon /> {pi.githubLabel || 'GitHub'}</a>
                     )}
                     {pi.leetcodeUrl && (
-                        <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><LeetCodeIcon /> LeetCode</a>
+                        <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><LeetCodeIcon /> {pi.leetcodeLabel || 'LeetCode'}</a>
                     )}
                     {pi.portfolioUrl && (
-                        <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><GlobeIcon /> Portfolio</a>
+                        <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' }}><GlobeIcon /> {pi.portfolioLabel || 'Portfolio'}</a>
                     )}
                 </div>
             </div>
@@ -145,23 +147,24 @@ export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
                     {data.projects.map((p, i) => (
                         <div key={i} style={{ marginBottom: '8px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                                    <strong style={{ fontSize: '11pt' }}>{p.title}</strong>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        {p.githubUrl && (
-                                            <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>GitHub</a>
-                                        )}
-                                        {p.demoUrl && (
-                                            <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>Live</a>
-                                        )}
-                                    </div>
-                                </div>
+                                <strong style={{ fontSize: '11pt' }}>{p.title}</strong>
                                 {(p.startDate || p.endDate) && (
                                     <span style={{ fontSize: '9.5pt', color: '#6B6560' }}>
                                         {p.startDate}{p.startDate && p.endDate ? ' – ' : ''}{p.endDate}
                                     </span>
                                 )}
                             </div>
+                            {(p.githubUrl || p.demoUrl) && (
+                                <div style={{ display: 'flex', gap: '8px', marginTop: '2px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                    {p.githubUrl && (
+                                        <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>{p.githubLabel || 'GitHub'}</a>
+                                    )}
+                                    {p.githubUrl && p.demoUrl && <span style={{ color: '#CBD5E0', fontSize: '9pt' }}>|</span>}
+                                    {p.demoUrl && (
+                                        <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9pt', color: accentColor, textDecoration: 'none' }}>{p.demoLabel || 'Live'}</a>
+                                    )}
+                                </div>
+                            )}
                             {p.techStack?.length > 0 && (
                                 <p style={{ fontSize: '9.5pt', color: '#6B6560', fontStyle: 'italic', margin: 0, marginTop: '2px', marginBottom: '2px' }}>
                                     {p.techStack.join(', ')}
@@ -209,7 +212,7 @@ export default function Template6({ data = {}, accentColor = '#2D6A4F' }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 {c.year && <span style={{ fontSize: '9.5pt', color: '#6B6560' }}>{c.year}</span>}
                                 {c.url && (
-                                    <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9.5pt', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                    <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '9.5pt', color: accentColor, textDecoration: 'none' }}>Verify →</a>
                                 )}
                             </div>
                         </div>

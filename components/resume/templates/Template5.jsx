@@ -1,3 +1,5 @@
+import { resolveSectionTitle } from '@/lib/resumeUtils';
+
 export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
     if (accentColor === '#FFFFFF' || accentColor === '#ffffff') {
         accentColor = '#1C1C1C';
@@ -16,7 +18,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                     textTransform: 'uppercase',
                     letterSpacing: isSidebarSec ? '0.12em' : undefined,
                     marginBottom: isSidebarSec ? '6px' : '8px'
-                }}>{title}</h3>
+                }}>{resolveSectionTitle(title, data.atsStandardSectionNames)}</h3>
                 {children}
             </div>
         );
@@ -60,21 +62,46 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
 
                 <div style={{ marginBottom: '20px' }}>
                     <h3 style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: accentColor, marginBottom: '6px' }}>Contact</h3>
-                    {pi.email && <p style={{ fontSize: '10px', color: '#4a4a4a', wordBreak: 'break-all', margin: '0 0 4px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><MailIcon /> {pi.email}</p>}
-                    {pi.phone && <p style={{ fontSize: '10px', color: '#4a4a4a', margin: '0 0 4px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><PhoneIcon /> {pi.phone}</p>}
-                    {pi.location && <p style={{ fontSize: '10px', color: '#4a4a4a', margin: '0 0 6px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><MapPinIcon /> {pi.location}</p>}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '10px', color: '#4a4a4a', marginTop: '6px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '10px', color: '#4a4a4a' }}>
+                        {pi.email && (
+                            <a href={`mailto:${pi.email}`} style={{ color: 'inherit', textDecoration: 'none', wordBreak: 'break-all', display: 'flex', alignItems: 'flex-start', gap: '5px' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '2.5px' }}><MailIcon /></span>
+                                <span>{pi.email}</span>
+                            </a>
+                        )}
+                        {pi.phone && (
+                            <p style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex' }}><PhoneIcon /></span> {pi.phone}
+                            </p>
+                        )}
+                        {pi.location && (
+                            <p style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex' }}><MapPinIcon /></span> {pi.location}
+                            </p>
+                        )}
                         {pi.linkedinUrl && (
-                            <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><LinkedinIcon /> LinkedIn</a>
+                            <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '2.5px' }}><LinkedinIcon /></span>
+                                <span>{pi.linkedinLabel || 'LinkedIn'}</span>
+                            </a>
                         )}
                         {pi.githubUrl && (
-                            <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><GithubIcon /> GitHub</a>
+                            <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '2.5px' }}><GithubIcon /></span>
+                                <span>{pi.githubLabel || 'GitHub'}</span>
+                            </a>
                         )}
                         {pi.leetcodeUrl && (
-                            <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><LeetCodeIcon /> LeetCode</a>
+                            <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '2.5px' }}><LeetCodeIcon /></span>
+                                <span>{pi.leetcodeLabel || 'LeetCode'}</span>
+                            </a>
                         )}
                         {pi.portfolioUrl && (
-                            <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}><GlobeIcon /> Portfolio</a>
+                            <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'flex-start', gap: '5px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '2.5px' }}><GlobeIcon /></span>
+                                <span>{pi.portfolioLabel || 'Portfolio'}</span>
+                            </a>
                         )}
                     </div>
                 </div>
@@ -111,7 +138,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 1. Professional Summary */}
                 {data.summary && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '6px' }}>Professional Summary</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '6px' }}>{resolveSectionTitle("Professional Summary", data.atsStandardSectionNames)}</h3>
                         <p style={{ fontSize: '11px', color: '#4a4a4a', margin: 0 }}>{data.summary}</p>
                     </div>
                 )}
@@ -119,7 +146,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 2. Education */}
                 {data.education?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Education</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Education", data.atsStandardSectionNames)}</h3>
                         {data.education.map((e, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -138,27 +165,28 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 3. Projects */}
                 {data.projects?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Projects</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Projects", data.atsStandardSectionNames)}</h3>
                         {data.projects.map((p, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                                        <strong style={{ fontSize: '12px' }}>{p.title}</strong>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            {p.githubUrl && (
-                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>GitHub</a>
-                                            )}
-                                            {p.demoUrl && (
-                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>Live</a>
-                                            )}
-                                        </div>
-                                    </div>
+                                    <strong style={{ fontSize: '12px' }}>{p.title}</strong>
                                     {(p.startDate || p.endDate) && (
                                         <span style={{ fontSize: '10px', color: '#6B6560' }}>
                                             {p.startDate}{p.startDate && p.endDate ? ' – ' : ''}{p.endDate}
                                         </span>
                                     )}
                                 </div>
+                                {(p.githubUrl || p.demoUrl) && (
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '2px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                        {p.githubUrl && (
+                                            <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>{p.githubLabel || 'GitHub'}</a>
+                                        )}
+                                        {p.githubUrl && p.demoUrl && <span style={{ color: '#CBD5E0', fontSize: '10px' }}>|</span>}
+                                        {p.demoUrl && (
+                                            <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>{p.demoLabel || 'Live'}</a>
+                                        )}
+                                    </div>
+                                )}
                                 {p.techStack?.length > 0 && (
                                     <p style={{ fontSize: '10px', color: '#6B6560', fontStyle: 'italic', margin: 0, marginTop: '2px' }}>
                                         {p.techStack.join(', ')}
@@ -175,7 +203,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 4. Work & Internship Experience */}
                 {data.experience?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Work & Internship Experience</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Work & Internship Experience", data.atsStandardSectionNames)}</h3>
                         {data.experience.map((e, i) => (
                             <div key={i} style={{ marginBottom: '10px', paddingLeft: '12px', borderLeft: `2px solid ${accentColor}` }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
@@ -192,7 +220,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 5. Certifications */}
                 {data.certifications?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Certifications</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Certifications", data.atsStandardSectionNames)}</h3>
                         {data.certifications.map((c, i) => (
                             <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                 <div>
@@ -202,7 +230,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {c.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{c.year}</span>}
                                     {c.url && (
-                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>View →</a>
+                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: accentColor, textDecoration: 'none' }}>Verify →</a>
                                     )}
                                 </div>
                             </div>
@@ -213,7 +241,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 6. Achievements */}
                 {data.achievements?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Achievements</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Achievements", data.atsStandardSectionNames)}</h3>
                         {data.achievements.map((a, i) => (
                             <div key={i} style={{ marginBottom: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                                 <div>
@@ -234,7 +262,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 7. Leadership & Extracurricular Activities */}
                 {data.leadership?.length > 0 && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>Leadership & Extracurricular Activities</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("Leadership & Extracurricular Activities", data.atsStandardSectionNames)}</h3>
                         {data.leadership.map((l, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -250,7 +278,7 @@ export default function Template5({ data = {}, accentColor = '#2D6A4F' }) {
                 {/* 8. References (Optional) */}
                 {data.references && (
                     <div style={{ marginBottom: '18px' }}>
-                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>References</h3>
+                        <h3 style={{ fontSize: '12px', fontWeight: 700, color: accentColor, textTransform: 'uppercase', marginBottom: '8px' }}>{resolveSectionTitle("References", data.atsStandardSectionNames)}</h3>
                         <p style={{ fontSize: '11px', color: '#4a4a4a', whiteSpace: 'pre-line', margin: 0 }}>{data.references}</p>
                     </div>
                 )}

@@ -25,6 +25,7 @@ const ACCENT_COLORS = ['#2D6A4F', '#1B4332', '#C0392B', '#2C3E50', '#8E44AD', '#
 
 export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave }) {
     const [step, setStep] = useState(0);
+    const [showAtsSidebar, setShowAtsSidebar] = useState(true);
     const [data, setData] = useState({
         templateId: resume?.templateId || 1,
         accentColor: resume?.accentColor || '#2D6A4F',
@@ -47,6 +48,13 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
         references: resume?.references || '',
         skillsText: resume?.skillsText || '',
         boldSkillsHeader: resume?.boldSkillsHeader || false,
+        atsSymbols: resume?.atsSymbols !== false,
+        atsStandardSectionNames: resume?.atsStandardSectionNames === true,
+        atsConsistentFormatting: resume?.atsConsistentFormatting === true,
+        atsSingleColumn: resume?.atsSingleColumn === true,
+        atsFontSelection: resume?.atsFontSelection || '',
+        atsProfileLinksFormat: resume?.atsProfileLinksFormat === true,
+        atsProjectLinksFormat: resume?.atsProjectLinksFormat === true,
     });
     const [saving, setSaving] = useState(false);
     const [showExitConfirm, setShowExitConfirm] = useState(false);
@@ -420,12 +428,48 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                             <span className="fancy-toggle-slider" />
                         </label>
                     </div>
-                    {['name', 'email', 'phone', 'location', 'linkedinUrl', 'githubUrl', 'leetcodeUrl', 'portfolioUrl'].map(f => (
-                        <div key={f} style={{ marginBottom: '16px' }}>
-                            <label style={labelStyle}>{f.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).replace('Url', ' URL')}</label>
-                            <input className="fancy-input" value={data.personalInfo[f] || ''} onChange={e => updatePI(f, e.target.value)} />
-                        </div>
-                    ))}
+                    {['name', 'email', 'phone', 'location', 'linkedinUrl', 'githubUrl', 'leetcodeUrl', 'portfolioUrl'].map(f => {
+                        const isHidden = !!data.personalInfo[`${f}_hidden`];
+                        return (
+                            <div key={f} style={{ marginBottom: '16px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                    <label style={{ ...labelStyle, marginBottom: 0 }}>
+                                        {f.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()).replace('Url', ' URL')}
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={() => updatePI(`${f}_hidden`, !isHidden)}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            fontSize: '11px',
+                                            color: isHidden ? '#C0392B' : '#2D6A4F',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '4px',
+                                            fontWeight: 600,
+                                            outline: 'none',
+                                            padding: 0,
+                                        }}
+                                        title={isHidden ? "Show on Resume" : "Hide from Resume"}
+                                    >
+                                        {isHidden ? '🙈 Hidden' : '👁️ Visible'}
+                                    </button>
+                                </div>
+                                <input 
+                                    className="fancy-input" 
+                                    value={data.personalInfo[f] || ''} 
+                                    onChange={e => updatePI(f, e.target.value)} 
+                                    style={{
+                                        opacity: isHidden ? 0.6 : 1,
+                                        borderStyle: isHidden ? 'dashed' : 'solid',
+                                        transition: 'all 0.25s ease'
+                                    }}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             );
             case 1: return (
@@ -1083,32 +1127,55 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     </div>
                 </div>
 
-                {/* Right: Exit Action */}
-                <button 
-                    onClick={() => setShowExitConfirm(true)} 
-                    className="btn-ghost" 
-                    style={{ 
-                        padding: '8px 16px', 
-                        fontSize: '13px', 
-                        fontWeight: 600,
-                        color: 'var(--engine-red)', 
-                        borderColor: 'var(--engine-red)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        borderRadius: '10px',
-                        transition: 'all 0.2s ease',
-                        flexShrink: 0 
-                    }}
-                    onMouseEnter={e => {
-                        e.currentTarget.style.background = 'rgba(192, 57, 43, 0.08)';
-                    }}
-                    onMouseLeave={e => {
-                        e.currentTarget.style.background = 'transparent';
-                    }}
-                >
-                    ✕ Exit Builder
-                </button>
+                {/* Right: Actions */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button 
+                        onClick={() => setShowAtsSidebar(!showAtsSidebar)}
+                        className="btn-outline" 
+                        style={{ 
+                            padding: '8px 16px', 
+                            fontSize: '13px', 
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            borderColor: 'var(--border)',
+                            background: showAtsSidebar ? 'rgba(201, 162, 58, 0.08)' : 'transparent',
+                            color: showAtsSidebar ? 'var(--accent)' : 'var(--text-muted)',
+                            transition: 'all 0.2s ease',
+                            flexShrink: 0 
+                        }}
+                    >
+                        ⚙️ ATS Settings {showAtsSidebar ? '◀' : '▶'}
+                    </button>
+                    <button 
+                        onClick={() => setShowExitConfirm(true)} 
+                        className="btn-ghost" 
+                        style={{ 
+                            padding: '8px 16px', 
+                            fontSize: '13px', 
+                            fontWeight: 600,
+                            color: 'var(--engine-red)', 
+                            borderColor: 'var(--engine-red)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            borderRadius: '10px',
+                            transition: 'all 0.2s ease',
+                            flexShrink: 0 
+                        }}
+                        onMouseEnter={e => {
+                            e.currentTarget.style.background = 'rgba(192, 57, 43, 0.08)';
+                        }}
+                        onMouseLeave={e => {
+                            e.currentTarget.style.background = 'transparent';
+                        }}
+                    >
+                        ✕ Exit Builder
+                    </button>
+                </div>
             </div>
 
             {/* Step Navigation Pills */}
@@ -1172,7 +1239,7 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     </div>
                 </div>
 
-                {/* Right: Live Preview */}
+                {/* Center: Live Preview */}
                 <div style={{
                     flex: 1, overflow: 'auto', background: 'var(--surface)', borderLeft: '1px solid var(--border)',
                     padding: '20px', display: 'flex', flexDirection: 'column',
@@ -1180,9 +1247,9 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                     {/* Template Switcher */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px', background: 'var(--bg)', padding: '14px', borderRadius: '12px', border: '1px solid var(--border)', width: '100%', boxSizing: 'border-box' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>Classic:</span>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>Templates:</span>
                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                {[1, 2, 3, 4, 5, 6, 7, 8].map(id => (
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(id => (
                                     <button
                                         key={id}
                                         onClick={() => update('templateId', id)}
@@ -1198,39 +1265,26 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                                 ))}
                             </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>ATS Friendly:</span>
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                {[9, 10, 11].map(id => (
-                                    <button
-                                        key={id}
-                                        onClick={() => update('templateId', id)}
-                                        style={{
-                                            padding: '6px 12px', borderRadius: '6px', fontSize: '11px', cursor: 'pointer',
-                                            background: data.templateId === id ? 'var(--accent)' : 'var(--skeleton)',
-                                            color: data.templateId === id ? '#fff' : 'var(--text)',
-                                            border: 'none', fontWeight: 500, transition: 'all 0.2s ease',
-                                        }}
-                                    >
-                                        T{id} (ATS)
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '4px' }}>
                             <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', width: '100px', flexShrink: 0 }}>Accent:</span>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                                {ACCENT_COLORS.map(c => (
-                                    <button
-                                        key={c}
-                                        onClick={() => update('accentColor', c)}
-                                        style={{
-                                            width: '20px', height: '20px', borderRadius: '50%', background: c,
-                                            border: data.accentColor === c ? '3px solid var(--text)' : '1.5px solid var(--border)',
-                                            cursor: 'pointer', transition: 'all 0.2s ease',
-                                        }}
-                                    />
-                                ))}
+                                {data.atsConsistentFormatting ? (
+                                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        ⚠️ Overridden by Consistent Formatting
+                                    </span>
+                                ) : (
+                                    ACCENT_COLORS.map(c => (
+                                        <button
+                                            key={c}
+                                            onClick={() => update('accentColor', c)}
+                                            style={{
+                                                width: '20px', height: '20px', borderRadius: '50%', background: c,
+                                                border: data.accentColor === c ? '3px solid var(--text)' : '1.5px solid var(--border)',
+                                                cursor: 'pointer', transition: 'all 0.2s ease',
+                                            }}
+                                        />
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
@@ -1244,6 +1298,142 @@ export default function ResumeBuilder({ resume, userProfilePic, onClose, onSave 
                         flexShrink: 0,
                     }}>
                         <ResumePreview data={data} templateId={data.templateId} accentColor={data.accentColor} />
+                    </div>
+                </div>
+
+                {/* Right: ATS Configuration Sidebar */}
+                <div style={{
+                    width: showAtsSidebar ? '320px' : '0px',
+                    borderLeft: showAtsSidebar ? '1px solid var(--border)' : 'none',
+                    background: 'var(--surface)',
+                    padding: showAtsSidebar ? '24px 20px' : '0px',
+                    overflowY: 'auto',
+                    overflowX: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '24px',
+                    flexShrink: 0,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    opacity: showAtsSidebar ? 1 : 0,
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '4px', minWidth: '280px' }}>
+                        <span style={{ fontSize: '18px' }}>⚙️</span>
+                        <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '16px', fontWeight: 700, margin: 0, color: 'var(--text)' }}>
+                            ATS Optimization
+                        </h3>
+                    </div>
+
+                    {/* Symbols Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Show Symbols & Icons</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>Hides all visual icons/logos for strict text parsing.</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsSymbols !== false} 
+                                onChange={e => update('atsSymbols', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Standard Section Names Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Standard Section Names</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>Forces headings like Summary, Experience, Education.</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsStandardSectionNames === true} 
+                                onChange={e => update('atsStandardSectionNames', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Consistent Formatting Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Consistent Formatting</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>Enforces uniform black/dark colors and solid layout flows.</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsConsistentFormatting === true} 
+                                onChange={e => update('atsConsistentFormatting', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Single Column Layout Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Single Column Layout</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>Forces side-by-side grids and sidebars to stack vertically.</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsSingleColumn === true} 
+                                onChange={e => update('atsSingleColumn', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Profile Links Format Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Profile Links URL format</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>e.g. LinkedIn: linkedin.com/in/...</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsProfileLinksFormat === true} 
+                                onChange={e => update('atsProfileLinksFormat', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Project Links Format Toggle */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', minWidth: '280px' }}>
+                        <div style={{ flex: 1 }}>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>Project Links URL format</span>
+                            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.3, display: 'block' }}>e.g. GitHub: github.com/...</span>
+                        </div>
+                        <label className="fancy-toggle" style={{ '--accent-color': (data.accentColor === '#FFFFFF' || data.accentColor === '#ffffff') ? '#1C1C1C' : data.accentColor, flexShrink: 0 }}>
+                            <input 
+                                type="checkbox" 
+                                checked={data.atsProjectLinksFormat === true} 
+                                onChange={e => update('atsProjectLinksFormat', e.target.checked)}
+                            />
+                            <span className="fancy-toggle-slider" />
+                        </label>
+                    </div>
+
+                    {/* Font Selection Dropdown */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', minWidth: '280px' }}>
+                        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>Standard Font Selection</span>
+                        <select 
+                            className="fancy-input" 
+                            value={data.atsFontSelection || ''} 
+                            onChange={e => update('atsFontSelection', e.target.value)}
+                            style={{ width: '100%', outline: 'none' }}
+                        >
+                            <option value="">Default Template Font</option>
+                            <option value="Arial">Arial</option>
+                            <option value="Calibri">Calibri</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Georgia">Georgia</option>
+                        </select>
                     </div>
                 </div>
             </div>

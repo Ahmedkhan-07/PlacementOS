@@ -1,3 +1,5 @@
+import { resolveSectionTitle } from '@/lib/resumeUtils';
+
 export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
     const pi = data.personalInfo || {};
     const initials = (pi.name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
@@ -43,6 +45,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
 
     const Section = ({ title, children }) => {
         const isSidebarSec = title === "Skills" || title === "Technical Skills" || title === "Languages" || title === "Interests";
+        const resolvedTitle = resolveSectionTitle(title, data.atsStandardSectionNames);
         return (
             <div style={{ marginBottom: '20px' }}>
                 {isSidebarSec && !isWhite && (
@@ -65,7 +68,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                     letterSpacing: isSidebarSec ? '0.1em' : undefined,
                     opacity: isSidebarSec && !isWhite ? 0.7 : undefined,
                     marginBottom: '8px'
-                }}>{title}</h3>
+                }}>{resolvedTitle}</h3>
                 <div className={isSidebarSec ? "sidebar-section-content" : ""}>
                     {children}
                 </div>
@@ -111,24 +114,48 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                 )}
 
                 <h1 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '4px', textAlign: 'center' }}>{pi.name || 'Your Name'}</h1>
-                <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '24px', textAlign: 'center', wordBreak: 'break-all' }}>{pi.email}</p>
+                {pi.email && (
+                    <p style={{ fontSize: '11px', opacity: 0.8, marginBottom: '24px', textAlign: 'center', wordBreak: 'break-all' }}>
+                        <a href={`mailto:${pi.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{pi.email}</a>
+                    </p>
+                )}
 
                 <div style={{ marginBottom: '20px' }}>
                     <h3 style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.7, marginBottom: '8px' }}>Contact</h3>
-                    {pi.phone && <p style={{ fontSize: '11px', marginBottom: '4px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><PhoneIcon /> {pi.phone}</p>}
-                    {pi.location && <p style={{ fontSize: '11px', marginBottom: '4px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><MapPinIcon /> {pi.location}</p>}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {pi.phone && (
+                            <p style={{ fontSize: '11px', margin: 0, display: 'flex', alignItems: 'center', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex' }}><PhoneIcon /></span> {pi.phone}
+                            </p>
+                        )}
+                        {pi.location && (
+                            <p style={{ fontSize: '11px', margin: 0, display: 'flex', alignItems: 'center', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex' }}><MapPinIcon /></span> {pi.location}
+                            </p>
+                        )}
                         {pi.linkedinUrl && (
-                            <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><LinkedinIcon /> LinkedIn</a>
+                            <a href={pi.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '3px' }}><LinkedinIcon /></span>
+                                <span>{pi.linkedinLabel || 'LinkedIn'}</span>
+                            </a>
                         )}
                         {pi.githubUrl && (
-                            <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><GithubIcon /> GitHub</a>
+                            <a href={pi.githubUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '3px' }}><GithubIcon /></span>
+                                <span>{pi.githubLabel || 'GitHub'}</span>
+                            </a>
                         )}
                         {pi.leetcodeUrl && (
-                            <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><LeetCodeIcon /> LeetCode</a>
+                            <a href={pi.leetcodeUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '3px' }}><LeetCodeIcon /></span>
+                                <span>{pi.leetcodeLabel || 'LeetCode'}</span>
+                            </a>
                         )}
                         {pi.portfolioUrl && (
-                            <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}><GlobeIcon /> Portfolio</a>
+                            <a href={pi.portfolioUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none', fontSize: '11px', display: 'flex', alignItems: 'flex-start', gap: '6px', wordBreak: 'break-all' }}>
+                                <span style={{ display: 'inline-flex', marginTop: '3px' }}><GlobeIcon /></span>
+                                <span>{pi.portfolioLabel || 'Portfolio'}</span>
+                            </a>
                         )}
                     </div>
                 </div>
@@ -194,23 +221,24 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                         {data.projects.map((p, i) => (
                             <div key={i} style={{ marginBottom: '8px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                                        <strong style={{ fontSize: '12px' }}>{p.title}</strong>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            {p.githubUrl && (
-                                                <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>GitHub</a>
-                                            )}
-                                            {p.demoUrl && (
-                                                <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>Live</a>
-                                            )}
-                                        </div>
-                                    </div>
+                                    <strong style={{ fontSize: '12px' }}>{p.title}</strong>
                                     {(p.startDate || p.endDate) && (
                                         <span style={{ fontSize: '10px', color: '#6B6560' }}>
                                             {p.startDate}{p.startDate && p.endDate ? ' – ' : ''}{p.endDate}
                                         </span>
                                     )}
                                 </div>
+                                {(p.githubUrl || p.demoUrl) && (
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '2px', flexWrap: 'wrap', alignItems: 'center' }}>
+                                        {p.githubUrl && (
+                                            <a href={p.githubUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>{p.githubLabel || 'GitHub'}</a>
+                                        )}
+                                        {p.githubUrl && p.demoUrl && <span style={{ color: '#CBD5E0', fontSize: '10px' }}>|</span>}
+                                        {p.demoUrl && (
+                                            <a href={p.demoUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>{p.demoLabel || 'Live'}</a>
+                                        )}
+                                    </div>
+                                )}
                                 {p.techStack?.length > 0 && (
                                     <p style={{ fontSize: '10px', color: '#6B6560', fontStyle: 'italic', margin: 0, marginTop: '2px' }}>
                                         {p.techStack.join(', ')}
@@ -254,7 +282,7 @@ export default function Template2({ data = {}, accentColor = '#2D6A4F' }) {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     {c.year && <span style={{ fontSize: '10px', color: '#6B6560' }}>{c.year}</span>}
                                     {c.url && (
-                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>View →</a>
+                                        <a href={c.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '10px', color: resolvedAccent, textDecoration: 'none' }}>Verify →</a>
                                     )}
                                 </div>
                             </div>

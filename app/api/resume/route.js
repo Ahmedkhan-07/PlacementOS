@@ -41,6 +41,13 @@ export async function getOrMigrateUserResumes(userId) {
             references: rawDoc.references || '',
             boldSkillsHeader: rawDoc.boldSkillsHeader || false,
             showProfilePic: rawDoc.showProfilePic !== false,
+            atsSymbols: rawDoc.atsSymbols !== false,
+            atsStandardSectionNames: rawDoc.atsStandardSectionNames || false,
+            atsConsistentFormatting: rawDoc.atsConsistentFormatting || false,
+            atsSingleColumn: rawDoc.atsSingleColumn || false,
+            atsFontSelection: rawDoc.atsFontSelection || '',
+            atsProfileLinksFormat: rawDoc.atsProfileLinksFormat || false,
+            atsProjectLinksFormat: rawDoc.atsProjectLinksFormat || false,
             updatedAt: rawDoc.updatedAt || new Date(),
         };
 
@@ -64,9 +71,15 @@ export async function getOrMigrateUserResumes(userId) {
                     leadership: "",
                     languages: "",
                     interests: "",
-                    references: "",
                     boldSkillsHeader: "",
-                    showProfilePic: ""
+                    showProfilePic: "",
+                    atsSymbols: "",
+                    atsStandardSectionNames: "",
+                    atsConsistentFormatting: "",
+                    atsSingleColumn: "",
+                    atsFontSelection: "",
+                    atsProfileLinksFormat: "",
+                    atsProjectLinksFormat: ""
                 }
             }
         );
@@ -129,6 +142,13 @@ export async function getOrMigrateUserResumes(userId) {
         checkAndRestoreValue('showProfilePic');
         checkAndRestoreValue('templateId');
         checkAndRestoreValue('accentColor');
+        checkAndRestoreValue('atsSymbols');
+        checkAndRestoreValue('atsStandardSectionNames');
+        checkAndRestoreValue('atsConsistentFormatting');
+        checkAndRestoreValue('atsSingleColumn');
+        checkAndRestoreValue('atsFontSelection');
+        checkAndRestoreValue('atsProfileLinksFormat');
+        checkAndRestoreValue('atsProjectLinksFormat');
 
         checkAndRestorePersonalInfo();
 
